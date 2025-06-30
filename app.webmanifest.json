@@ -1,21 +1,22 @@
 {
   "name": "Funorte Hub",
   "short_name": "FunorteHub",
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0d1b2a",
   "theme_color": "#0d1b2a",
-  "description": "Aplicativo da Funorte para registro de diários de campo",
   "icons": [
     {
       "src": "https://i.imgur.com/INUxxnc.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "https://i.imgur.com/INUxxnc.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
