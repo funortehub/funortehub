@@ -177,7 +177,7 @@
 
         .footer {
             text-align: center;
-            padding: 10px 20px; /* Reduzido o padding */
+            padding: 10px 20px;
             font-size: 0.8rem;
             color: var(--light-gray);
             margin-top: auto;
@@ -785,7 +785,7 @@
         /* Estilo para o rodapé com logo */
         .footer-logo {
             width: 100px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         /* Estilo para o modal de ícones de perfil */
@@ -1040,9 +1040,9 @@
             gap: 10px;
             margin-top: 10px;
         }
-
+        
         /* Estilo para informações de avaliação */
-        .evaluation-info-text {
+        .evaluation-info {
             font-size: 0.9rem;
             opacity: 0.8;
         }
@@ -1770,12 +1770,12 @@
             <div class="evaluation-container">
                 <div class="evaluation-header">
                     <div class="evaluation-title" id="evaluation-title">Título do Diário</div>
-                    <div class="evaluation-date" id="evaluation-date">Data: 00/00/0000</div>
-                    <div style="margin-top: 5px;">
-                        <div class="evaluation-info-text">Aluno: <span id="evaluation-student-name"></span></div>
-                        <div class="evaluation-info-text">Matrícula: <span id="evaluation-student-registration"></span></div>
+                    <div class="evaluation-info">
+                        <div>Data: <span id="evaluation-date"></span></div>
+                        <div>Aluno: <span id="evaluation-student-name"></span></div>
+                        <div>Matrícula: <span id="evaluation-student-registration"></span></div>
                     </div>
-                    <div class="evaluation-status" id="evaluation-status" style="margin-top: 5px; display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem; background-color: rgba(255,255,255,0.1);">
+                    <div class="evaluation-status" id="evaluation-status" style="margin-top: 5px; display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
                         <i class="fas fa-clock"></i> Pendente
                     </div>
                 </div>
@@ -2166,6 +2166,9 @@
                     appState.messagesListener = null;
                 }
             }
+            
+            // Esconder mensagem de aprovação ao mudar de tela
+            hideApprovedMessage();
         }
 
         // Configurar a tela do aluno baseada no status de aprovação
@@ -2208,10 +2211,8 @@
                 virtualclassCard.classList.remove('disabled');
                 virtualclassCard.onclick = () => openVirtualClass();
                 
-                // Esconder a mensagem após 10 segundos
-                setTimeout(() => {
-                    approvedAlert.style.display = 'none';
-                }, 10000);
+                // Esconder mensagem de aprovação após 10 segundos
+                setTimeout(hideApprovedMessage, 10000);
             } else {
                 // Status não definido (para segurança, tratamos como pendente)
                 pendingAlert.style.display = 'block';
@@ -2225,6 +2226,14 @@
                 
                 virtualclassCard.classList.add('disabled');
                 virtualclassCard.onclick = null;
+            }
+        }
+        
+        // Esconder mensagem de aprovação
+        function hideApprovedMessage() {
+            const approvedAlert = document.getElementById('approved-registration-alert');
+            if (approvedAlert) {
+                approvedAlert.style.display = 'none';
             }
         }
 
@@ -3710,7 +3719,8 @@
                 // Configurar query baseada nos filtros
                 let query = db.collection('Diario')
                     .where('userCourse', '==', course)
-                    .orderBy('createdAt', 'desc');
+                    .orderBy('status') // Ordenar por status (pendente primeiro)
+                    .orderBy('createdAt', 'desc'); // Depois por data
                 
                 // Se o filtro "Apenas meus alunos" estiver ativo
                 if (filterMyStudents && appState.userData.role === 'teacher') {
@@ -3725,20 +3735,17 @@
                         return;
                     }
                     
-                    appState.submissions = snapshot.docs.map(doc => ({ 
+                    // Ordenar para garantir que pendentes apareçam primeiro
+                    const submissions = snapshot.docs.map(doc => ({ 
                         id: doc.id, 
                         ...doc.data() 
                     }));
-
-                    // Ordenar submissões: pendentes primeiro
-                    appState.submissions.sort((a, b) => {
-                        if (a.status === 'pending' && b.status !== 'pending') {
-                            return -1;
-                        } else if (a.status !== 'pending' && b.status === 'pending') {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
+                    
+                    // Ordenar submissões: pendentes primeiro, depois revisadas
+                    appState.submissions = submissions.sort((a, b) => {
+                        if (a.status === 'pending' && b.status !== 'pending') return -1;
+                        if (a.status !== 'pending' && b.status === 'pending') return 1;
+                        return 0;
                     });
                     
                     // Atualiza a lista de submissões
@@ -3909,7 +3916,7 @@
             
             // Atualizar informações na tela
             document.getElementById('evaluation-title').textContent = diary.title;
-            document.getElementById('evaluation-date').textContent = `Data: ${formatDate(diary.date)}`;
+            document.getElementById('evaluation-date').textContent = formatDate(diary.date);
             document.getElementById('evaluation-student-name').textContent = diary.userName;
             document.getElementById('evaluation-student-registration').textContent = diary.userRegistration;
             document.getElementById('evaluation-text').textContent = diary.text;
@@ -4551,7 +4558,9 @@
                 }
                 iconOption.innerHTML = `<i class="${iconClass}"></i>`;
                 iconOption.onclick = function() {
-                    document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+                    document.querySelectorAll('.icon-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
                     this.classList.add('selected');
                     appState.selectedIcon = iconClass;
                 };
@@ -4578,12 +4587,11 @@
                 // Atualizar estado
                 appState.userData.profileIcon = appState.selectedIcon;
                 
-                // Atualizar ícone na UI
+                // Atualizar ícone na interface
                 document.getElementById('profile-icon').className = appState.selectedIcon;
                 
+                alert('Ícone de perfil atualizado com sucesso!');
                 hideIconSelector();
-                alert('Ícone atualizado com sucesso!');
-                
             } catch (error) {
                 console.error('Erro ao salvar ícone:', error);
                 alert('Erro ao salvar ícone: ' + error.message);
@@ -4592,65 +4600,84 @@
 
         // Mostrar carrossel de imagens
         function showImageCarousel(images, startIndex = 0) {
-            if (!images || images.length === 0) return;
-            
             appState.carouselImages = images;
             appState.currentCarouselIndex = startIndex;
             
             const carouselContainer = document.querySelector('.carousel-container');
-            carouselContainer.innerHTML = `
-                <div class="carousel-close" onclick="hideImageCarousel()">&times;</div>
-                ${images.map((img, index) => `
-                    <img src="${img}" class="carousel-image ${index === startIndex ? 'active' : ''}">
-                `).join('')}
-                <div class="carousel-nav carousel-prev" onclick="prevImage()">
-                    <i class="fas fa-chevron-left"></i>
-                </div>
-                <div class="carousel-nav carousel-next" onclick="nextImage()">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-                <div class="carousel-counter" id="carousel-counter">${startIndex + 1} / ${images.length}</div>
-            `;
+            carouselContainer.innerHTML = '';
             
+            // Adicionar botão de fechar
+            const closeBtn = document.createElement('div');
+            closeBtn.className = 'carousel-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.onclick = hideImageCarousel;
+            carouselContainer.appendChild(closeBtn);
+            
+            // Adicionar navegação
+            const prevBtn = document.createElement('div');
+            prevBtn.className = 'carousel-nav carousel-prev';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = prevImage;
+            carouselContainer.appendChild(prevBtn);
+            
+            const nextBtn = document.createElement('div');
+            nextBtn.className = 'carousel-nav carousel-next';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = nextImage;
+            carouselContainer.appendChild(nextBtn);
+            
+            // Adicionar contador
+            const counter = document.createElement('div');
+            counter.className = 'carousel-counter';
+            counter.id = 'carousel-counter';
+            carouselContainer.appendChild(counter);
+            
+            // Atualizar imagens
+            updateCarouselImages();
+            
+            // Mostrar modal
             document.getElementById('image-carousel-modal').style.display = 'flex';
         }
 
-        // Navegar para imagem anterior
-        function prevImage() {
-            if (appState.currentCarouselIndex > 0) {
-                appState.currentCarouselIndex--;
-                updateCarousel();
-            }
+        // Atualizar imagens no carrossel
+        function updateCarouselImages() {
+            const carouselContainer = document.querySelector('.carousel-container');
+            // Remover imagens existentes
+            const existingImages = document.querySelectorAll('.carousel-image');
+            existingImages.forEach(img => img.remove());
+            
+            // Adicionar imagem atual
+            const currentImage = document.createElement('img');
+            currentImage.src = appState.carouselImages[appState.currentCarouselIndex];
+            currentImage.className = 'carousel-image active';
+            carouselContainer.appendChild(currentImage);
+            
+            // Atualizar contador
+            document.getElementById('carousel-counter').textContent = `${appState.currentCarouselIndex + 1}/${appState.carouselImages.length}`;
         }
 
-        // Navegar para próxima imagem
+        // Próxima imagem no carrossel
         function nextImage() {
             if (appState.currentCarouselIndex < appState.carouselImages.length - 1) {
                 appState.currentCarouselIndex++;
-                updateCarousel();
+                updateCarouselImages();
             }
         }
 
-        // Atualizar carrossel
-        function updateCarousel() {
-            const images = document.querySelectorAll('.carousel-image');
-            images.forEach((img, index) => {
-                if (index === appState.currentCarouselIndex) {
-                    img.classList.add('active');
-                } else {
-                    img.classList.remove('active');
-                }
-            });
-            document.getElementById('carousel-counter').textContent = 
-                `${appState.currentCarouselIndex + 1} / ${appState.carouselImages.length}`;
+        // Imagem anterior no carrossel
+        function prevImage() {
+            if (appState.currentCarouselIndex > 0) {
+                appState.currentCarouselIndex--;
+                updateCarouselImages();
+            }
         }
 
         // Esconder carrossel de imagens
         function hideImageCarousel() {
             document.getElementById('image-carousel-modal').style.display = 'none';
         }
-
-        // Registrar Service Worker
+        
+        // Registrar Service Worker para PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -4658,7 +4685,7 @@
                         console.log('Service Worker registrado com sucesso:', registration);
                     })
                     .catch(error => {
-                        console.log('Falha ao registrar Service Worker:', error);
+                        console.log('Falha ao registrar o Service Worker:', error);
                     });
             });
         }
