@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0d1b2a">
     <title>Funorte Hub</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/INUxxnc.png">
+    <link rel="manifest" href="app.webmanifest">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -21,6 +20,7 @@
             --success: #2ecc71;
             --warning: #f39c12;
             --error: #e74c3c;
+            --info: #3498db;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             --transition: all 0.3s ease;
         }
@@ -87,7 +87,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            position: relative; /* Adicionado para o beta-tag */
+            position: relative;
         }
 
         .header h1 {
@@ -161,13 +161,23 @@
             color: var(--white);
         }
 
+        .btn-info {
+            background-color: var(--info);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
         .btn:active {
             transform: scale(0.98);
         }
 
         .footer {
             text-align: center;
-            padding: 20px;
+            padding: 10px 20px; /* Reduzido o padding */
             font-size: 0.8rem;
             color: var(--light-gray);
             margin-top: auto;
@@ -273,7 +283,7 @@
             transition: var(--transition);
             cursor: pointer;
             min-height: 140px;
-            position: relative; /* Adicionado para o badge */
+            position: relative;
         }
 
         .module-card:active {
@@ -301,8 +311,8 @@
             right: 5px;
             background-color: var(--accent);
             color: white;
-            font-size: 0.81rem; /* Aumentado em 35% (0.6 * 1.35) */
-            padding: 3px 7px;   /* Aumentado proporcionalmente */
+            font-size: 0.81rem;
+            padding: 3px 7px;
             border-radius: 10px;
             font-weight: bold;
         }
@@ -568,7 +578,7 @@
             color: var(--light-gray);
         }
 
-        /* Estilos para visualização de diário */
+        /* Estilo para visualização de diário */
         .diary-modal {
             display: none;
             position: fixed;
@@ -991,6 +1001,51 @@
             object-fit: cover;
             cursor: pointer;
         }
+        
+        /* Estilo para alerta de aprovação pendente */
+        .pending-registration-alert {
+            background-color: var(--warning);
+            color: white;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Estilo para alerta de aprovação concedida */
+        .approved-registration-alert {
+            background-color: var(--success);
+            color: white;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Estilo para o tempo de espera */
+        .waiting-time {
+            background-color: var(--info);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        /* Estilo para botões de aprovação */
+        .approval-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Estilo para informações de avaliação */
+        .evaluation-info-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -1020,7 +1075,7 @@
             </div>
             
             <div class="footer">
-                <img src="https://i.imgur.com/X7zXKVe.png" alt="Funorte Hub Logo" class="footer-logo">
+                <img src="https://i.imgur.com/X7zXKVe.png" alt="Funorte Logo" class="footer-logo">
                 Funorte Hub © 2025 - Todos os direitos reservados
             </div>
         </div>
@@ -1145,6 +1200,9 @@
                     <button id="create-user-btn" class="btn btn-primary" onclick="showCreateUserModal()" style="padding: 8px 12px; font-size: 0.9rem; display: none;">
                         <i class="fas fa-user-plus"></i>
                     </button>
+                    <button id="approval-btn" class="btn btn-info" onclick="showScreen('approval-screen')" style="padding: 8px 12px; font-size: 0.9rem; display: none;">
+                        <i class="fas fa-clock"></i>
+                    </button>
                     <button id="send-message-btn" class="btn btn-primary" onclick="showSendMessageModal()" style="padding: 8px 12px; font-size: 0.9rem; display: none;">
                         <i class="fas fa-bullhorn"></i>
                     </button>
@@ -1258,6 +1316,22 @@
             </div>
         </div>
         
+        <!-- Tela de Aprovação de Registros (Admin) -->
+        <div id="approval-screen" class="screen hidden">
+            <div class="header">
+                <h1><i class="fas fa-arrow-left" onclick="showScreen('teacher-screen')"></i> Aprovar Registros</h1>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Alunos Pendentes</div>
+                </div>
+                <div class="card-content" id="pending-students-list">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Tela Funorte Hub (Aluno) -->
         <div id="hub-screen" class="screen hidden">
             <div class="header">
@@ -1280,13 +1354,23 @@
             <!-- Mensagens persistentes -->
             <div id="persistent-messages-container"></div>
             
+            <!-- Alerta de aprovação pendente -->
+            <div id="pending-registration-alert" class="pending-registration-alert" style="display: none;">
+                Seu registro está pendente de aprovação. Você não pode acessar todas as funcionalidades até ser aprovado.
+            </div>
+            
+            <!-- Alerta de aprovação concedida -->
+            <div id="approved-registration-alert" class="approved-registration-alert" style="display: none;">
+                Tudo certo por aqui! Seu perfil foi aprovado pelo nosso sistema.
+            </div>
+            
             <div class="module-grid">
-                <div class="module-card" onclick="showScreen('diary-screen')">
+                <div class="module-card" id="diary-card" onclick="showScreen('diary-screen')">
                     <i class="fas fa-book-medical"></i>
                     <div>Registro de Diário de Campo</div>
                 </div>
                 
-                <div class="module-card" onclick="showScreen('submissions-screen')">
+                <div class="module-card" id="submissions-card" onclick="showScreen('submissions-screen')">
                     <i class="fas fa-history"></i>
                     <div>Meus Envios</div>
                 </div>
@@ -1296,7 +1380,7 @@
                     <div>Meu Perfil</div>
                 </div>
                 
-                <div class="module-card" onclick="openVirtualClass()">
+                <div class="module-card" id="virtualclass-card" onclick="openVirtualClass()">
                     <i class="fas fa-globe"></i>
                     <div>VirtualClass</div>
                 </div>
@@ -1677,65 +1761,6 @@
             </div>
         </div>
         
-        <!-- Tela de Edição de Professor (Admin) -->
-        <div id="edit-teacher-screen" class="screen hidden">
-            <div class="header">
-                <h1><i class="fas fa-arrow-left" onclick="showScreen('teacher-view-screen')"></i> Editar Professor</h1>
-            </div>
-            
-            <div class="form-container">
-                <div class="form-group">
-                    <label for="edit-teacher-fullname">Nome Completo</label>
-                    <input type="text" id="edit-teacher-fullname" class="form-control">
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="edit-teacher-birthdate">Data de Nascimento</label>
-                        <input type="date" id="edit-teacher-birthdate" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-teacher-cpf">CPF</label>
-                        <input type="text" id="edit-teacher-cpf" class="form-control" maxlength="14">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-teacher-registration">Número de Matrícula</label>
-                    <input type="text" id="edit-teacher-registration" class="form-control">
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-teacher-username">Nome de Usuário</label>
-                    <input type="text" id="edit-teacher-username" class="form-control">
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit-teacher-password">Senha</label>
-                    <input type="password" id="edit-teacher-password" class="form-control" placeholder="Deixe em branco para manter a atual">
-                </div>
-                
-                <div class="form-group">
-                    <label>Senha Atual</label>
-                    <div class="form-control" style="background-color: transparent; border: none; padding: 0;" id="current-teacher-password-display"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Data de Criação</label>
-                    <div id="edit-teacher-created" class="form-control" style="background-color: transparent; border: none; padding: 0; opacity: 0.7;" readonly></div>
-                </div>
-                
-                <div class="btn-container">
-                    <button class="btn btn-secondary" onclick="showScreen('teacher-view-screen')">
-                        <i class="fas fa-times"></i> Cancelar
-                    </button>
-                    <button class="btn btn-primary" onclick="saveTeacherChanges()">
-                        <i class="fas fa-save"></i> Salvar Alterações
-                    </button>
-                </div>
-            </div>
-        </div>
-        
         <!-- Tela de Avaliação Detalhada -->
         <div id="evaluation-screen" class="screen hidden">
             <div class="header">
@@ -1747,8 +1772,8 @@
                     <div class="evaluation-title" id="evaluation-title">Título do Diário</div>
                     <div class="evaluation-date" id="evaluation-date">Data: 00/00/0000</div>
                     <div style="margin-top: 5px;">
-                        <div>Aluno: <span id="evaluation-student-name"></span></div>
-                        <div>Matrícula: <span id="evaluation-student-registration"></span></div>
+                        <div class="evaluation-info-text">Aluno: <span id="evaluation-student-name"></span></div>
+                        <div class="evaluation-info-text">Matrícula: <span id="evaluation-student-registration"></span></div>
                     </div>
                     <div class="evaluation-status" id="evaluation-status" style="margin-top: 5px; display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem; background-color: rgba(255,255,255,0.1);">
                         <i class="fas fa-clock"></i> Pendente
@@ -2102,12 +2127,14 @@
                 loadPersistentMessages();
                 loadProfessors();
                 setupMessagesListener();
+                setupHubScreen();
             } else if (screenId === 'submissions-screen') {
                 loadUserSubmissions();
             } else if (screenId === 'teacher-screen') {
                 checkNotifications();
                 if (appState.userData.role === 'admin') {
                     document.getElementById('create-user-btn').style.display = 'block';
+                    document.getElementById('approval-btn').style.display = 'block';
                     document.getElementById('send-message-btn').style.display = 'block';
                     document.getElementById('manage-messages-btn').style.display = 'block';
                     document.getElementById('teachers-card').style.display = 'block';
@@ -2131,11 +2158,73 @@
                 document.getElementById('virtualclass-iframe').src = "https://appfunorte.virtualclass.com.br/Index20.jsp";
             } else if (screenId === 'messages-screen') {
                 loadActiveMessages();
+            } else if (screenId === 'approval-screen') {
+                loadPendingStudents();
             } else {
                 if (appState.messagesListener) {
                     appState.messagesListener();
                     appState.messagesListener = null;
                 }
+            }
+        }
+
+        // Configurar a tela do aluno baseada no status de aprovação
+        function setupHubScreen() {
+            if (!appState.currentUser || !appState.userData) return;
+            
+            const pendingAlert = document.getElementById('pending-registration-alert');
+            const approvedAlert = document.getElementById('approved-registration-alert');
+            const diaryCard = document.getElementById('diary-card');
+            const submissionsCard = document.getElementById('submissions-card');
+            const virtualclassCard = document.getElementById('virtualclass-card');
+            
+            // Verificar o status de aprovação do usuário
+            if (appState.userData.registrationStatus === 'pending') {
+                // Usuário pendente - mostrar alerta e desativar funcionalidades
+                pendingAlert.style.display = 'block';
+                approvedAlert.style.display = 'none';
+                
+                // Desativar funcionalidades específicas
+                diaryCard.classList.add('disabled');
+                diaryCard.onclick = null;
+                
+                submissionsCard.classList.add('disabled');
+                submissionsCard.onclick = null;
+                
+                virtualclassCard.classList.add('disabled');
+                virtualclassCard.onclick = null;
+            } else if (appState.userData.registrationStatus === 'approved') {
+                // Usuário aprovado - mostrar alerta de aprovação e ativar funcionalidades
+                pendingAlert.style.display = 'none';
+                approvedAlert.style.display = 'block';
+                
+                // Ativar funcionalidades
+                diaryCard.classList.remove('disabled');
+                diaryCard.onclick = () => showScreen('diary-screen');
+                
+                submissionsCard.classList.remove('disabled');
+                submissionsCard.onclick = () => showScreen('submissions-screen');
+                
+                virtualclassCard.classList.remove('disabled');
+                virtualclassCard.onclick = () => openVirtualClass();
+                
+                // Esconder a mensagem após 10 segundos
+                setTimeout(() => {
+                    approvedAlert.style.display = 'none';
+                }, 10000);
+            } else {
+                // Status não definido (para segurança, tratamos como pendente)
+                pendingAlert.style.display = 'block';
+                approvedAlert.style.display = 'none';
+                
+                diaryCard.classList.add('disabled');
+                diaryCard.onclick = null;
+                
+                submissionsCard.classList.add('disabled');
+                submissionsCard.onclick = null;
+                
+                virtualclassCard.classList.add('disabled');
+                virtualclassCard.onclick = null;
             }
         }
 
@@ -2444,11 +2533,29 @@
                 const offset = -3;
                 const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
                 const brasiliaTime = new Date(utc + (3600000 * offset));
-
                 return brasiliaTime.toLocaleDateString('pt-BR');
             } catch (e) {
                 console.error('Erro ao formatar data:', e);
                 return 'Data inválida';
+            }
+        }
+
+        // Formatar tempo de espera
+        function formatWaitingTime(createdAt) {
+            const now = new Date();
+            const createdDate = createdAt.toDate();
+            const diffTime = Math.abs(now - createdDate);
+            
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+            
+            if (diffDays > 0) {
+                return `${diffDays} dia${diffDays > 1 ? 's' : ''}`;
+            } else if (diffHours > 0) {
+                return `${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+            } else {
+                return `${diffMinutes} minuto${diffMinutes > 1 ? 's' : ''}`;
             }
         }
 
@@ -2596,6 +2703,7 @@
                     role: 'student',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'active',
+                    registrationStatus: 'pending', // Status pendente por padrão
                     profileIcon: 'fas fa-user'
                 };
 
@@ -2663,6 +2771,7 @@
                     role,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'active',
+                    registrationStatus: role === 'student' ? 'pending' : 'approved',
                     profileIcon: role === 'student' ? 'fas fa-user' : 'fas fa-chalkboard-teacher'
                 };
 
@@ -2716,10 +2825,12 @@
                 appState.userData = {
                     fullname: 'Administrador',
                     role: 'admin',
-                    course: 'all'
+                    course: 'all',
+                    registrationStatus: 'approved'
                 };
                 showScreen('teacher-screen');
                 document.getElementById('create-user-btn').style.display = 'block';
+                document.getElementById('approval-btn').style.display = 'block';
                 document.getElementById('send-message-btn').style.display = 'block';
                 document.getElementById('manage-messages-btn').style.display = 'block';
                 document.getElementById('teachers-card').style.display = 'block';
@@ -2751,10 +2862,12 @@
                     throw new Error('Usuário ou senha incorretos');
                 }
                 
+                const userData = userDoc.data();
+                
                 // Verificar se o usuário está bloqueado
-                if (userDoc.data().status === 'blocked') {
+                if (userData.status === 'blocked') {
                     document.getElementById('blocked-message').style.display = 'block';
-                    document.getElementById('block-reason').textContent = userDoc.data().blockReason || 'Conta suspensa por violação dos termos de uso';
+                    document.getElementById('block-reason').textContent = userData.blockReason || 'Conta suspensa por violação dos termos de uso';
                     return;
                 } else {
                     document.getElementById('blocked-message').style.display = 'none';
@@ -2765,13 +2878,14 @@
                     username
                 };
                 
-                appState.userData = userDoc.data();
+                appState.userData = userData;
                 
                 // Mostrar tela apropriada baseada no tipo de usuário
                 if (appState.userData.role === 'teacher' || appState.userData.role === 'admin') {
                     showScreen('teacher-screen');
                     if (appState.userData.role === 'admin') {
                         document.getElementById('create-user-btn').style.display = 'block';
+                        document.getElementById('approval-btn').style.display = 'block';
                         document.getElementById('send-message-btn').style.display = 'block';
                         document.getElementById('manage-messages-btn').style.display = 'block';
                         document.getElementById('teachers-card').style.display = 'block';
@@ -2832,6 +2946,12 @@
                 return;
             }
             
+            // Verificar se o usuário está aprovado
+            if (appState.userData.registrationStatus !== 'approved') {
+                alert('Seu registro ainda não foi aprovado. Você não pode enviar diários até ser aprovado.');
+                return;
+            }
+            
             const date = document.getElementById('diary-date').value;
             const title = document.getElementById('diary-title').value;
             const text = document.getElementById('diary-text').value;
@@ -2862,12 +2982,12 @@
                 const diaryRef = await db.collection('Diario').add({
                     userId: appState.currentUser.id,
                     userName: appState.userData.fullname,
-                    userRegistration: appState.userData.registration, // Adiciona a matrícula
+                    userRegistration: appState.userData.registration,
                     userCourse: appState.userData.course,
                     date: date,
                     title: title,
                     text: text,
-                    images: imageUrls, // Armazenar URLs das imagens
+                    images: imageUrls,
                     professor: professor,
                     status: 'pending',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2893,6 +3013,117 @@
             } catch (error) {
                 console.error('Erro ao enviar diário:', error);
                 alert('Erro ao enviar diário: ' + error.message);
+            }
+        }
+
+        // Carregar alunos pendentes (Admin)
+        async function loadPendingStudents() {
+            const listElement = document.getElementById('pending-students-list');
+            listElement.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const snapshot = await db.collection('alunos')
+                    .where('registrationStatus', '==', 'pending')
+                    .orderBy('createdAt') // Ordenar por criação (mais antigo primeiro)
+                    .get();
+
+                if (snapshot.empty) {
+                    listElement.innerHTML = '<p>Nenhum aluno pendente encontrado.</p>';
+                    return;
+                }
+
+                listElement.innerHTML = ''; // Limpa o spinner
+
+                snapshot.forEach(doc => {
+                    const student = { id: doc.id, ...doc.data() };
+                    const studentItem = document.createElement('div');
+                    studentItem.className = 'submission-item';
+                    studentItem.style.padding = '15px';
+                    studentItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+
+                    // Calcular tempo de espera
+                    const waitingTime = formatWaitingTime(student.createdAt);
+                    
+                    studentItem.innerHTML = `
+                        <div>
+                            <div style="font-weight: 500;">${student.fullname}</div>
+                            <div style="margin-top: 5px; font-size: 0.9rem;">
+                                <div>Matrícula: ${student.registration}</div>
+                                <div>CPF: ${student.cpf}</div>
+                                <div>Curso: ${getCourseName(student.course)}</div>
+                                <div class="waiting-time">Tempo de espera: ${waitingTime}</div>
+                            </div>
+                            <div class="approval-buttons">
+                                <button class="btn btn-success" onclick="approveRegistration('${student.id}')">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </button>
+                                <button class="btn btn-secondary" onclick="denyRegistration('${student.id}')">
+                                    <i class="fas fa-times"></i> Negar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    listElement.appendChild(studentItem);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar alunos pendentes:', error);
+                listElement.innerHTML = `<p>Erro: ${error.message}</p>`;
+            }
+        }
+
+        // Aprovar registro de aluno
+        async function approveRegistration(studentId) {
+            try {
+                // Atualizar o status do aluno para aprovado
+                await db.collection('alunos').doc(studentId).update({
+                    registrationStatus: 'approved'
+                });
+
+                // Enviar notificação para o aluno
+                const studentRef = await db.collection('alunos').doc(studentId).get();
+                const student = studentRef.data();
+
+                await db.collection('notifications').add({
+                    userId: studentId,
+                    type: 'registration_approved',
+                    title: 'Registro aprovado',
+                    message: 'Tudo certo por aqui! Seu perfil foi aprovado pelo nosso sistema.',
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Recarregar a lista
+                loadPendingStudents();
+                alert('Aluno aprovado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao aprovar aluno:', error);
+                alert('Erro: ' + error.message);
+            }
+        }
+
+        // Negar registro de aluno
+        async function denyRegistration(studentId) {
+            const reason = prompt('Informe o motivo da negação (opcional):') || 
+                          'Dados de registro incorretos! Verifique seus dados cadastrados no aplicativo como matrícula, CPF e data de nascimento, ou procure a coordenação do seu curso.';
+
+            try {
+                // Enviar notificação para o aluno
+                await db.collection('notifications').add({
+                    userId: studentId,
+                    type: 'registration_denied',
+                    title: 'Registro negado',
+                    message: reason,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Recarregar a lista? O aluno continua pendente, então fica na lista.
+                loadPendingStudents();
+                alert('Aluno notificado sobre a negação.');
+            } catch (error) {
+                console.error('Erro ao negar aluno:', error);
+                alert('Erro: ' + error.message);
             }
         }
 
@@ -2939,7 +3170,7 @@
                                 submission.userName,
                                 submission.grade,
                                 submission.comments,
-                                submission.images // Passar imagens para o modal
+                                submission.images
                             );
                             
                             let statusBadge = '';
@@ -3497,11 +3728,17 @@
                     appState.submissions = snapshot.docs.map(doc => ({ 
                         id: doc.id, 
                         ...doc.data() 
-                    })).sort((a, b) => {
-                        // Ordenar: pendentes primeiro, depois visualizados
-                        if (a.status === 'pending' && b.status !== 'pending') return -1;
-                        if (a.status !== 'pending' && b.status === 'pending') return 1;
-                        return 0;
+                    }));
+
+                    // Ordenar submissões: pendentes primeiro
+                    appState.submissions.sort((a, b) => {
+                        if (a.status === 'pending' && b.status !== 'pending') {
+                            return -1;
+                        } else if (a.status !== 'pending' && b.status === 'pending') {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
                     });
                     
                     // Atualiza a lista de submissões
@@ -4313,11 +4550,9 @@
                     iconOption.classList.add('selected');
                 }
                 iconOption.innerHTML = `<i class="${iconClass}"></i>`;
-                iconOption.onclick = () => {
-                    document.querySelectorAll('.icon-option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    iconOption.classList.add('selected');
+                iconOption.onclick = function() {
+                    document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
                     appState.selectedIcon = iconClass;
                 };
                 iconGrid.appendChild(iconOption);
@@ -4340,32 +4575,33 @@
                     profileIcon: appState.selectedIcon
                 });
                 
-                // Atualizar estado da aplicação
+                // Atualizar estado
                 appState.userData.profileIcon = appState.selectedIcon;
                 
                 // Atualizar ícone na UI
                 document.getElementById('profile-icon').className = appState.selectedIcon;
                 
                 hideIconSelector();
-                alert('Ícone de perfil atualizado com sucesso!');
+                alert('Ícone atualizado com sucesso!');
                 
             } catch (error) {
-                console.error('Erro ao salvar ícone de perfil:', error);
-                alert('Erro ao salvar ícone de perfil: ' + error.message);
+                console.error('Erro ao salvar ícone:', error);
+                alert('Erro ao salvar ícone: ' + error.message);
             }
         }
 
         // Mostrar carrossel de imagens
         function showImageCarousel(images, startIndex = 0) {
+            if (!images || images.length === 0) return;
+            
             appState.carouselImages = images;
             appState.currentCarouselIndex = startIndex;
             
-            const container = document.querySelector('.carousel-container');
-            container.innerHTML = `
+            const carouselContainer = document.querySelector('.carousel-container');
+            carouselContainer.innerHTML = `
                 <div class="carousel-close" onclick="hideImageCarousel()">&times;</div>
                 ${images.map((img, index) => `
-                    <img src="${img}" class="carousel-image ${index === startIndex ? 'active' : ''}" 
-                         onclick="event.stopPropagation()">
+                    <img src="${img}" class="carousel-image ${index === startIndex ? 'active' : ''}">
                 `).join('')}
                 <div class="carousel-nav carousel-prev" onclick="prevImage()">
                     <i class="fas fa-chevron-left"></i>
@@ -4373,34 +4609,26 @@
                 <div class="carousel-nav carousel-next" onclick="nextImage()">
                     <i class="fas fa-chevron-right"></i>
                 </div>
-                <div class="carousel-counter" id="carousel-counter">
-                    ${startIndex + 1} / ${images.length}
-                </div>
+                <div class="carousel-counter" id="carousel-counter">${startIndex + 1} / ${images.length}</div>
             `;
             
             document.getElementById('image-carousel-modal').style.display = 'flex';
         }
 
-        // Esconder carrossel de imagens
-        function hideImageCarousel() {
-            document.getElementById('image-carousel-modal').style.display = 'none';
-            appState.carouselImages = [];
-        }
-
         // Navegar para imagem anterior
         function prevImage() {
-            if (appState.carouselImages.length === 0) return;
-            
-            appState.currentCarouselIndex = (appState.currentCarouselIndex - 1 + appState.carouselImages.length) % appState.carouselImages.length;
-            updateCarousel();
+            if (appState.currentCarouselIndex > 0) {
+                appState.currentCarouselIndex--;
+                updateCarousel();
+            }
         }
 
         // Navegar para próxima imagem
         function nextImage() {
-            if (appState.carouselImages.length === 0) return;
-            
-            appState.currentCarouselIndex = (appState.currentCarouselIndex + 1) % appState.carouselImages.length;
-            updateCarousel();
+            if (appState.currentCarouselIndex < appState.carouselImages.length - 1) {
+                appState.currentCarouselIndex++;
+                updateCarousel();
+            }
         }
 
         // Atualizar carrossel
@@ -4413,90 +4641,27 @@
                     img.classList.remove('active');
                 }
             });
-            
             document.getElementById('carousel-counter').textContent = 
                 `${appState.currentCarouselIndex + 1} / ${appState.carouselImages.length}`;
         }
 
-        // Máscara de CPF
-        document.getElementById('cpf').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            
-            if (value.length > 11) {
-                value = value.slice(0, 11);
-            }
-            
-            if (value.length > 9) {
-                value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2}).*/, '$1.$2.$3-$4');
-            } else if (value.length > 6) {
-                value = value.replace(/^(\d{3})(\d{3})(\d{0,3}).*/, '$1.$2.$3');
-            } else if (value.length > 3) {
-                value = value.replace(/^(\d{3})(\d{0,3}).*/, '$1.$2');
-            }
-            
-            e.target.value = value;
-        });
+        // Esconder carrossel de imagens
+        function hideImageCarousel() {
+            document.getElementById('image-carousel-modal').style.display = 'none';
+        }
 
-        // Máscara de CPF para o modal
-        document.getElementById('new-user-cpf').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            
-            if (value.length > 11) {
-                value = value.slice(0, 11);
-            }
-            
-            if (value.length > 9) {
-                value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2}).*/, '$1.$2.$3-$4');
-            } else if (value.length > 6) {
-                value = value.replace(/^(\d{3})(\d{3})(\d{0,3}).*/, '$1.$2.$3');
-            } else if (value.length > 3) {
-                value = value.replace(/^(\d{3})(\d{0,3}).*/, '$1.$2');
-            }
-            
-            e.target.value = value;
-        });
-
-        // Mostrar/ocultar opções de curso para mensagens
-        document.getElementById('message-recipients').addEventListener('change', function() {
-            const courseContainer = document.getElementById('course-select-container');
-            courseContainer.style.display = this.value === 'course' ? 'block' : 'none';
-        });
-
-        // Registrar Service Worker para PWA
+        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
+                navigator.serviceWorker.register('sw.js')
                     .then(registration => {
                         console.log('Service Worker registrado com sucesso:', registration);
                     })
                     .catch(error => {
-                        console.log('Falha ao registrar o Service Worker:', error);
+                        console.log('Falha ao registrar Service Worker:', error);
                     });
             });
         }
-
-        // Prevenir zoom
-        document.addEventListener('gesturestart', function (e) {
-            e.preventDefault();
-        });
-
-        // Configurar recarregamento do VirtualClass
-        document.getElementById('reload-virtualclass').addEventListener('click', function() {
-            const iframe = document.getElementById('virtualclass-iframe');
-            const loader = document.getElementById('virtualclass-loader');
-            loader.style.display = 'block';
-            iframe.src = iframe.src;
-        });
-
-        // Ocultar loader quando o iframe carregar
-        document.getElementById('virtualclass-iframe').addEventListener('load', function() {
-            document.getElementById('virtualclass-loader').style.display = 'none';
-        });
-
-        // Inicializar data ao carregar
-        window.addEventListener('load', function() {
-            setCurrentDate();
-        });
     </script>
 </body>
 </html>
