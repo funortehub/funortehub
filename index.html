@@ -61,6 +61,7 @@
             max-width: 100%;
             overflow: hidden;
             position: relative;
+            padding-bottom: 1cm; /* Ajuste para subir o rodapé */
         }
         .screen {
             position: absolute;
@@ -177,10 +178,16 @@
             padding: 10px 20px;
             font-size: .8rem;
             color: var(--light-gray);
-            margin-top: auto;
+            /* Removido margin-top: auto para controle manual */
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: absolute; /* Posicionamento absoluto para controle preciso */
+            bottom: 0; /* Fixa no fundo do app-container */
+            width: 100%; /* Ocupa toda a largura */
+            background-color: var(--primary-dark); /* Garante que o fundo seja o mesmo */
+            box-shadow: var(--shadow); /* Mantém a sombra se desejar */
+            padding-bottom: 10px; /* Ajuste para o conteúdo do rodapé */
         }
         .form-container {
             padding: 15px;
@@ -678,7 +685,7 @@
             height: 50px;
         }
         .footer-logo {
-            width: 100px;
+            width: 125px; /* Aumentado em 25% (100px * 1.25 = 125px) */
             margin-bottom: 5px;
         }
         .icon-grid {
