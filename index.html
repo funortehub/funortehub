@@ -257,7 +257,8 @@
                     </div>
                     <div class="form-group">
                         <label for="diary-date">Data do Registro</label>
-                        <input type="date" id="diary-date" class="form-control" readonly="readonly">
+                        <!-- Campo de data não editável, preenchido via JS -->
+                        <input type="date" id="diary-date" class="form-control" readonly>
                     </div>
                     <div class="form-group">
                         <label for="diary-title">Título</label>
@@ -898,7 +899,7 @@
                 loadNotifications();
             } else if (screenId === 'diary-screen') {
                 loadProfessors();
-                setCurrentDate();
+                setCurrentDate(); // Chama a função para definir a data atual
                 appState.diaryImages = [];
                 renderImageUploads();
                 setupImageInput();
@@ -1143,9 +1144,11 @@
             window.open("https://appfunorte.virtualclass.com.br/Index20.jsp", "_blank");
         }
 
+        // Função para definir a data atual no campo "Data do Registro"
         function setCurrentDate() {
             const now = new Date();
-            const offset = -3 * 60;
+            // Ajusta para o fuso horário de Brasília (UTC-3)
+            const offset = -3 * 60; // em minutos
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const brasiliaTime = new Date(utc + (3600000 * offset / 60));
             
@@ -1630,6 +1633,7 @@
             document.getElementById('professor').selectedIndex = 0;
             appState.diaryImages = [];
             renderImageUploads();
+            setCurrentDate(); // Garante que a data seja atualizada ao limpar os campos
         }
 
         function backFromDiaryScreen() {
@@ -1648,7 +1652,7 @@
                 return;
             }
             
-            const date = document.getElementById('diary-date').value;
+            const date = document.getElementById('diary-date').value; // Pega a data do campo (já preenchida automaticamente)
             const title = document.getElementById('diary-title').value;
             const text = document.getElementById('diary-text').value;
             const professor = document.getElementById('professor').value;
