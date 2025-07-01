@@ -188,6 +188,9 @@
             background-color: var(--primary-dark); /* Garante que o fundo seja o mesmo */
             box-shadow: var(--shadow); /* Mantém a sombra se desejar */
             padding-bottom: 10px; /* Ajuste para o conteúdo do rodapé */
+            /* INÍCIO DAS ALTERAÇÕES */
+            padding-top: 5px; /* Reduz o padding superior para aproximar a imagem do rodapé */
+            /* FIM DAS ALTERAÇÕES */
         }
         .form-container {
             padding: 15px;
@@ -686,7 +689,9 @@
         }
         .footer-logo {
             width: 125px; /* Aumentado em 25% (100px * 1.25 = 125px) */
-            margin-bottom: 5px;
+            /* INÍCIO DAS ALTERAÇÕES */
+            margin-bottom: 0px; /* Reduz a margem inferior para aproximar do rodapé */
+            /* FIM DAS ALTERAÇÕES */
         }
         .icon-grid {
             display: grid;
@@ -917,14 +922,17 @@
             </div>
             <div class="assistant-message fade-in">
                 <div class="assistant-icon"><i class="fas fa-robot"></i></div>
-                <div class="assistant-text">Olá! Eu sou o assistente virtual Funorte Hub. Bem-vindo ao nosso aplicativo! Aqui você pode registrar seus diários de campo, acompanhar suas atividades e muito mais.</div>
+                <div class="assistant-text">Bem-vindo ao espaço virtual da Funorte! Aqui você pode registrar seus diários de campo, acompanhar suas atividades e muito mais.</div>
             </div>
             <div class="btn-container">
                 <button class="btn btn-primary" onclick='showScreen("login-screen")'><i class="fas fa-sign-in-alt"></i>Login</button>
                 <button class="btn btn-secondary" onclick='showScreen("register-screen")'><i class="fas fa-user-plus"></i>Registrar</button>
             </div>
             <div class="footer">
-                <img src="https://i.imgur.com/X7zXKVe.png" alt="Funorte Logo" class="footer-logo"> Funorte Hub © 2025 - Todos os direitos reservados
+                <img src="https://i.imgur.com/X7zXKVe.png" alt="Funorte Logo" class="footer-logo"> 
+                <!-- INÍCIO DAS ALTERAÇÕES -->
+                <span style="margin-top: 5px;">Funorte Hub © 2025 - Todos os direitos reservados</span>
+                <!-- FIM DAS ALTERAÇÕES -->
             </div>
         </div>
 
@@ -934,7 +942,7 @@
             </div>
             <div class="assistant-message">
                 <div class="assistant-icon"><i class="fas fa-robot"></i></div>
-                <div class="assistant-text">Vou te ajudar com o registro da sua conta! Lembre-se de acessar o VirtualClass para visualizar seu número de matrícula.</div>
+                <div class="assistant-text">Lembre-se de acessar o VirtualClass para visualizar seu número de matrícula.</div>
             </div>
             <div class="form-container">
                 <div class="form-group">
