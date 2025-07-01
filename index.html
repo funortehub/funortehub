@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="theme-color" content="#0d1b2a">
     <title>Funorte Hub</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="manifest" href="app.webmanifest">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/INUxxnc.png">
+    <link rel="icon" href="https://i.imgur.com/INUxxnc.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -35,8 +36,14 @@
             -khtml-user-select: none; /* Konqueror HTML */
             -moz-user-select: none; /* Old versions of Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+        }
+        input, textarea, select {
+            -webkit-user-select: text; /* Safari */
+            -khtml-user-select: text; /* Konqueror HTML */
+            -moz-user-select: text; /* Old versions of Firefox */
+            -ms-user-select: text; /* Internet Explorer/Edge */
+            user-select: text; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
         }
         body {
             font-family: Roboto, sans-serif;
@@ -45,7 +52,7 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            touch-action: pan-y; /* Disable pinch-zoom */
+            touch-action: pan-y; /* Disable pinch zoom */
         }
         .app-container {
             display: flex;
@@ -189,7 +196,6 @@
         .form-group label {
             font-weight: 500;
             font-size: .9rem;
-            user-select: none; /* Prevent selection of labels */
         }
         .form-control {
             padding: 14px;
@@ -199,12 +205,10 @@
             color: var(--white);
             font-size: 1rem;
             transition: var(--transition);
-            user-select: text; /* Allow selection inside input fields */
         }
         select.form-control {
             background-color: var(--primary-light);
             color: var(--white);
-            user-select: none; /* Prevent selection of select options */
         }
         .form-control:focus {
             outline: 0;
@@ -495,7 +499,6 @@
             background-color: rgba(255,255,255,.1);
             color: var(--white);
             font-size: .9rem;
-            user-select: text;
         }
         .search-icon {
             position: absolute;
@@ -653,7 +656,6 @@
             color: #fff;
             border: 1px solid rgba(255,255,255,.2);
             margin-bottom: 15px;
-            user-select: text;
         }
         .block-modal-buttons {
             display: flex;
@@ -1072,7 +1074,9 @@
                         <input type="text" id="search-student" class="search-input" placeholder="Buscar aluno..." oninput="filterSubmissions()">
                     </div>
                     <div class="form-group" style="margin-top:10px">
-                        <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="filter-my-students" onchange="loadSubmissions()"> Apenas meus alunos</label>
+                        <label style="display:flex;align-items:center;gap:8px">
+                            <input type="checkbox" id="filter-my-students" onchange="loadSubmissions()"> Apenas meus alunos
+                        </label>
                     </div>
                     <div id="submissions-list"><p>Selecione um curso para visualizar as submissões.</p></div>
                     <div id="submissions-pagination" class="pagination" style="display:none">
@@ -1332,7 +1336,7 @@
                     <input type="text" id="edit-student-username" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="edit-student-password">Nova Senha</label>
+                    <label for="edit-student-password">Senha</label>
                     <input type="password" id="edit-student-password" class="form-control" placeholder="Deixe em branco para manter a atual">
                 </div>
                 <div class="form-group">
@@ -1747,39 +1751,29 @@
             if (appState.userData.registrationStatus === 'pending') {
                 pendingAlert.style.display = 'block';
                 approvedAlert.style.display = 'none';
-                
                 diaryCard.classList.add('disabled');
                 diaryCard.onclick = null;
-                
                 submissionsCard.classList.add('disabled');
                 submissionsCard.onclick = null;
-                
                 virtualclassCard.classList.add('disabled');
                 virtualclassCard.onclick = null;
             } else if (appState.userData.registrationStatus === 'approved') {
                 pendingAlert.style.display = 'none';
                 approvedAlert.style.display = 'block';
-                
                 diaryCard.classList.remove('disabled');
                 diaryCard.onclick = () => showScreen('diary-screen');
-                
                 submissionsCard.classList.remove('disabled');
                 submissionsCard.onclick = () => showScreen('submissions-screen');
-                
                 virtualclassCard.classList.remove('disabled');
                 virtualclassCard.onclick = () => openVirtualClass();
-                
                 setTimeout(hideApprovedMessage, 10000);
             } else {
                 pendingAlert.style.display = 'block';
                 approvedAlert.style.display = 'none';
-                
                 diaryCard.classList.add('disabled');
                 diaryCard.onclick = null;
-                
                 submissionsCard.classList.add('disabled');
                 submissionsCard.onclick = null;
-                
                 virtualclassCard.classList.add('disabled');
                 virtualclassCard.onclick = null;
             }
@@ -2190,16 +2184,17 @@
             const cpf = document.getElementById('cpf').value;
             const registration = document.getElementById('registration').value;
             const course = document.getElementById('course').value;
-            const usernameInput = document.getElementById('username');
-            const username = usernameInput.value.toLowerCase().replace(/[^a-z0-9._,]/g, ''); // Lowercase and filter chars
+            let username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
-            usernameInput.value = username; // Update input field with formatted username
             
             if (!fullname || !birthdate || !cpf || !registration || !course || !username || !password) {
                 alert('Por favor, preencha todos os campos!');
                 return;
             }
+
+            // Normalize username
+            username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+            document.getElementById('username').value = username; // Update input field
 
             try {
                 const userQuery = await db.collection('users').where('username', '==', username).get();
@@ -2252,17 +2247,18 @@
             const cpf = document.getElementById('new-user-cpf').value;
             const registration = document.getElementById('new-user-registration').value;
             const course = document.getElementById('new-user-course').value;
-            const usernameInput = document.getElementById('new-user-username');
-            const username = usernameInput.value.toLowerCase().replace(/[^a-z0-9._,]/g, '');
+            let username = document.getElementById('new-user-username').value;
             const password = document.getElementById('new-user-password').value;
             const role = document.getElementById('new-user-role').value;
-
-            usernameInput.value = username;
             
             if (!fullname || !birthdate || !cpf || !registration || !course || !username || !password) {
                 alert('Por favor, preencha todos os campos!');
                 return;
             }
+
+            // Normalize username
+            username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+            document.getElementById('new-user-username').value = username; // Update input field
 
             try {
                 const userQuery = await db.collection('users').where('username', '==', username).get();
@@ -2405,18 +2401,10 @@
         }
 
         function logout() {
-            if (appState.studentsListener) {
-                appState.studentsListener();
-            }
-            if (appState.teachersListener) {
-                appState.teachersListener();
-            }
-            if (appState.submissionsListener) {
-                appState.submissionsListener();
-            }
-            if (appState.messagesListener) {
-                appState.messagesListener();
-            }
+            if (appState.studentsListener) appState.studentsListener();
+            if (appState.teachersListener) appState.teachersListener();
+            if (appState.submissionsListener) appState.submissionsListener();
+            if (appState.messagesListener) appState.messagesListener();
             
             appState.currentUser = null;
             appState.userData = null;
@@ -4034,31 +4022,16 @@
             if (cpfInput) {
                 cpfInput.addEventListener('input', (e) => {
                     let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                    if (value.length > 11) value = value.slice(0, 11); // Limit to 11 digits
-                    
-                    if (value.length > 9) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
-                    } else if (value.length > 6) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
-                    } else if (value.length > 3) {
-                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
-                    }
-                    e.target.value = value;
-                });
-            }
-
-            const editCpfInput = document.getElementById('edit-cpf');
-            if (editCpfInput) {
-                editCpfInput.addEventListener('input', (e) => {
-                    let value = e.target.value.replace(/\D/g, '');
                     if (value.length > 11) value = value.slice(0, 11);
-                    
+
                     if (value.length > 9) {
                         value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
                     } else if (value.length > 6) {
                         value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
                     } else if (value.length > 3) {
                         value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
+                    } else if (value.length > 0) {
+                        value = value.replace(/^(\d{3})$/, '$1');
                     }
                     e.target.value = value;
                 });
@@ -4067,50 +4040,89 @@
             const newCpfInput = document.getElementById('new-user-cpf');
             if (newCpfInput) {
                 newCpfInput.addEventListener('input', (e) => {
-                    let value = e.target.value.replace(/\D/g, '');
+                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                     if (value.length > 11) value = value.slice(0, 11);
-                    
+
                     if (value.length > 9) {
                         value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
                     } else if (value.length > 6) {
                         value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
                     } else if (value.length > 3) {
                         value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
+                    } else if (value.length > 0) {
+                        value = value.replace(/^(\d{3})$/, '$1');
                     }
                     e.target.value = value;
                 });
             }
 
-            // Username input formatting
+            const editCpfInput = document.getElementById('edit-cpf');
+            if (editCpfInput) {
+                editCpfInput.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                    if (value.length > 11) value = value.slice(0, 11);
+
+                    if (value.length > 9) {
+                        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+                    } else if (value.length > 6) {
+                        value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
+                    } else if (value.length > 3) {
+                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
+                    } else if (value.length > 0) {
+                        value = value.replace(/^(\d{3})$/, '$1');
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            const editStudentCpfInput = document.getElementById('edit-student-cpf');
+            if (editStudentCpfInput) {
+                editStudentCpfInput.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                    if (value.length > 11) value = value.slice(0, 11);
+
+                    if (value.length > 9) {
+                        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+                    } else if (value.length > 6) {
+                        value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
+                    } else if (value.length > 3) {
+                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
+                    } else if (value.length > 0) {
+                        value = value.replace(/^(\d{3})$/, '$1');
+                    }
+                    e.target.value = value;
+                });
+            }
+
             const usernameInput = document.getElementById('username');
             if (usernameInput) {
                 usernameInput.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._,]/g, '');
+                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
                 });
             }
 
             const newUsernameInput = document.getElementById('new-user-username');
             if (newUsernameInput) {
                 newUsernameInput.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._,]/g, '');
+                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
                 });
             }
 
-            const loginUsernameInput = document.getElementById('login-username');
-            if (loginUsernameInput) {
-                loginUsernameInput.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._,]/g, '');
+            const editUsernameInput = document.getElementById('edit-username');
+            if (editUsernameInput) {
+                editUsernameInput.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
                 });
             }
 
             const editStudentUsernameInput = document.getElementById('edit-student-username');
             if (editStudentUsernameInput) {
                 editStudentUsernameInput.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._,]/g, '');
+                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
                 });
             }
         });
-        
+
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
