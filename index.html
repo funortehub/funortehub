@@ -1343,7 +1343,7 @@
                     <input type="text" id="edit-student-username" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="edit-student-password">Senha</label>
+                    <label for="edit-student-password">Nova Senha</label>
                     <input type="password" id="edit-student-password" class="form-control" placeholder="Deixe em branco para manter a atual">
                 </div>
                 <div class="form-group">
@@ -3567,6 +3567,63 @@
             showScreen('edit-student-screen');
         }
 
+        async function saveStudentChanges() {
+            if (!appState.currentStudent) return;
+
+            const fullname = document.getElementById('edit-student-fullname').value;
+            const birthdate = document.getElementById('edit-student-birthdate').value;
+            const cpf = document.getElementById('edit-student-cpf').value;
+            const registration = document.getElementById('edit-student-registration').value;
+            const course = document.getElementById('edit-student-course').value;
+            let username = document.getElementById('edit-student-username').value;
+            const password = document.getElementById('edit-student-password').value;
+
+            if (!fullname || !birthdate || !cpf || !registration || !course || !username) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            // Normalize username
+            username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+
+            try {
+                const updateData = {
+                    fullname,
+                    birthdate,
+                    cpf,
+                    registration,
+                    course,
+                    username,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (password) {
+                    updateData.password = password;
+                }
+
+                await db.collection('alunos').doc(appState.currentStudent.id).update(updateData);
+                
+                // Update the user entry in the 'users' collection as well
+                const userQuery = await db.collection('users').where('userId', '==', appState.currentStudent.id).get();
+                if (!userQuery.empty) {
+                    const userDocRef = userQuery.docs[0].ref;
+                    await userDocRef.update(updateData);
+                }
+
+                appState.currentStudent = {
+                    ...appState.currentStudent,
+                    ...updateData
+                };
+
+                alert('Alterações salvas com sucesso!');
+                viewStudent(appState.currentStudent); // Go back to student view with updated data
+
+            } catch (error) {
+                console.error('Erro ao salvar alterações do aluno:', error);
+                alert('Erro ao salvar alterações: ' + error.message);
+            }
+        }
+
         function editTeacher() {
             if (!appState.currentTeacher) return;
             
@@ -4023,11 +4080,11 @@
             document.getElementById('image-carousel-modal').style.display = 'none';
         }
 
-        // CPF formatting
+        // CPF formatting and Username normalization
         document.addEventListener('DOMContentLoaded', () => {
-            const cpfInput = document.getElementById('cpf');
-            if (cpfInput) {
-                cpfInput.addEventListener('input', (e) => {
+            const cpfInputs = document.querySelectorAll('#cpf, #new-user-cpf, #edit-cpf, #edit-student-cpf');
+            cpfInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
                     let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                     if (value.length > 11) value = value.slice(0, 11);
 
@@ -4042,92 +4099,15 @@
                     }
                     e.target.value = value;
                 });
-            }
+            });
 
-            const newCpfInput = document.getElementById('new-user-cpf');
-            if (newCpfInput) {
-                newCpfInput.addEventListener('input', (e) => {
-                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                    if (value.length > 11) value = value.slice(0, 11);
-
-                    if (value.length > 9) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
-                    } else if (value.length > 6) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
-                    } else if (value.length > 3) {
-                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
-                    } else if (value.length > 0) {
-                        value = value.replace(/^(\d{3})$/, '$1');
-                    }
-                    e.target.value = value;
-                });
-            }
-
-            const editCpfInput = document.getElementById('edit-cpf');
-            if (editCpfInput) {
-                editCpfInput.addEventListener('input', (e) => {
-                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                    if (value.length > 11) value = value.slice(0, 11);
-
-                    if (value.length > 9) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
-                    } else if (value.length > 6) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
-                    } else if (value.length > 3) {
-                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
-                    } else if (value.length > 0) {
-                        value = value.replace(/^(\d{3})$/, '$1');
-                    }
-                    e.target.value = value;
-                });
-            }
-
-            const editStudentCpfInput = document.getElementById('edit-student-cpf');
-            if (editStudentCpfInput) {
-                editStudentCpfInput.addEventListener('input', (e) => {
-                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                    if (value.length > 11) value = value.slice(0, 11);
-
-                    if (value.length > 9) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
-                    } else if (value.length > 6) {
-                        value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
-                    } else if (value.length > 3) {
-                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
-                    } else if (value.length > 0) {
-                        value = value.replace(/^(\d{3})$/, '$1');
-                    }
-                    e.target.value = value;
-                });
-            }
-
-            const usernameInput = document.getElementById('username');
-            if (usernameInput) {
-                usernameInput.addEventListener('input', (e) => {
+            const usernameInputs = document.querySelectorAll('#login-username, #username, #new-user-username, #edit-username, #edit-student-username');
+            usernameInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    // Convert to lowercase and allow only letters, numbers, '.', ',', '_'
                     e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
                 });
-            }
-
-            const newUsernameInput = document.getElementById('new-user-username');
-            if (newUsernameInput) {
-                newUsernameInput.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-                });
-            }
-
-            const editUsernameInput = document.getElementById('edit-username');
-            if (editUsernameInput) {
-                editUsernameInput.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-                });
-            }
-
-            const editStudentUsernameInput = document.getElementById('edit-student-username');
-            if (editStudentUsernameInput) {
-                editStudentUsernameInput.addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-                });
-            }
+            });
         });
 
         // Register Service Worker for PWA
