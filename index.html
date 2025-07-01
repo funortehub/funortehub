@@ -1396,7 +1396,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="admin-actions-container">
+                <div id="admin-actions-container-teacher"> <!-- MODIFICADO: ID único para ações de professor -->
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Ações Administrativas</div>
@@ -1409,6 +1409,52 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-teacher-screen" class="screen hidden"> <!-- NOVO: Tela de edição de professor -->
+            <div class="header">
+                <h1><i class="fas fa-arrow-left" onclick='showScreen("teacher-view-screen")'></i>Editar Professor</h1>
+            </div>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="edit-teacher-fullname">Nome Completo</label>
+                    <input type="text" id="edit-teacher-fullname" class="form-control">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-teacher-birthdate">Data de Nascimento</label>
+                        <input type="date" id="edit-teacher-birthdate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-teacher-cpf">CPF</label>
+                        <input type="text" id="edit-teacher-cpf" class="form-control" maxlength="14">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-teacher-registration">Número de Matrícula</label>
+                    <input type="text" id="edit-teacher-registration" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-teacher-username">Nome de Usuário</label>
+                    <input type="text" id="edit-teacher-username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-teacher-password">Nova Senha</label>
+                    <input type="password" id="edit-teacher-password" class="form-control" placeholder="Deixe em branco para manter a atual">
+                </div>
+                <div class="form-group">
+                    <label>Senha Atual</label>
+                    <div class="form-control" style="background-color:transparent;border:none;padding:0" id="current-teacher-password-display"></div>
+                </div>
+                <div class="form-group">
+                    <label>Data de Criação</label>
+                    <div id="edit-teacher-created" class="form-control" style="background-color:transparent;border:none;padding:0;opacity:.7" readonly></div>
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-secondary" onclick='showScreen("teacher-view-screen")'><i class="fas fa-times"></i>Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveTeacherChanges()"><i class="fas fa-save"></i>Salvar Alterações</button>
                 </div>
             </div>
         </div>
@@ -3638,6 +3684,61 @@
             showScreen('edit-teacher-screen');
         }
 
+        async function saveTeacherChanges() {
+            if (!appState.currentTeacher) return;
+
+            const fullname = document.getElementById('edit-teacher-fullname').value;
+            const birthdate = document.getElementById('edit-teacher-birthdate').value;
+            const cpf = document.getElementById('edit-teacher-cpf').value;
+            const registration = document.getElementById('edit-teacher-registration').value;
+            let username = document.getElementById('edit-teacher-username').value;
+            const password = document.getElementById('edit-teacher-password').value;
+
+            if (!fullname || !birthdate || !cpf || !registration || !username) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            // Normalize username
+            username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+
+            try {
+                const updateData = {
+                    fullname,
+                    birthdate,
+                    cpf,
+                    registration,
+                    username,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (password) {
+                    updateData.password = password;
+                }
+
+                await db.collection('professores').doc(appState.currentTeacher.id).update(updateData);
+                
+                // Update the user entry in the 'users' collection as well
+                const userQuery = await db.collection('users').where('userId', '==', appState.currentTeacher.id).get();
+                if (!userQuery.empty) {
+                    const userDocRef = userQuery.docs[0].ref;
+                    await userDocRef.update(updateData);
+                }
+
+                appState.currentTeacher = {
+                    ...appState.currentTeacher,
+                    ...updateData
+                };
+
+                alert('Alterações salvas com sucesso!');
+                viewTeacher(appState.currentTeacher); // Go back to teacher view with updated data
+
+            } catch (error) {
+                console.error('Erro ao salvar alterações do professor:', error);
+                alert('Erro ao salvar alterações: ' + error.message);
+            }
+        }
+
         async function confirmBlock() {
             const reason = document.getElementById('block-reason-input').value;
             let collectionName, target;
@@ -3671,6 +3772,13 @@
                 }
                 
                 await db.collection(collectionName).doc(target.id).update(updateData);
+
+                // Update the corresponding entry in the 'users' collection
+                const userQuery = await db.collection('users').where('userId', '==', target.id).get();
+                if (!userQuery.empty) {
+                    const userDocRef = userQuery.docs[0].ref;
+                    await userDocRef.update(updateData);
+                }
                 
                 target.status = newStatus;
                 target.blockReason = newStatus === 'blocked' ? reason : '';
@@ -4082,7 +4190,7 @@
 
         // CPF formatting and Username normalization
         document.addEventListener('DOMContentLoaded', () => {
-            const cpfInputs = document.querySelectorAll('#cpf, #new-user-cpf, #edit-cpf, #edit-student-cpf');
+            const cpfInputs = document.querySelectorAll('#cpf, #new-user-cpf, #edit-cpf, #edit-student-cpf, #edit-teacher-cpf'); // MODIFICADO: Adicionado #edit-teacher-cpf
             cpfInputs.forEach(input => {
                 input.addEventListener('input', (e) => {
                     let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -4101,7 +4209,7 @@
                 });
             });
 
-            const usernameInputs = document.querySelectorAll('#login-username, #username, #new-user-username, #edit-username, #edit-student-username');
+            const usernameInputs = document.querySelectorAll('#login-username, #username, #new-user-username, #edit-username, #edit-student-username, #edit-teacher-username'); // MODIFICADO: Adicionado #edit-teacher-username
             usernameInputs.forEach(input => {
                 input.addEventListener('input', (e) => {
                     // Convert to lowercase and allow only letters, numbers, '.', ',', '_'
