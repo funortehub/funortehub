@@ -256,9 +256,9 @@
                         <div class="assistant-text">Verifique com seu preceptor ou coordenador do curso o prazo máximo para envio do diário de campo. Submissões fora do prazo podem não ser aceitas!</div>
                     </div>
                     <div class="form-group">
-                        <label for="diary-date">Data do Registro</label>
+                        <label for="diary-date-display">Data do Registro</label>
                         <!-- Campo de data não editável, preenchido via JS -->
-                        <input type="date" id="diary-date" class="form-control" readonly>
+                        <div id="diary-date-display" class="form-control" style="background-color:transparent;border:none;padding:0;color:var(--white);"></div>
                     </div>
                     <div class="form-group">
                         <label for="diary-title">Título</label>
@@ -899,7 +899,7 @@
                 loadNotifications();
             } else if (screenId === 'diary-screen') {
                 loadProfessors();
-                setCurrentDate(); // Chama a função para definir a data atual
+                displayCurrentDate(); // Chama a função para exibir a data atual
                 appState.diaryImages = [];
                 renderImageUploads();
                 setupImageInput();
@@ -1144,20 +1144,18 @@
             window.open("https://appfunorte.virtualclass.com.br/Index20.jsp", "_blank");
         }
 
-        // Função para definir a data atual no campo "Data do Registro"
-        function setCurrentDate() {
+        // Função para exibir a data atual no campo "Data do Registro"
+        function displayCurrentDate() {
             const now = new Date();
             // Ajusta para o fuso horário de Brasília (UTC-3)
             const offset = -3 * 60; // em minutos
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const brasiliaTime = new Date(utc + (3600000 * offset / 60));
             
-            const year = brasiliaTime.getFullYear();
-            const month = String(brasiliaTime.getMonth() + 1).padStart(2, '0');
-            const day = String(brasiliaTime.getDate()).padStart(2, '0');
-            const dateStr = `${year}-${month}-${day}`;
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            const formattedDate = brasiliaTime.toLocaleDateString('pt-BR', options);
             
-            document.getElementById('diary-date').value = dateStr;
+            document.getElementById('diary-date-display').textContent = formattedDate;
         }
 
         function showCreateUserModal() {
@@ -1633,7 +1631,7 @@
             document.getElementById('professor').selectedIndex = 0;
             appState.diaryImages = [];
             renderImageUploads();
-            setCurrentDate(); // Garante que a data seja atualizada ao limpar os campos
+            displayCurrentDate(); // Garante que a data seja atualizada ao limpar os campos
         }
 
         function backFromDiaryScreen() {
@@ -1652,12 +1650,12 @@
                 return;
             }
             
-            const date = document.getElementById('diary-date').value; // Pega a data do campo (já preenchida automaticamente)
+            // A data será o timestamp do envio
             const title = document.getElementById('diary-title').value;
             const text = document.getElementById('diary-text').value;
             const professor = document.getElementById('professor').value;
             
-            if (!date || !title || !text || !professor) {
+            if (!title || !text || !professor) {
                 alert('Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
@@ -1681,7 +1679,7 @@
                     userName: appState.userData.fullname,
                     userRegistration: appState.userData.registration,
                     userCourse: appState.userData.course,
-                    date: date,
+                    date: firebase.firestore.FieldValue.serverTimestamp(), // Data do envio
                     title: title,
                     text: text,
                     images: imageUrls,
@@ -2065,9 +2063,9 @@
             document.getElementById('student-view-cpf').textContent = student.cpf;
             document.getElementById('student-view-registration').textContent = student.registration;
             
-            if (student.status === 'blocked' && student.blockReason) {
+            if (student.status === 'blocked') {
                 document.getElementById('student-view-block-reason').style.display = 'block';
-                document.getElementById('student-block-reason').textContent = student.blockReason;
+                document.getElementById('student-block-reason').textContent = student.blockReason || 'Conta suspensa por violação dos termos de uso';
             } else {
                 document.getElementById('student-view-block-reason').style.display = 'none';
             }
@@ -2323,9 +2321,9 @@
             document.getElementById('teacher-view-cpf').textContent = teacher.cpf;
             document.getElementById('teacher-view-registration').textContent = teacher.registration;
             
-            if (teacher.status === 'blocked' && teacher.blockReason) {
+            if (teacher.status === 'blocked') {
                 document.getElementById('teacher-view-block-reason').style.display = 'block';
-                document.getElementById('teacher-block-reason').textContent = teacher.blockReason;
+                document.getElementById('teacher-block-reason').textContent = teacher.blockReason || 'Conta suspensa por violação dos termos de uso';
             } else {
                 document.getElementById('teacher-view-block-reason').style.display = 'none';
             }
