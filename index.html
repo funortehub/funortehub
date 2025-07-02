@@ -1758,6 +1758,11 @@
                     <div class="card-content" id="my-submissions-list">
                         <div class="spinner"></div>
                     </div>
+                    <div id="my-submissions-pagination" class="pagination" style="display:none">
+                        <button class="page-btn" onclick="prevMySubmissionsPage()" id="prev-my-submission-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
+                        <span id="my-submissions-page-info">Página 1 de 1</span>
+                        <button class="page-btn" onclick="nextMySubmissionsPage()" id="next-my-submission-btn" disabled="disabled"><i class="fas fa-chevron-right"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -1880,6 +1885,11 @@
                         </div>
                         <div class="card-content" id="student-diaries-list">
                             <div class="spinner"></div>
+                        </div>
+                        <div id="student-diaries-pagination" class="pagination" style="display:none">
+                            <button class="page-btn" onclick="prevStudentDiariesPage()" id="prev-student-diaries-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
+                            <span id="student-diaries-page-info">Página 1 de 1</span>
+                            <button class="page-btn" onclick="nextStudentDiariesPage()" id="next-student-diaries-btn" disabled="disabled"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                     <div id="admin-actions-container" style="display:none">
@@ -2405,7 +2415,8 @@
         const appState = {
             currentUser: null,
             userData: null,
-            submissions: [],
+            submissions: [], // All submissions for the current user (student)
+            mySubmissionsPage: 1, // Pagination for "Meus Envios"
             students: [],
             teachers: [],
             currentStudent: null,
@@ -2414,10 +2425,16 @@
             notifications: [],
             studentsPage: 1,
             teachersPage: 1,
-            submissionsPage: 1,
-            checkinHistoryPage: 1, // New: Check-in history pagination
-            studentCheckinHistoryPage: 1, // New: Student view check-in history pagination
-            pageSize: 5,
+            submissionsPage: 1, // Pagination for teacher's evaluation screen
+            checkins: [], // All checkins for the current user (student)
+            checkinHistoryPage: 1, // Pagination for student's check-in history
+            studentCheckins: [], // All checkins for the viewed student (teacher)
+            studentCheckinHistoryPage: 1, // Pagination for student view check-in history
+            studentDiaries: [], // All diaries for the viewed student (teacher)
+            studentDiariesPage: 1, // Pagination for student view diaries
+            pendingCheckins: [], // All pending checkins for teacher/admin
+            pendingCheckinsPage: 1, // Pagination for pending checkins
+            pageSize: 5, // Changed to 5 items per page
             touchStartX: 0,
             currentNotificationId: null,
             blockTargetId: null,
@@ -2426,8 +2443,10 @@
             teachersListener: null,
             submissionsListener: null,
             messagesListener: null,
-            userRegistrationStatusListener: null, // Novo listener para status de registro
-            checkinHistoryListener: null, // New: Listener for student's check-in history
+            userRegistrationStatusListener: null,
+            checkinHistoryListener: null,
+            pendingCheckinsListener: null, // New: Listener for pending check-ins
+            studentDiariesListener: null, // New: Listener for student diaries in student view
             selectedIcon: null,
             diaryImages: [],
             carouselImages: [],
@@ -2450,6 +2469,14 @@
                 appState.checkinHistoryListener(); // Detach listener
                 appState.checkinHistoryListener = null;
             }
+            if (appState.pendingCheckinsListener) { // Detach pending checkins listener
+                appState.pendingCheckinsListener();
+                appState.pendingCheckinsListener = null;
+            }
+            if (appState.studentDiariesListener) { // Detach student diaries listener
+                appState.studentDiariesListener();
+                appState.studentDiariesListener = null;
+            }
 
             if (screenId === 'home-screen') {
                 checkPWAInstallPrompt(); // Verifica e exibe o pop-up de instalação do PWA na tela inicial
@@ -2461,6 +2488,7 @@
                 setupMessagesListener();
                 setupUserRegistrationStatusListener(); // Inicia o listener de status de registro
             } else if (screenId === 'submissions-screen') {
+                appState.mySubmissionsPage = 1; // Reset page for "Meus Envios"
                 loadUserSubmissions();
             } else if (screenId === 'teacher-screen') {
                 checkNotifications();
@@ -2498,6 +2526,7 @@
                 loadPendingStudents();
             } else if (screenId === 'checkin-screen') { // New: Check-in screen logic
                 loadPreceptorsForCheckin();
+                appState.checkinHistoryPage = 1; // Reset page for student's checkin history
                 loadCheckinHistory(); // This will now set up the real-time listener
             }
             
@@ -3291,6 +3320,8 @@
             if (appState.messagesListener) appState.messagesListener();
             if (appState.userRegistrationStatusListener) appState.userRegistrationStatusListener(); // Desativa o listener ao deslogar
             if (appState.checkinHistoryListener) appState.checkinHistoryListener(); // Desativa o listener do check-in
+            if (appState.pendingCheckinsListener) appState.pendingCheckinsListener(); // Desativa o listener de check-ins pendentes
+            if (appState.studentDiariesListener) appState.studentDiariesListener(); // Desativa o listener de diários do aluno
             
             appState.currentUser = null;
             appState.userData = null;
@@ -3503,6 +3534,7 @@
                     .onSnapshot(snapshot => {
                         if (snapshot.empty) {
                             submissionsList.innerHTML = '<p>Nenhum diário enviado ainda.</p>';
+                            document.getElementById('my-submissions-pagination').style.display = 'none';
                             return;
                         }
                         
@@ -3511,66 +3543,7 @@
                             ...doc.data() 
                         }));
                         
-                        submissionsList.innerHTML = '';
-                        
-                        appState.submissions.forEach(submission => {
-                            const submissionItem = document.createElement('div');
-                            submissionItem.className = 'submission-item';
-                            submissionItem.style.padding = '15px';
-                            submissionItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                            submissionItem.style.cursor = 'pointer';
-                            submissionItem.onclick = () => showDiaryModal(
-                                submission.title, 
-                                submission.date, 
-                                submission.text, 
-                                submission.userName,
-                                submission.grade,
-                                submission.comments,
-                                submission.images
-                            );
-                            
-                            let statusBadge = '';
-                            if (submission.status === 'pending') {
-                                statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    <i class="fas fa-clock"></i> Pendente
-                                </div>`;
-                            } else if (submission.status === 'reviewed') {
-                                statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    <i class="fas fa-check-circle"></i> Visualizado
-                                </div>`;
-                            }
-                            
-                            let gradeBadge = '';
-                            if (submission.grade !== undefined && submission.grade !== null) {
-                                gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    Nota: ${submission.grade}
-                                </div>`;
-                            }
-                            
-                            let imagesBadge = '';
-                            if (submission.images && submission.images.length > 0) {
-                                imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    <i class="fas fa-camera"></i> ${submission.images.length}
-                                </div>`;
-                            }
-                            
-                            submissionItem.innerHTML = `
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="font-weight: 500;">${submission.title}</div>
-                                    <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(submission.date)}</div>
-                                </div>
-                                <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                                    ${submission.text.substring(0, 50)}${submission.text.length > 50 ? '...' : ''}
-                                </div>
-                                <div style="margin-top: 10px; display: flex; gap: 10px;">
-                                    ${statusBadge}
-                                    ${gradeBadge}
-                                    ${imagesBadge}
-                                </div>
-                            `;
-                            
-                            submissionsList.appendChild(submissionItem);
-                        });
+                        updateMySubmissionsList();
                     }, error => {
                         console.error('Erro ao carregar envios:', error);
                         submissionsList.innerHTML = `<p>Erro ao carregar seus diários: ${error.message}</p>`;
@@ -3579,6 +3552,106 @@
             } catch (error) {
                 console.error('Erro ao carregar envios:', error);
                 submissionsList.innerHTML = `<p>Erro ao carregar seus diários: ${error.message}</p>`;
+            }
+        }
+
+        function updateMySubmissionsList() {
+            const submissionsList = document.getElementById('my-submissions-list');
+            const pagination = document.getElementById('my-submissions-pagination');
+            const prevBtn = document.getElementById('prev-my-submission-btn');
+            const nextBtn = document.getElementById('next-my-submission-btn');
+            const pageInfo = document.getElementById('my-submissions-page-info');
+            
+            const startIndex = (appState.mySubmissionsPage - 1) * appState.pageSize;
+            const endIndex = startIndex + appState.pageSize;
+            const paginatedSubmissions = appState.submissions.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
+            
+            submissionsList.innerHTML = '';
+            
+            if (paginatedSubmissions.length === 0) {
+                submissionsList.innerHTML = '<p>Nenhum diário enviado ainda.</p>';
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            paginatedSubmissions.forEach(submission => {
+                const submissionItem = document.createElement('div');
+                submissionItem.className = 'submission-item';
+                submissionItem.style.padding = '15px';
+                submissionItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                submissionItem.style.cursor = 'pointer';
+                submissionItem.onclick = () => showDiaryModal(
+                    submission.title, 
+                    submission.date, 
+                    submission.text, 
+                    submission.userName,
+                    submission.grade,
+                    submission.comments,
+                    submission.images
+                );
+                
+                let statusBadge = '';
+                if (submission.status === 'pending') {
+                    statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-clock"></i> Pendente
+                    </div>`;
+                } else if (submission.status === 'reviewed') {
+                    statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-check-circle"></i> Visualizado
+                    </div>`;
+                }
+                
+                let gradeBadge = '';
+                if (submission.grade !== undefined && submission.grade !== null) {
+                    gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        Nota: ${submission.grade}
+                    </div>`;
+                }
+                
+                let imagesBadge = '';
+                if (submission.images && submission.images.length > 0) {
+                    imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-camera"></i> ${submission.images.length}
+                    </div>`;
+                }
+                
+                submissionItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="font-weight: 500;">${submission.title}</div>
+                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(submission.date)}</div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                        ${submission.text.substring(0, 50)}${submission.text.length > 50 ? '...' : ''}
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        ${statusBadge}
+                        ${gradeBadge}
+                        ${imagesBadge}
+                    </div>
+                `;
+                
+                submissionsList.appendChild(submissionItem);
+            });
+
+            pageInfo.textContent = `Página ${appState.mySubmissionsPage} de ${totalPages}`;
+            prevBtn.disabled = appState.mySubmissionsPage === 1;
+            nextBtn.disabled = appState.mySubmissionsPage === totalPages;
+            pagination.style.display = 'flex';
+        }
+
+        function prevMySubmissionsPage() {
+            if (appState.mySubmissionsPage > 1) {
+                appState.mySubmissionsPage--;
+                updateMySubmissionsList();
+            }
+        }
+
+        function nextMySubmissionsPage() {
+            const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
+            if (appState.mySubmissionsPage < totalPages) {
+                appState.mySubmissionsPage++;
+                updateMySubmissionsList();
             }
         }
 
@@ -3775,7 +3848,9 @@
                 document.getElementById('admin-actions-container').style.display = 'none';
             }
             
+            appState.studentDiariesPage = 1; // Reset page for student diaries
             loadStudentDiaries(student.id);
+            appState.studentCheckinHistoryPage = 1; // Reset page for student checkin history
             loadStudentCheckinHistory(student.id); // New: Load student's check-in history
             showScreen('student-view-screen');
         }
@@ -3785,76 +3860,26 @@
             diariesList.innerHTML = '<div class="spinner"></div>';
             
             try {
-                if (appState.submissionsListener) {
-                    appState.submissionsListener();
+                if (appState.studentDiariesListener) { // Use specific listener for student diaries
+                    appState.studentDiariesListener();
                 }
                 
-                appState.submissionsListener = db.collection('Diario')
+                appState.studentDiariesListener = db.collection('Diario')
                     .where('userId', '==', studentId)
                     .orderBy('createdAt', 'desc')
                     .onSnapshot(snapshot => {
                         if (snapshot.empty) {
                             diariesList.innerHTML = '<p>Nenhum diário enviado por este aluno.</p>';
+                            document.getElementById('student-diaries-pagination').style.display = 'none';
                             return;
                         }
                         
-                        const diaries = snapshot.docs.map(doc => ({ 
+                        appState.studentDiaries = snapshot.docs.map(doc => ({ 
                             id: doc.id, 
                             ...doc.data() 
                         }));
                         
-                        diariesList.innerHTML = '';
-                        
-                        diaries.forEach(diary => {
-                            const diaryItem = document.createElement('div');
-                            diaryItem.className = 'submission-item';
-                            diaryItem.style.padding = '15px';
-                            diaryItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                            diaryItem.style.cursor = 'pointer';
-                            diaryItem.onclick = () => viewDiaryForEvaluation(diary);
-                            
-                            let statusBadge = '';
-                            if (diary.status === 'pending') {
-                                statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    <i class="fas fa-clock"></i> Pendente
-                                </div>`;
-                            } else if (diary.status === 'reviewed') {
-                                statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    <i class="fas fa-check-circle"></i> Visualizado
-                                </div>`;
-                            }
-                            
-                            let gradeBadge = '';
-                            if (diary.grade !== undefined && diary.grade !== null) {
-                                gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    Nota: ${diary.grade}
-                                </div>`;
-                            }
-                            
-                            let imagesBadge = '';
-                            if (diary.images && diary.images.length > 0) {
-                                imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                                    <i class="fas fa-camera"></i> ${diary.images.length}
-                                </div>`;
-                            }
-                            
-                            diaryItem.innerHTML = `
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="font-weight: 500;">${diary.title}</div>
-                                    <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(diary.date)}</div>
-                                </div>
-                                <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                                    ${diary.text.substring(0, 50)}${diary.text.length > 50 ? '...' : ''}
-                                </div>
-                                <div style="margin-top: 10px; display: flex; gap: 10px;">
-                                    ${statusBadge}
-                                    ${gradeBadge}
-                                    ${imagesBadge}
-                                </div>
-                            `;
-                            
-                            diariesList.appendChild(diaryItem);
-                        });
+                        updateStudentDiariesList();
                     }, error => {
                         console.error('Erro ao carregar diários do aluno:', error);
                         diariesList.innerHTML = `<p>Erro ao carregar diários do aluno: ${error.message}</p>`;
@@ -3863,6 +3888,98 @@
             } catch (error) {
                 console.error('Erro ao carregar diários do aluno:', error);
                 diariesList.innerHTML = `<p>Erro ao carregar diários do aluno: ${error.message}</p>`;
+            }
+        }
+
+        function updateStudentDiariesList() {
+            const diariesList = document.getElementById('student-diaries-list');
+            const pagination = document.getElementById('student-diaries-pagination');
+            const prevBtn = document.getElementById('prev-student-diaries-btn');
+            const nextBtn = document.getElementById('next-student-diaries-btn');
+            const pageInfo = document.getElementById('student-diaries-page-info');
+            
+            const startIndex = (appState.studentDiariesPage - 1) * appState.pageSize;
+            const endIndex = startIndex + appState.pageSize;
+            const paginatedDiaries = appState.studentDiaries.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(appState.studentDiaries.length / appState.pageSize);
+            
+            diariesList.innerHTML = '';
+            
+            if (paginatedDiaries.length === 0) {
+                diariesList.innerHTML = '<p>Nenhum diário enviado por este aluno.</p>';
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            paginatedDiaries.forEach(diary => {
+                const diaryItem = document.createElement('div');
+                diaryItem.className = 'submission-item';
+                diaryItem.style.padding = '15px';
+                diaryItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                diaryItem.style.cursor = 'pointer';
+                diaryItem.onclick = () => viewDiaryForEvaluation(diary);
+                
+                let statusBadge = '';
+                if (diary.status === 'pending') {
+                    statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-clock"></i> Pendente
+                    </div>`;
+                } else if (diary.status === 'reviewed') {
+                    statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-check-circle"></i> Visualizado
+                    </div>`;
+                }
+                
+                let gradeBadge = '';
+                if (diary.grade !== undefined && diary.grade !== null) {
+                    gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        Nota: ${diary.grade}
+                    </div>`;
+                }
+                
+                let imagesBadge = '';
+                if (diary.images && diary.images.length > 0) {
+                    imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-camera"></i> ${diary.images.length}
+                    </div>`;
+                }
+                
+                diaryItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="font-weight: 500;">${diary.title}</div>
+                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(diary.date)}</div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                        ${diary.text.substring(0, 50)}${diary.text.length > 50 ? '...' : ''}
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        ${statusBadge}
+                        ${gradeBadge}
+                        ${imagesBadge}
+                    </div>
+                `;
+                
+                diariesList.appendChild(diaryItem);
+            });
+            
+            pageInfo.textContent = `Página ${appState.studentDiariesPage} de ${totalPages}`;
+            prevBtn.disabled = appState.studentDiariesPage === 1;
+            nextBtn.disabled = appState.studentDiariesPage === totalPages;
+            pagination.style.display = 'flex';
+        }
+
+        function prevStudentDiariesPage() {
+            if (appState.studentDiariesPage > 1) {
+                appState.studentDiariesPage--;
+                updateStudentDiariesList();
+            }
+        }
+
+        function nextStudentDiariesPage() {
+            const totalPages = Math.ceil(appState.studentDiaries.length / appState.pageSize);
+            if (appState.studentDiariesPage < totalPages) {
+                appState.studentDiariesPage++;
+                updateStudentDiariesList();
             }
         }
 
@@ -5382,62 +5499,84 @@
             }
         }
 
-        // New: Load Pending Check-ins for Teachers/Admins
+        // New: Load Pending Check-ins for Teachers/Admins with real-time listener
         async function loadPendingCheckins() {
             if (!appState.currentUser || (appState.userData.role !== 'teacher' && appState.userData.role !== 'admin')) return;
 
             const pendingCheckinsList = document.getElementById('pending-checkins-list');
             pendingCheckinsList.innerHTML = '<div class="spinner"></div>';
 
-            try {
-                let query = db.collection('checkins').where('status', '==', 'pending');
+            // Detach previous listener if exists
+            if (appState.pendingCheckinsListener) {
+                appState.pendingCheckinsListener();
+            }
 
-                if (appState.userData.role === 'teacher') {
-                    query = query.where('preceptorId', '==', appState.currentUser.id);
-                }
+            let query = db.collection('checkins').where('status', '==', 'pending');
 
-                const snapshot = await query.orderBy('createdAt', 'desc').get();
+            if (appState.userData.role === 'teacher') {
+                query = query.where('preceptorId', '==', appState.currentUser.id);
+            }
 
+            appState.pendingCheckinsListener = query.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
                 if (snapshot.empty) {
                     pendingCheckinsList.innerHTML = '<p>Nenhum check-in pendente.</p>';
                     return;
                 }
 
-                pendingCheckinsList.innerHTML = '';
-
-                snapshot.forEach(doc => {
-                    const checkin = { id: doc.id, ...doc.data() };
-                    const checkinItem = document.createElement('div');
-                    checkinItem.className = 'submission-item';
-                    checkinItem.style.padding = '15px';
-                    checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-
-                    checkinItem.innerHTML = `
-                        <div>
-                            <div style="font-weight: 500;">Check-in de ${checkin.studentName}</div>
-                            <div style="margin-top: 5px; font-size: 0.9rem;">
-                                <div>Matrícula: ${checkin.studentRegistration}</div>
-                                <div>Curso: ${getCourseName(checkin.studentCourse)}</div>
-                                <div>Hora: ${formatDateTime(checkin.checkinTime)}</div>
-                                <div>Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a> ${checkin.locationType === 'ip' ? '(Aproximada por IP)' : ''}</div>
-                            </div>
-                            <div class="approval-buttons">
-                                <button class="btn btn-success" onclick="approveCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
-                                    <i class="fas fa-check"></i> Aprovar
-                                </button>
-                                <button class="btn btn-secondary" onclick="denyCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
-                                    <i class="fas fa-times"></i> Recusar
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    pendingCheckinsList.appendChild(checkinItem);
-                });
-
-            } catch (error) {
-                console.error('Erro ao carregar check-ins pendentes:', error);
+                appState.pendingCheckins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updatePendingCheckinsList(); // Re-render the list
+            }, error => {
+                console.error('Erro ao carregar check-ins pendentes em tempo real:', error);
                 pendingCheckinsList.innerHTML = `<p>Erro: ${error.message}</p>`;
+            });
+        }
+
+        // New: Update Pending Check-ins List (with pagination)
+        function updatePendingCheckinsList() {
+            const pendingCheckinsList = document.getElementById('pending-checkins-list');
+            const pagination = document.getElementById('pending-checkins-pagination'); // Assuming you'll add pagination for this too
+            // const prevBtn = document.getElementById('prev-pending-checkin-btn');
+            // const nextBtn = document.getElementById('next-pending-checkin-btn');
+            // const pageInfo = document.getElementById('pending-checkins-page-info');
+
+            // For simplicity, not adding pagination to pending checkins for now, just displaying all
+            // If needed, implement pagination similar to other lists.
+
+            pendingCheckinsList.innerHTML = '';
+
+            if (appState.pendingCheckins.length === 0) {
+                pendingCheckinsList.innerHTML = '<p>Nenhum check-in pendente.</p>';
+                // pagination.style.display = 'none';
+                return;
             }
+
+            appState.pendingCheckins.forEach(checkin => {
+                const checkinItem = document.createElement('div');
+                checkinItem.className = 'submission-item';
+                checkinItem.style.padding = '15px';
+                checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+
+                checkinItem.innerHTML = `
+                    <div>
+                        <div style="font-weight: 500;">Check-in de ${checkin.studentName}</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem;">
+                            <div>Matrícula: ${checkin.studentRegistration}</div>
+                            <div>Curso: ${getCourseName(checkin.studentCourse)}</div>
+                            <div>Hora: ${formatDateTime(checkin.checkinTime)}</div>
+                            <div>Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a> ${checkin.locationType === 'ip' ? '(Aproximada por IP)' : ''}</div>
+                        </div>
+                        <div class="approval-buttons">
+                            <button class="btn btn-success" onclick="approveCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
+                                <i class="fas fa-check"></i> Aprovar
+                            </button>
+                            <button class="btn btn-secondary" onclick="denyCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
+                                <i class="fas fa-times"></i> Recusar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                pendingCheckinsList.appendChild(checkinItem);
+            });
         }
 
         // New: Approve Check-in
@@ -5463,7 +5602,7 @@
                 });
 
                 alert('Check-in aprovado com sucesso!');
-                loadPendingCheckins(); // Refresh pending list
+                // loadPendingCheckins() will be triggered by the listener
             } catch (error) {
                 console.error('Erro ao aprovar check-in:', error);
                 alert('Erro ao aprovar check-in: ' + error.message);
@@ -5500,7 +5639,7 @@
                 });
 
                 alert('Check-in recusado com sucesso!');
-                loadPendingCheckins(); // Refresh pending list
+                // loadPendingCheckins() will be triggered by the listener
             } catch (error) {
                 console.error('Erro ao recusar check-in:', error);
                 alert('Erro ao recusar check-in: ' + error.message);
