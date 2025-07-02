@@ -4974,6 +4974,26 @@
             }
         }
 
+        async function deleteMessage(messageId) {
+            if (!appState.currentUser || appState.userData.role !== 'admin') {
+                alert('Você não tem permissão para excluir mensagens.');
+                return;
+            }
+
+            if (!confirm('Tem certeza que deseja excluir esta mensagem?')) {
+                return;
+            }
+
+            try {
+                await db.collection('messages').doc(messageId).delete();
+                alert('Mensagem excluída com sucesso!');
+                loadActiveMessages(); // Recarrega a lista de mensagens ativas
+            } catch (error) {
+                console.error('Erro ao excluir mensagem:', error);
+                alert('Erro ao excluir mensagem: ' + error.message);
+            }
+        }
+
         async function loadActiveMessages() {
             if (!appState.currentUser || appState.userData.role !== 'admin') return;
             
