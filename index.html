@@ -1692,7 +1692,7 @@
                 <div class="module-grid">
                     <div class="module-card" id="diary-card" onclick='showScreen("diary-screen")'><i class="fas fa-book-medical"></i><div>Registro de Diário de Campo</div></div>
                     <div class="module-card" id="submissions-card" onclick='showScreen("submissions-screen")'><i class="fas fa-history"></i><div>Meus Envios</div></div>
-                    <div class="module-card" onclick="showProfile()"><i class="fas fa-user"></i><div>Meu Perfil</div></div>
+                    <div class="module-card" id="profile-card" onclick="showProfile()"><i class="fas fa-user"></i><div>Meu Perfil</div></div>
                     <div class="module-card" id="virtualclass-card" onclick="openVirtualClass()"><i class="fas fa-globe"></i><div>VirtualClass</div></div>
                     <!-- New: Check-in Internato button -->
                     <div class="module-card" id="checkin-internato-card" onclick="handleCheckinInternatoClick()">
@@ -1700,7 +1700,7 @@
                         <div>Check-in (Internato)</div>
                     </div>
                     <div class="module-card disabled"><i class="fas fa-comments"></i><div>Fórum</div><span class="beta-badge">Beta</span></div>
-                    <div class="module-card" onclick="logout()"><i class="fas fa-sign-out-alt"></i><div>Sair</div></div>
+                    <div class="module-card" id="logout-card" onclick="logout()"><i class="fas fa-sign-out-alt"></i><div>Sair</div></div>
                 </div>
             </div>
 
@@ -2490,6 +2490,7 @@
                 loadProfessors(); 
                 setupMessagesListener();
                 setupUserRegistrationStatusListener(); 
+                setupHubScreen(); // Call setupHubScreen here to ensure buttons are correctly enabled/disabled
             } else if (screenId === 'submissions-screen') {
                 loadUserSubmissions(); // Carrega os diários do aluno com paginação
             } else if (screenId === 'teacher-screen') {
@@ -2544,10 +2545,20 @@
             const submissionsCard = document.getElementById('submissions-card');
             const virtualclassCard = document.getElementById('virtualclass-card');
             const checkinInternatoCard = document.getElementById('checkin-internato-card'); 
+            const profileCard = document.getElementById('profile-card');
+            const logoutCard = document.getElementById('logout-card');
             
+            // Always enable "Meu Perfil" and "Sair"
+            profileCard.classList.remove('disabled');
+            profileCard.onclick = () => showProfile();
+            logoutCard.classList.remove('disabled');
+            logoutCard.onclick = () => logout();
+
             if (appState.userData.registrationStatus === 'pending') {
                 pendingAlert.style.display = 'block';
                 approvedAlert.style.display = 'none';
+                
+                // Disable other buttons
                 diaryCard.classList.add('disabled');
                 diaryCard.onclick = null;
                 submissionsCard.classList.add('disabled');
@@ -2556,9 +2567,12 @@
                 virtualclassCard.onclick = null;
                 checkinInternatoCard.classList.add('disabled'); 
                 checkinInternatoCard.onclick = () => alert('Seu registro está pendente de aprovação. Você não pode usar esta função.');
+
             } else if (appState.userData.registrationStatus === 'approved') {
                 pendingAlert.style.display = 'none';
                 approvedAlert.style.display = 'block';
+                
+                // Enable other buttons
                 diaryCard.classList.remove('disabled');
                 diaryCard.onclick = () => showScreen('diary-screen');
                 submissionsCard.classList.remove('disabled');
@@ -2566,6 +2580,7 @@
                 virtualclassCard.classList.remove('disabled');
                 virtualclassCard.onclick = () => openVirtualClass(); 
 
+                // Check internatoType for check-in button
                 if (appState.userData.internatoType === 'interno') {
                     checkinInternatoCard.classList.remove('disabled');
                     checkinInternatoCard.onclick = () => showScreen('checkin-screen');
@@ -2576,6 +2591,7 @@
 
                 setTimeout(hideApprovedMessage, 10000);
             } else { 
+                // Default to pending/disabled if status is unknown or not approved
                 pendingAlert.style.display = 'block'; 
                 approvedAlert.style.display = 'none';
                 diaryCard.classList.add('disabled');
@@ -2590,8 +2606,10 @@
         }
 
         function handleCheckinInternatoClick() {
-            if (appState.userData.internatoType === 'interno') {
+            if (appState.userData.internatoType === 'interno' && appState.userData.registrationStatus === 'approved') {
                 showScreen('checkin-screen');
+            } else if (appState.userData.registrationStatus !== 'approved') {
+                alert('Seu registro está pendente de aprovação. Você não pode usar esta função.');
             } else {
                 alert('Esta função é exclusiva para alunos do internato.');
             }
@@ -5276,8 +5294,8 @@
         }
 
         async function performCheckin() {
-            if (!appState.currentUser || appState.userData.internatoType !== 'interno') {
-                alert('Esta função é exclusiva para alunos do internato.');
+            if (!appState.currentUser || appState.userData.internatoType !== 'interno' || appState.userData.registrationStatus !== 'approved') {
+                alert('Esta função é exclusiva para alunos do internato com registro aprovado.');
                 return;
             }
 
