@@ -4851,24 +4851,21 @@
         }
 
         function checkPWAInstallPrompt() {
-            const lastShown = localStorage.getItem('pwaInstallPromptLastShown');
+            // Apenas verifica se o usuário clicou em "Não mostrar novamente"
             const dontShowAgain = localStorage.getItem('pwaInstallPromptDontShowAgain');
-            const now = new Date().getTime();
-            const oneWeek = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
 
             if (!isMobile() || isPWAInstalled() || dontShowAgain === 'true') {
-                return; // Don't show on desktop, if already installed, or if user opted out
+                return; // Não mostra em desktop, se já instalado, ou se o usuário optou por não mostrar novamente
             }
 
-            if (!lastShown || (now - lastShown > oneWeek)) {
-                showPWAInstallPrompt();
-            }
+            // Se não optou por não mostrar novamente, exibe o pop-up
+            showPWAInstallPrompt();
         }
 
         function showPWAInstallPrompt() {
             const pwaModal = document.getElementById('pwa-install-modal');
             pwaModal.style.display = 'flex';
-            localStorage.setItem('pwaInstallPromptLastShown', new Date().getTime());
+            // Não salvamos mais o 'lastShown' para que apareça sempre
 
             // Detect OS and show relevant steps
             if (/(iPhone|iPad|iPod)/i.test(navigator.userAgent)) {
@@ -4883,6 +4880,9 @@
             pwaModal.style.display = 'none';
             if (dontShowAgain) {
                 localStorage.setItem('pwaInstallPromptDontShowAgain', 'true');
+            } else {
+                // Se clicou em "Entendi", remove a opção de "Não mostrar novamente" para que apareça na próxima visita
+                localStorage.removeItem('pwaInstallPromptDontShowAgain');
             }
         }
 
