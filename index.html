@@ -10,90 +10,1400 @@
     <link rel="icon" href="https://i.imgur.com/INUxxnc.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Meta tag para bloquear a rotação da tela em dispositivos móveis -->
-    <meta name="screen-orientation" content="portrait">
-    <meta name="x5-orientation" content="portrait">
-    <meta name="browsermode" content="application">
-    <meta name="full-screen" content="yes">
-    <meta name="layoutmode" content="standard">
-    <meta name="wap-font-scale" content="no">
-    <style>:root{--primary-dark:#0d1b2a;--primary-light:#1b263b;--accent:#e63946;--white:#ffffff;--gray:#f0f0f0;--dark-gray:#333;--light-gray:#e0e0e0;--success:#2ecc71;--warning:#f39c12;--error:#e74c3c;--info:#3498db;--shadow:0 4px 12px rgba(0, 0, 0, 0.15);--transition:all 0.3s ease}*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}input,select,textarea{-webkit-user-select:text;-khtml-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}body{font-family:Roboto,sans-serif;background-color:var(--primary-dark);color:var(--white);height:100vh;overflow:hidden;position:relative;touch-action:pan-y}.app-container{display:flex;flex-direction:column;height:100vh;max-width:100%;overflow:hidden;position:relative;padding-bottom:1cm}.screen{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;transition:transform .5s ease,opacity .5s ease;background-color:var(--primary-dark);overflow-y:auto;padding:0;z-index:10}.screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}.screen.active{transform:translateX(0);opacity:1;z-index:20}.header{background-color:var(--primary-dark);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow);position:sticky;top:0;z-index:100;position:relative}.header h1{font-family:Poppins,sans-serif;font-weight:700;font-size:1.5rem;display:flex;align-items:center;gap:10px}.assistant-message{background-color:var(--primary-light);padding:15px;margin:15px;border-radius:12px;box-shadow:var(--shadow);display:flex;gap:10px;animation:fadeIn .5s ease}.assistant-icon{background-color:var(--accent);width:40px;height:40px;border-radius:50%;display:flex;justify-content:center;align-items:center;flex-shrink:0}.assistant-text{font-size:.9rem;line-height:1.5}.btn-container{display:flex;flex-direction:column;gap:15px;padding:20px;margin-top:10px}.btn{padding:15px 20px;border-radius:12px;border:none;font-family:Poppins,sans-serif;font-weight:500;font-size:1rem;text-align:center;cursor:pointer;transition:var(--transition);display:flex;justify-content:center;align-items:center;gap:10px;box-shadow:var(--shadow)}.btn-primary{background-color:var(--accent);color:var(--white)}.btn-secondary{background-color:var(--primary-light);color:var(--white)}.btn-info{background-color:var(--info);color:var(--white)}.btn-success{background-color:var(--success);color:var(--white)}.btn:active{transform:scale(.98)}.footer{text-align:center;padding:10px 20px;font-size:.8rem;color:var(--light-gray);display:flex;flex-direction:column;align-items:center;position:absolute;bottom:0;width:100%;background-color:var(--primary-dark);box-shadow:var(--shadow);padding-bottom:10px;padding-top:5px}.form-container{padding:15px;display:flex;flex-direction:column;gap:20px}.form-group{display:flex;flex-direction:column;gap:8px}.form-group label{font-weight:500;font-size:.9rem}.form-control{padding:14px;border-radius:10px;border:2px solid var(--primary-light);background-color:rgba(255,255,255,.1);color:var(--white);font-size:1rem;transition:var(--transition)}select.form-control{background-color:var(--primary-light);color:var(--white)}.form-control:focus{outline:0;border-color:var(--accent);background-color:rgba(255,255,255,.15)}.form-row{display:flex;gap:15px}.form-row .form-group{flex:1}.card{background-color:var(--primary-light);border-radius:12px;padding:20px;margin:15px;box-shadow:var(--shadow)}.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.card-title{font-family:Poppins,sans-serif;font-weight:600;font-size:1.2rem}.card-content{display:flex;flex-direction:column;gap:15px}.module-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;padding:15px}.module-card{background-color:var(--primary-light);border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;box-shadow:var(--shadow);transition:var(--transition);cursor:pointer;min-height:140px;position:relative}.module-card:active{transform:scale(.97)}.module-card i{font-size:2rem;color:var(--accent)}.module-card.disabled{opacity:.6;cursor:not-allowed}.module-card.disabled i{color:var(--light-gray)}.beta-badge{position:absolute;top:5px;right:5px;background-color:var(--accent);color:#fff;font-size:.81rem;padding:3px 7px;border-radius:10px;font-weight:700}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn .5s ease}@media (min-width:768px){.app-container{max-width:480px;margin:0 auto;box-shadow:0 0 30px rgba(0,0,0,.3)}.header h1{font-size:1.8rem}.module-grid{grid-template-columns:repeat(3,1fr)}}@media (max-width:767px){.form-row{flex-direction:column;gap:8px}}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:0 0}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}.spinner{width:40px;height:40px;border:4px solid rgba(255,255,255,.1);border-top:4px solid var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:20px auto}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);z-index:1000;justify-content:center;align-items:center}.modal-content{background-color:var(--primary-light);padding:20px;border-radius:12px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-title{font-size:1.3rem;font-weight:600}.modal-close{font-size:1.5rem;cursor:pointer}.profile-container{padding:15px}.profile-header{display:flex;align-items:center;gap:15px;margin-bottom:20px}.profile-avatar{width:80px;height:80px;background-color:var(--primary-light);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:2rem;cursor:pointer}.profile-info{flex:1}.profile-name{font-size:1.3rem;font-weight:600;margin-bottom:5px}.profile-course{font-size:.9rem;opacity:.8}.evaluation-container{padding:15px}.evaluation-header{margin-bottom:20px}.evaluation-title{font-size:1.2rem;font-weight:600;margin-bottom:5px}.evaluation-date{font-size:.9rem;opacity:.8}.evaluation-content{background-color:var(--primary-light);padding:15px;border-radius:10px;margin-bottom:20px}.evaluation-text{line-height:1.6; white-space: pre-wrap;}.admin-actions{display:flex;gap:10px;margin-top:20px}.admin-btn{padding:10px 15px;border-radius:8px;border:none;font-family:Poppins,sans-serif;font-weight:500;font-size:.9rem;cursor:pointer;transition:var(--transition)}.admin-btn-danger{background-color:#e74c3c;color:#fff}.admin-btn-warning{background-color:#f39c12;color:#fff}.admin-btn-primary{background-color:#3498db;color:#fff}.admin-btn-success{background-color:var(--success);color:#fff}.notification-badge{position:absolute;top:-5px;right:-5px;background-color:var(--accent);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;justify-content:center;align-items:center;font-size:.7rem;font-weight:700}.notification-btn{position:relative;background:0 0;border:none;color:#fff;font-size:1.2rem;cursor:pointer}.search-container{position:relative;margin-bottom:15px}.search-input{width:100%;padding:12px 15px;padding-left:40px;border-radius:10px;border:none;background-color:rgba(255,255,255,.1);color:var(--white);font-size:.9rem}.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--light-gray)}.diary-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);z-index:1000;justify-content:center;align-items:center}.diary-modal-content{background-color:var(--primary-light);padding:20px;border-radius:12px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto}.diary-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.diary-modal-title{font-size:1.3rem;font-weight:600}.diary-modal-close{font-size:1.5rem;cursor:pointer}.diary-content{margin-top:15px;line-height:1.6; white-space: pre-wrap;}.diary-info{margin-top:15px;font-size:.9rem;color:var(--light-gray)}.diary-grade{margin-top:15px;padding:10px;background-color:rgba(255,255,255,.1);border-radius:8px}.diary-comments{margin-top:10px;padding:10px;background-color:rgba(255,255,255,.1);border-radius:8px}.pagination{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:15px;padding:10px}.page-btn{padding:8px 15px;border-radius:8px;border:none;background-color:var(--primary-light);color:#fff;cursor:pointer}.page-btn:disabled{opacity:.5;cursor:not-allowed}.blocked-message{background-color:var(--error);color:#fff;padding:15px;margin:15px;border-radius:12px;text-align:center;animation:fadeIn .5s ease}.persistent-message{background-color:var(--warning);color:#fff;padding:15px;margin:15px;border-radius:12px;text-align:center;animation:fadeIn .5s ease}.notification-item{position:relative;overflow:hidden}.notification-swipe{position:absolute;top:0;right:-80px;width:80px;height:100%;background-color:var(--error);display:flex;justify-content:center;align-items:center;transition:right .3s ease}.notification-item.swiping .notification-swipe{right:0}.notification-item.deleting .notification-swipe{right:0}.block-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);z-index:1000;justify-content:center;align-items:center}.block-modal-content{background-color:var(--primary-light);padding:20px;border-radius:12px;width:90%;max-width:400px}.block-modal-title{font-size:1.3rem;font-weight:600;margin-bottom:15px}.block-modal-textarea{width:100%;height:100px;padding:10px;border-radius:8px;background-color:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);margin-bottom:15px}.block-modal-buttons{display:flex;gap:10px;justify-content:flex-end}.blocked-icon{color:var(--error);margin-left:5px}.webview-container{width:100%;height:calc(100% - 60px);border:none}#virtualclass-loader{display:flex;justify-content:center;align-items:center;height:50px}.footer-logo{width:125px;margin-bottom:0}.icon-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:20px}.icon-option{width:50px;height:50px;background-color:var(--primary-light);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:1.5rem;cursor:pointer;transition:all .3s ease}.icon-option.selected,.icon-option:hover{background-color:var(--accent);transform:scale(1.1)}.message-item{padding:15px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center}.message-content{flex:1}.message-expiration{font-size:.8rem;opacity:.7;margin-top:5px}.images-container{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.image-item{position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;background-color:var(--primary-light)}.image-preview{width:100%;height:100%;object-fit:cover}.image-remove{position:absolute;top:5px;right:5px;background-color:var(--error);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;cursor:pointer}.image-upload-btn{width:80px;height:80px;border-radius:8px;background-color:var(--primary-light);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.5rem}.image-upload-input{display:none}.image-uploading{position:absolute;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center}.image-uploading .spinner{width:30px;height:30px;border-width:3px}.carousel-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.9);z-index:2000;justify-content:center;align-items:center}.carousel-container{width:90%;max-width:800px;height:80vh;position:relative}.carousel-image{width:100%;height:100%;object-fit:contain;display:none}.carousel-image.active{display:block}.carousel-nav{position:absolute;top:50%;transform:translateY(-50%);background-color:rgba(0,0,0,.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;z-index:10}.carousel-prev{left:15px}.carousel-next{right:15px}.carousel-close{position:absolute;top:15px;right:15px;color:#fff;font-size:2rem;cursor:pointer;z-index:10}.carousel-counter{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);color:#fff;background-color:rgba(0,0,0,.5);padding:5px 15px;border-radius:20px;font-size:.9rem}.thumbnail-container{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}.thumbnail{width:80px;height:80px;border-radius:8px;object-fit:cover;cursor:pointer}.pending-registration-alert{background-color:var(--warning);color:#fff;padding:15px;margin:15px;border-radius:12px;text-align:center;animation:fadeIn .5s ease}.approved-registration-alert{background-color:var(--success);color:#fff;padding:15px;margin:15px;border-radius:12px;text-align:center;animation:fadeIn .5s ease}.waiting-time{background-color:var(--info);padding:3px 8px;border-radius:5px;font-size:.8rem;display:inline-block;margin-top:5px}.approval-buttons{display:flex;gap:10px;margin-top:10px}.evaluation-info{font-size:.9rem;opacity:.8}@media (min-width:1024px){body{display:flex;justify-content:center;align-items:center;overflow:hidden}.main-desktop-container{display:flex;width:90%;height:90vh;max-width:1400px;background-color:var(--primary-dark);border-radius:15px;box-shadow:0 0 30px rgba(0,0,0,.5);overflow:hidden}.app-container{flex:1;height:100%;max-width:none;box-shadow:none;padding-bottom:0;position:relative}.screen{position:absolute;top:0;left:0;width:100%;height:100%;transition:transform .5s ease,opacity .5s ease;overflow-y:auto;padding-bottom:20px}.screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}.screen.active{transform:translateX(0);opacity:1;z-index:20}#home-screen{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}#home-screen .btn-container{position:absolute;left:20px;top:50%;transform:translateY(-50%);flex-direction:column;gap:15px;padding:0;margin-top:0;z-index:30}#home-screen .assistant-message{margin-left:auto;margin-right:auto;max-width:600px}#home-screen .footer{position:absolute;bottom:0;width:100%;background-color:transparent;box-shadow:none}.header{background-color:var(--primary-dark);box-shadow:var(--shadow);position:relative}#approval-screen .card,#diary-screen .form-container,#edit-student-screen .form-container,#edit-teacher-screen .form-container,#evaluation-screen .evaluation-container,#login-screen .form-container,#messages-screen .card,#notifications-screen .card,#profile-screen .profile-container,#register-screen .form-container,#student-view-screen .profile-container,#submissions-screen .card,#teacher-screen .card,#teacher-view-screen .profile-container{padding:20px;margin:15px auto;max-width:700px}#hub-screen .module-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));max-width:900px;margin:20px auto}}
-    /* Estilos para o pop-up de instalação do PWA */
-    .pwa-install-modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 2000; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
-        justify-content: center;
-        align-items: center;
-    }
+    <style>
+        :root {
+            --primary-dark: #0d1b2a;
+            --primary-light: #1b263b;
+            --accent: #e63946;
+            --white: #ffffff;
+            --gray: #f0f0f0;
+            --dark-gray: #333;
+            --light-gray: #e0e0e0;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --error: #e74c3c;
+            --info: #3498db;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
 
-    .pwa-install-content {
-        background-color: var(--primary-light);
-        margin: auto;
-        padding: 25px;
-        border-radius: 15px;
-        width: 90%;
-        max-width: 400px;
-        box-shadow: var(--shadow);
-        text-align: center;
-        position: relative;
-        animation: fadeIn 0.5s ease-out;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-    .pwa-install-content h2 {
-        font-family: Poppins, sans-serif;
-        font-size: 1.4rem;
-        margin-bottom: 15px;
-        color: var(--accent);
-    }
+        input,
+        select,
+        textarea {
+            -webkit-user-select: text;
+            -khtml-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
 
-    .pwa-install-content p {
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin-bottom: 20px;
-        color: var(--white);
-    }
+        body {
+            font-family: Roboto, sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--white);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            touch-action: pan-y;
+        }
 
-    .pwa-install-content .instructions {
-        text-align: left;
-        margin-bottom: 20px;
-    }
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding-bottom: 1cm;
+        }
 
-    .pwa-install-content .instructions div {
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.9rem;
-    }
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform .5s ease, opacity .5s ease;
+            background-color: var(--primary-dark);
+            overflow-y: auto;
+            padding: 0;
+            z-index: 10;
+        }
 
-    .pwa-install-content .instructions i {
-        color: var(--accent);
-        font-size: 1.2rem;
-        flex-shrink: 0;
-    }
+        .screen.hidden {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    .pwa-install-content .close-btn {
-        background-color: var(--accent);
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1rem;
-        font-weight: 500;
-        transition: background-color 0.3s ease;
-    }
+        .screen.active {
+            transform: translateX(0);
+            opacity: 1;
+            z-index: 20;
+        }
 
-    .pwa-install-content .close-btn:hover {
-        background-color: #c2303b;
-    }
+        .header {
+            background-color: var(--primary-dark);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: Poppins, sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .assistant-message {
+            background-color: var(--primary-light);
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 10px;
+            animation: fadeIn .5s ease;
+        }
+
+        .assistant-icon {
+            background-color: var(--accent);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .assistant-text {
+            font-size: .9rem;
+            line-height: 1.5;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: none;
+            font-family: Poppins, sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+
+        .btn-info {
+            background-color: var(--info);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
+        .btn:active {
+            transform: scale(.98);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px 20px;
+            font-size: .8rem;
+            color: var(--light-gray);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--primary-dark);
+            box-shadow: var(--shadow);
+            padding-bottom: 10px;
+            padding-top: 5px;
+        }
+
+        .form-container {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-size: .9rem;
+        }
+
+        .form-control {
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-light);
+            background-color: rgba(255, 255, 255, .1);
+            color: var(--white);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        select.form-control {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+
+        .form-control:focus {
+            outline: 0;
+            border-color: var(--accent);
+            background-color: rgba(255, 255, 255, .15);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .card {
+            background-color: var(--primary-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-family: Poppins, sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .module-card {
+            background-color: var(--primary-light);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            min-height: 140px;
+            position: relative;
+        }
+
+        .module-card:active {
+            transform: scale(.97);
+        }
+
+        .module-card i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .module-card.disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .module-card.disabled i {
+            color: var(--light-gray);
+        }
+
+        .beta-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: var(--accent);
+            color: #fff;
+            font-size: .81rem;
+            padding: 3px 7px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn .5s ease;
+        }
+
+        @media (min-width:768px) {
+            .app-container {
+                max-width: 480px;
+                margin: 0 auto;
+                box-shadow: 0 0 30px rgba(0, 0, 0, .3);
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .module-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width:767px) {
+            .form-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: 0 0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, .1);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--primary-light);
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .profile-container {
+            padding: 15px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-course {
+            font-size: .9rem;
+            opacity: .8;
+        }
+
+        .evaluation-container {
+            padding: 15px;
+        }
+
+        .evaluation-header {
+            margin-bottom: 20px;
+        }
+
+        .evaluation-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .evaluation-date {
+            font-size: .9rem;
+            opacity: .8;
+        }
+
+        .evaluation-content {
+            background-color: var(--primary-light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .evaluation-text {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            font-family: Poppins, sans-serif;
+            font-weight: 500;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .admin-btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .admin-btn-warning {
+            background-color: #f39c12;
+            color: #fff;
+        }
+
+        .admin-btn-primary {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .admin-btn-success {
+            background-color: var(--success);
+            color: #fff;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: .7rem;
+            font-weight: 700;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: 0 0;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            padding-left: 40px;
+            border-radius: 10px;
+            border: none;
+            background-color: rgba(255, 255, 255, .1);
+            color: var(--white);
+            font-size: .9rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-gray);
+        }
+
+        .diary-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .diary-modal-content {
+            background-color: var(--primary-light);
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .diary-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .diary-modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .diary-modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .diary-content {
+            margin-top: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .diary-info {
+            margin-top: 15px;
+            font-size: .9rem;
+            color: var(--light-gray);
+        }
+
+        .diary-grade {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, .1);
+            border-radius: 8px;
+        }
+
+        .diary-comments {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, .1);
+            border-radius: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+        }
+
+        .page-btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--primary-light);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .page-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .blocked-message {
+            background-color: var(--error);
+            color: #fff;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn .5s ease;
+        }
+
+        .persistent-message {
+            background-color: var(--warning);
+            color: #fff;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn .5s ease;
+        }
+
+        .notification-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-swipe {
+            position: absolute;
+            top: 0;
+            right: -80px;
+            width: 80px;
+            height: 100%;
+            background-color: var(--error);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: right .3s ease;
+        }
+
+        .notification-item.swiping .notification-swipe {
+            right: 0;
+        }
+
+        .notification-item.deleting .notification-swipe {
+            right: 0;
+        }
+
+        .block-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .block-modal-content {
+            background-color: var(--primary-light);
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .block-modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .block-modal-textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, .1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .2);
+            margin-bottom: 15px;
+        }
+
+        .block-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .blocked-icon {
+            color: var(--error);
+            margin-left: 5px;
+        }
+
+        .webview-container {
+            width: 100%;
+            height: calc(100% - 60px);
+            border: none;
+        }
+
+        #virtualclass-loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+        }
+
+        .footer-logo {
+            width: 125px;
+            margin-bottom: 0;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .icon-option {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all .3s ease;
+        }
+
+        .icon-option.selected,
+        .icon-option:hover {
+            background-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .message-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-expiration {
+            font-size: .8rem;
+            opacity: .7;
+            margin-top: 5px;
+        }
+
+        .images-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .image-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--primary-light);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: var(--error);
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7rem;
+            cursor: pointer;
+        }
+
+        .image-upload-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .image-upload-input {
+            display: none;
+        }
+
+        .image-uploading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-uploading .spinner {
+            width: 30px;
+            height: 30px;
+            border-width: 3px;
+        }
+
+        .carousel-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-container {
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            position: relative;
+        }
+
+        .carousel-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .carousel-image.active {
+            display: block;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, .5);
+            color: #fff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .carousel-prev {
+            left: 15px;
+        }
+
+        .carousel-next {
+            right: 15px;
+        }
+
+        .carousel-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .carousel-counter {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            background-color: rgba(0, 0, 0, .5);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: .9rem;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .pending-registration-alert {
+            background-color: var(--warning);
+            color: #fff;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn .5s ease;
+        }
+
+        .approved-registration-alert {
+            background-color: var(--success);
+            color: #fff;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn .5s ease;
+        }
+
+        .waiting-time {
+            background-color: var(--info);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: .8rem;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .approval-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .evaluation-info {
+            font-size: .9rem;
+            opacity: .8;
+        }
+
+        @media (min-width:1024px) {
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+            }
+
+            .main-desktop-container {
+                display: flex;
+                width: 90%;
+                height: 90vh;
+                max-width: 1400px;
+                background-color: var(--primary-dark);
+                border-radius: 15px;
+                box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+                overflow: hidden;
+            }
+
+            .app-container {
+                flex: 1;
+                height: 100%;
+                max-width: none;
+                box-shadow: none;
+                padding-bottom: 0;
+                position: relative;
+            }
+
+            .screen {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                transition: transform .5s ease, opacity .5s ease;
+                overflow-y: auto;
+                padding-bottom: 20px;
+            }
+
+            .screen.hidden {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .screen.active {
+                transform: translateX(0);
+                opacity: 1;
+                z-index: 20;
+            }
+
+            #home-screen {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+
+            #home-screen .btn-container {
+                position: absolute;
+                left: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                flex-direction: column;
+                gap: 15px;
+                padding: 0;
+                margin-top: 0;
+                z-index: 30;
+            }
+
+            #home-screen .assistant-message {
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 600px;
+            }
+
+            #home-screen .footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                background-color: transparent;
+                box-shadow: none;
+            }
+
+            .header {
+                background-color: var(--primary-dark);
+                box-shadow: var(--shadow);
+                position: relative;
+            }
+
+            #approval-screen .card,
+            #diary-screen .form-container,
+            #edit-student-screen .form-container,
+            #edit-teacher-screen .form-container,
+            #evaluation-screen .evaluation-container,
+            #login-screen .form-container,
+            #messages-screen .card,
+            #notifications-screen .card,
+            #profile-screen .profile-container,
+            #register-screen .form-container,
+            #student-view-screen .profile-container,
+            #submissions-screen .card,
+            #teacher-screen .card,
+            #teacher-view-screen .profile-container {
+                padding: 20px;
+                margin: 15px auto;
+                max-width: 700px;
+            }
+
+            #hub-screen .module-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                max-width: 900px;
+                margin: 20px auto;
+            }
+        }
+
+        /* PWA Install Prompt Styles */
+        .pwa-install-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .pwa-install-content {
+            background-color: var(--primary-light);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .pwa-install-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.8rem;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pwa-install-close:hover {
+            color: var(--white);
+        }
+
+        .pwa-install-title {
+            font-family: Poppins, sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .pwa-install-description {
+            font-size: 1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            color: var(--white);
+        }
+
+        .pwa-install-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .pwa-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--light-gray);
+            position: relative;
+        }
+
+        .pwa-step-icon {
+            background-color: var(--accent);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            color: var(--white);
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+        }
+
+        .pwa-step-text strong {
+            color: var(--white);
+        }
+
+        .pwa-device-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pwa-device-btn {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-dark);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pwa-device-btn.active,
+        .pwa-device-btn:hover {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .pwa-install-button {
+            background-color: var(--success);
+            color: var(--white);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            box-shadow: var(--shadow);
+        }
+
+        .pwa-install-button:hover {
+            background-color: #27ae60;
+        }
+
+        .pwa-install-button:active {
+            transform: scale(0.98);
+        }
+
+        .pwa-dont-show-again {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pwa-dont-show-again:hover {
+            color: var(--white);
+        }
+
+        /* Animations for steps */
+        .pwa-step.highlighted .pwa-step-icon {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(230, 57, 70, 0.7);
+            }
+
+            to {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px rgba(230, 57, 70, 0.9);
+            }
+        }
+
+        /* Specific animations for iOS/Android icons */
+        .pwa-step-icon.share-icon {
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        .pwa-step-icon.add-to-home-icon {
+            animation: rotateIn 0.8s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes rotateIn {
+            0% {
+                transform: rotate(-200deg) scale(0.3);
+                opacity: 0;
+            }
+
+            80% {
+                transform: rotate(10deg) scale(1.1);
+            }
+
+            100% {
+                transform: rotate(0deg) scale(1);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -894,15 +2204,52 @@
         </div>
     </div>
 
-    <!-- Novo modal para o pop-up de instalação do PWA -->
+    <!-- PWA Install Prompt Modal -->
     <div id="pwa-install-modal" class="pwa-install-modal">
         <div class="pwa-install-content">
-            <h2>Instale o Funorte Hub!</h2>
-            <p>Para uma melhor experiência, adicione o Funorte Hub à sua tela inicial.</p>
-            <div id="pwa-instructions" class="instructions">
-                <!-- As instruções serão preenchidas via JavaScript -->
+            <span class="pwa-install-close" onclick="hidePWAInstallPrompt(true)">&times;</span>
+            <div class="pwa-install-title">Instale o Funorte Hub!</div>
+            <div class="pwa-install-description">
+                Adicione o aplicativo à sua tela inicial para uma experiência completa e rápida.
             </div>
-            <button class="close-btn" onclick="hidePWAInstallPrompt()">Entendi</button>
+
+            <div class="pwa-device-selector">
+                <button class="pwa-device-btn active" id="pwa-ios-btn" onclick="showPWAInstallSteps('ios')"><i class="fab fa-apple"></i> iOS</button>
+                <button class="pwa-device-btn" id="pwa-android-btn" onclick="showPWAInstallSteps('android')"><i class="fab fa-android"></i> Android</button>
+            </div>
+
+            <div id="pwa-ios-steps" class="pwa-install-steps">
+                <div class="pwa-step">
+                    <div class="pwa-step-icon share-icon"><i class="fas fa-share-square"></i></div>
+                    <div class="pwa-step-text">Toque no ícone de <strong>Compartilhar</strong> na barra de navegação.</div>
+                </div>
+                <div class="pwa-step">
+                    <div class="pwa-step-icon add-to-home-icon"><i class="fas fa-plus-square"></i></div>
+                    <div class="pwa-step-text">Selecione <strong>"Adicionar à Tela de Início"</strong>.</div>
+                </div>
+                <div class="pwa-step">
+                    <div class="pwa-step-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="pwa-step-text">Toque em <strong>"Adicionar"</strong> no canto superior direito.</div>
+                </div>
+            </div>
+
+            <div id="pwa-android-steps" class="pwa-install-steps" style="display:none;">
+                <div class="pwa-step">
+                    <div class="pwa-step-icon"><i class="fas fa-ellipsis-v"></i></div>
+                    <div class="pwa-step-text">Toque no ícone de <strong>Menu</strong> (três pontos) no canto superior direito.</div>
+                </div>
+                <div class="pwa-step">
+                    <div class="pwa-step-icon"><i class="fas fa-plus-circle"></i></div>
+                    <div class="pwa-step-text">Selecione <strong>"Adicionar à tela inicial"</strong>.</div>
+                </div>
+                <div class="pwa-step">
+                    <div class="pwa-step-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="pwa-step-text">Confirme a adição tocando em <strong>"Adicionar"</strong>.</div>
+                </div>
+            </div>
+
+            <button class="pwa-install-button" onclick="hidePWAInstallPrompt(false)">Entendi!</button>
+            <div class="pwa-dont-show-again" onclick="hidePWAInstallPrompt(true)">Não mostrar novamente</div>
         </div>
     </div>
 
@@ -955,8 +2302,7 @@
             carouselImages: [],
             currentCarouselIndex: 0,
             imgurClientId: '4ae8b96c539d446',
-            imgurAccessToken: '898e039bb7db651c7b94f4d104a60aae3f5c6ff0',
-            deferredInstallPrompt: null // Para o evento beforeinstallprompt
+            imgurAccessToken: '898e039bb7db651c7b94f4d104a60aae3f5c6ff0'
         };
 
         // Navegação entre telas
@@ -969,10 +2315,8 @@
             document.getElementById(screenId).classList.add('active');
             
             if (screenId === 'home-screen') {
-                checkPWAInstallPrompt(); // Verifica e mostra o prompt de instalação na tela inicial
-            }
-
-            if (screenId === 'hub-screen' && appState.currentUser) {
+                checkPWAInstallPrompt(); // Verifica e exibe o pop-up de instalação do PWA na tela inicial
+            } else if (screenId === 'hub-screen' && appState.currentUser) {
                 updateUserGreeting();
                 checkNotifications();
                 loadPersistentMessages();
@@ -3247,21 +4591,6 @@
             }
         }
 
-        async function deleteMessage(messageId) {
-            if (!confirm('Tem certeza que deseja excluir esta mensagem?')) {
-                return;
-            }
-            
-            try {
-                await db.collection('messages').doc(messageId).delete();
-                loadActiveMessages();
-                alert('Mensagem excluída com sucesso!');
-            } catch (error) {
-                console.error('Erro ao excluir mensagem:', error);
-                alert('Erro ao excluir mensagem: ' + error.message);
-            }
-        }
-
         function setupMessagesListener() {
             if (!appState.currentUser || !appState.userData) return;
             
@@ -3473,6 +4802,105 @@
             document.getElementById('image-carousel-modal').style.display = 'none';
         }
 
+        // PWA Install Prompt Logic
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI notify the user they can install the PWA
+            // showInstallPromotion(); // We will control when to show it
+        });
+
+        window.addEventListener('appinstalled', () => {
+            // Hide the app-provided install promotion
+            hidePWAInstallPrompt(true); // Hide and set "don't show again"
+            // Clear the deferredPrompt so it can be garbage collected
+            deferredPrompt = null;
+            // Optionally, send analytics event to indicate successful install
+            console.log('PWA was installed');
+        });
+
+        function isMobile() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            // Android detection
+            if (/android/i.test(userAgent)) {
+                return true;
+            }
+            // iOS detection
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return true;
+            }
+            return false;
+        }
+
+        function isPWAInstalled() {
+            // For standalone mode (installed PWA)
+            if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+                return true;
+            }
+            // For some browsers, appinstalled event might not fire, but this check works
+            // Check if the app is running in a browser that supports PWA installation and it's already installed
+            // This is a heuristic and might not be 100% accurate for all browsers/OS
+            if (document.referrer.startsWith('android-app://') || document.referrer.startsWith('ios-app://')) {
+                return true;
+            }
+            return false;
+        }
+
+        function checkPWAInstallPrompt() {
+            const lastShown = localStorage.getItem('pwaInstallPromptLastShown');
+            const dontShowAgain = localStorage.getItem('pwaInstallPromptDontShowAgain');
+            const now = new Date().getTime();
+            const oneWeek = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
+
+            if (!isMobile() || isPWAInstalled() || dontShowAgain === 'true') {
+                return; // Don't show on desktop, if already installed, or if user opted out
+            }
+
+            if (!lastShown || (now - lastShown > oneWeek)) {
+                showPWAInstallPrompt();
+            }
+        }
+
+        function showPWAInstallPrompt() {
+            const pwaModal = document.getElementById('pwa-install-modal');
+            pwaModal.style.display = 'flex';
+            localStorage.setItem('pwaInstallPromptLastShown', new Date().getTime());
+
+            // Detect OS and show relevant steps
+            if (/(iPhone|iPad|iPod)/i.test(navigator.userAgent)) {
+                showPWAInstallSteps('ios');
+            } else if (/Android/i.test(navigator.userAgent)) {
+                showPWAInstallSteps('android');
+            }
+        }
+
+        function hidePWAInstallPrompt(dontShowAgain) {
+            const pwaModal = document.getElementById('pwa-install-modal');
+            pwaModal.style.display = 'none';
+            if (dontShowAgain) {
+                localStorage.setItem('pwaInstallPromptDontShowAgain', 'true');
+            }
+        }
+
+        function showPWAInstallSteps(os) {
+            document.getElementById('pwa-ios-steps').style.display = 'none';
+            document.getElementById('pwa-android-steps').style.display = 'none';
+            document.getElementById('pwa-ios-btn').classList.remove('active');
+            document.getElementById('pwa-android-btn').classList.remove('active');
+
+            if (os === 'ios') {
+                document.getElementById('pwa-ios-steps').style.display = 'flex';
+                document.getElementById('pwa-ios-btn').classList.add('active');
+            } else if (os === 'android') {
+                document.getElementById('pwa-android-steps').style.display = 'flex';
+                document.getElementById('pwa-android-btn').classList.add('active');
+            }
+        }
+
         // CPF formatting and Username normalization
         document.addEventListener('DOMContentLoaded', () => {
             const cpfInputs = document.querySelectorAll('#cpf, #new-user-cpf, #edit-cpf, #edit-student-cpf, #edit-teacher-cpf');
@@ -3486,6 +4914,8 @@
                     } else if (value.length > 6) {
                         value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
                     } else if (value.length > 3) {
+                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
+                    } else if (value.length > 0) {
                         value = value.replace(/^(\d{3})$/, '$1');
                     }
                     e.target.value = value;
@@ -3500,97 +4930,8 @@
                 });
             });
 
-            // Inicia a verificação do PWA quando o DOM estiver carregado
+            // Initial check for PWA install prompt when the page loads
             checkPWAInstallPrompt();
-        });
-
-        // Lógica para o pop-up de instalação do PWA
-        function isMobileDevice() {
-            return /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
-        }
-
-        function isRunningStandalone() {
-            return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone);
-        }
-
-        function isIOS() {
-            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        }
-
-        function isAndroid() {
-            return /Android/.test(navigator.userAgent);
-        }
-
-        function showPWAInstallPrompt() {
-            const pwaModal = document.getElementById('pwa-install-modal');
-            const pwaInstructions = document.getElementById('pwa-instructions');
-            pwaInstructions.innerHTML = ''; // Limpa instruções anteriores
-
-            if (isIOS()) {
-                pwaInstructions.innerHTML = `
-                    <div><i class="fas fa-share-square"></i> Toque no ícone de Compartilhar <br>(<img src="https://i.imgur.com/F411211.png" alt="Share icon" style="width:20px;height:20px;vertical-align:middle;"> no Safari).</div>
-                    <div><i class="fas fa-plus-square"></i> Selecione "Adicionar à Tela de Início".</div>
-                    <div><i class="fas fa-check-circle"></i> Toque em "Adicionar" no canto superior direito.</div>
-                `;
-            } else if (isAndroid()) {
-                pwaInstructions.innerHTML = `
-                    <div><i class="fas fa-ellipsis-v"></i> Toque no menu (3 pontos) no canto superior direito do navegador.</div>
-                    <div><i class="fas fa-download"></i> Selecione "Instalar aplicativo" ou "Adicionar à tela inicial".</div>
-                    <div><i class="fas fa-check-circle"></i> Confirme a instalação.</div>
-                `;
-            } else {
-                // Para outros navegadores ou desktops, não mostra o prompt ou mostra uma mensagem genérica
-                pwaInstructions.innerHTML = `
-                    <div><i class="fas fa-info-circle"></i> Use o menu do seu navegador para encontrar a opção "Instalar" ou "Adicionar à tela inicial".</div>
-                `;
-            }
-            pwaModal.style.display = 'flex';
-        }
-
-        function hidePWAInstallPrompt() {
-            const pwaModal = document.getElementById('pwa-install-modal');
-            pwaModal.style.display = 'none';
-        }
-
-        function checkPWAInstallPrompt() {
-            // Só mostra o prompt se for um dispositivo móvel e não estiver rodando como PWA
-            if (isMobileDevice() && !isRunningStandalone()) {
-                // Verifica se o evento beforeinstallprompt já foi disparado
-                if (appState.deferredInstallPrompt) {
-                    showPWAInstallPrompt();
-                } else {
-                    // Se não foi disparado, pode ser que o navegador não suporte ou já tenha sido recusado.
-                    // Ou, em alguns casos, o navegador pode ter seu próprio banner.
-                    // Podemos mostrar o prompt genérico se o navegador não tiver um nativo.
-                    // Para simplificar, vamos mostrar o prompt personalizado se não houver um nativo.
-                    // No entanto, é melhor esperar pelo 'beforeinstallprompt' para uma experiência mais fluida.
-                    // Por enquanto, vamos apenas mostrar se o deferredInstallPrompt estiver disponível.
-                    // Se você quiser forçar a exibição em todos os casos (mesmo sem beforeinstallprompt),
-                    // remova a condição `if (appState.deferredInstallPrompt)`
-                    showPWAInstallPrompt();
-                }
-            }
-        }
-
-        // Evento para capturar o beforeinstallprompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Previne que o mini-infobar padrão apareça
-            e.preventDefault();
-            // Armazena o evento para que possa ser disparado mais tarde.
-            appState.deferredInstallPrompt = e;
-            // Opcional: Mostra o seu próprio botão/banner de instalação aqui
-            // Por exemplo, você pode chamar showPWAInstallPrompt() aqui se quiser que ele apareça imediatamente
-            // após o evento ser disparado, em vez de esperar pelo DOMContentLoaded.
-            // showPWAInstallPrompt(); // Descomente se quiser que o prompt apareça assim que o evento for disparado
-        });
-
-        // Evento para detectar quando o PWA é instalado
-        window.addEventListener('appinstalled', () => {
-            // Esconde o prompt de instalação se ele estiver visível
-            hidePWAInstallPrompt();
-            // Limpa o evento armazenado
-            appState.deferredInstallPrompt = null;
-            alert('Funorte Hub instalado com sucesso!');
         });
 
         // Register Service Worker for PWA
