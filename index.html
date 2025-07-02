@@ -1076,6 +1076,19 @@
         .logo-card img {
             width: 187.5px; /* 125px * 1.5 = 187.5px (50% larger) */
             height: auto;
+            animation: pulse-logo 2s infinite alternate; /* Adiciona a animação */
+        }
+
+        /* Keyframes para a animação de pulsação da logo */
+        @keyframes pulse-logo {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
         }
 
         @media (min-width:1024px) {
@@ -1437,7 +1450,7 @@
                 </div>
                 <!-- New logo card -->
                 <div class="logo-card">
-                    <img src="https://i.imgur.com/X7zXKVe.png" alt="Funorte Logo">
+                    <img src="https://i.imgur.com/PxjtKqV.png" alt="Funorte Logo">
                 </div>
                 <div class="btn-container">
                     <button class="btn btn-primary" onclick='showScreen("login-screen")'><i class="fas fa-sign-in-alt"></i>Login</button>
@@ -4937,7 +4950,7 @@
                     } else if (value.length > 6) {
                         value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
                     } else if (value.length > 3) {
-                        value = value.replace(/^(\d{3})(\d{3})$/, '$1.$2');
+                        value = value.replace(/^(\d{3})$/, '$1');
                     } else if (value.length > 0) {
                         value = value.replace(/^(\d{3})$/, '$1');
                     }
