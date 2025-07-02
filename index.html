@@ -302,7 +302,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px;
             text-align: center;
             box-shadow: var(--shadow);
             transition: var(--transition);
@@ -2301,7 +2300,7 @@
     </div>
 
     <div id="block-modal" class="block-modal">
-        <div class="block-modal-content">
+        <div class="modal-content">
             <div class="block-modal-title">Motivo do Bloqueio</div>
             <textarea id="block-reason-input" class="block-modal-textarea" placeholder="Informe o motivo do bloqueio..."></textarea>
             <div class="block-modal-buttons">
@@ -2428,6 +2427,7 @@
             submissionsListener: null,
             messagesListener: null,
             userRegistrationStatusListener: null, // Novo listener para status de registro
+            checkinHistoryListener: null, // New: Listener for student's check-in history
             selectedIcon: null,
             diaryImages: [],
             carouselImages: [],
@@ -2445,6 +2445,12 @@
             document.getElementById(screenId).classList.remove('hidden');
             document.getElementById(screenId).classList.add('active');
             
+            // Stop previous listeners if navigating away from their screens
+            if (appState.checkinHistoryListener) {
+                appState.checkinHistoryListener(); // Detach listener
+                appState.checkinHistoryListener = null;
+            }
+
             if (screenId === 'home-screen') {
                 checkPWAInstallPrompt(); // Verifica e exibe o pop-up de instalação do PWA na tela inicial
             } else if (screenId === 'hub-screen' && appState.currentUser) {
@@ -2453,7 +2459,6 @@
                 loadPersistentMessages();
                 loadProfessors(); // Still needed for diary screen
                 setupMessagesListener();
-                setupHubScreen();
                 setupUserRegistrationStatusListener(); // Inicia o listener de status de registro
             } else if (screenId === 'submissions-screen') {
                 loadUserSubmissions();
@@ -2493,7 +2498,7 @@
                 loadPendingStudents();
             } else if (screenId === 'checkin-screen') { // New: Check-in screen logic
                 loadPreceptorsForCheckin();
-                loadCheckinHistory();
+                loadCheckinHistory(); // This will now set up the real-time listener
             }
             
             hideApprovedMessage();
@@ -3285,6 +3290,7 @@
             if (appState.submissionsListener) appState.submissionsListener();
             if (appState.messagesListener) appState.messagesListener();
             if (appState.userRegistrationStatusListener) appState.userRegistrationStatusListener(); // Desativa o listener ao deslogar
+            if (appState.checkinHistoryListener) appState.checkinHistoryListener(); // Desativa o listener do check-in
             
             appState.currentUser = null;
             appState.userData = null;
@@ -3930,7 +3936,7 @@
                         <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDateTime(checkin.checkinTime)}</div>
                     </div>
                     <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                        Localização: ${checkin.latitude}, ${checkin.longitude}
+                        Localização: ${checkin.latitude}, ${checkin.longitude} ${checkin.locationType === 'ip' ? '(Aproximada por IP)' : ''}
                     </div>
                     <div style="margin-top: 10px; display: flex; gap: 10px;">
                         ${statusBadge}
@@ -5183,7 +5189,12 @@
             performCheckinBtn.disabled = true;
             performCheckinBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto;"></div>';
 
+            let latitude = 'Não disponível';
+            let longitude = 'Não disponível';
+            let locationType = 'unknown'; // 'gps', 'ip', 'unknown'
+
             try {
+                // Try to get precise GPS location
                 const position = await new Promise((resolve, reject) => {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
@@ -5191,84 +5202,99 @@
                         reject(new Error('Geolocalização não suportada pelo seu navegador.'));
                     }
                 });
+                latitude = position.coords.latitude;
+                longitude = position.coords.longitude;
+                locationType = 'gps';
+                alert('Localização GPS obtida com sucesso!');
 
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                const checkinTime = firebase.firestore.FieldValue.serverTimestamp();
+            } catch (geoError) {
+                console.warn('Erro ao obter localização GPS:', geoError.message);
+                alert('Não foi possível obter sua localização exata. Tentando localização aproximada por IP.');
+                locationType = 'ip';
 
-                const preceptorDoc = await db.collection('professores').doc(preceptorId).get();
-                const preceptorData = preceptorDoc.data();
-                const preceptorName = preceptorData ? preceptorData.fullname : 'Preceptor Desconhecido';
-
-                const checkinData = {
-                    studentId: appState.currentUser.id,
-                    studentName: appState.userData.fullname,
-                    studentRegistration: appState.userData.registration,
-                    studentCourse: appState.userData.course,
-                    preceptorId: preceptorId,
-                    preceptorName: preceptorName,
-                    checkinTime: checkinTime,
-                    latitude: latitude,
-                    longitude: longitude,
-                    status: 'pending', // pending, approved, denied
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                const checkinRef = await db.collection('checkins').add(checkinData);
-
-                await db.collection('notifications').add({
-                    userId: preceptorId,
-                    type: 'new_checkin',
-                    checkinId: checkinRef.id,
-                    studentId: appState.currentUser.id,
-                    studentName: appState.userData.fullname,
-                    title: 'Novo Check-in Pendente',
-                    message: `${appState.userData.fullname} realizou um check-in e aguarda sua aprovação.`,
-                    read: false,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                alert('Check-in enviado para aprovação do preceptor!');
-                loadCheckinHistory(); // Refresh history
-            } catch (error) {
-                console.error('Erro ao realizar check-in:', error);
-                if (error.code === 1) { // PERMISSION_DENIED
-                    alert('Permissão de localização negada. Por favor, habilite a localização para usar esta função.');
-                } else if (error.code === 2) { // POSITION_UNAVAILABLE
-                    alert('Localização indisponível. Tente novamente mais tarde.');
-                } else if (error.code === 3) { // TIMEOUT
-                    alert('Tempo limite excedido ao tentar obter a localização. Verifique sua conexão ou tente novamente.');
-                } else {
-                    alert('Erro ao realizar check-in: ' + error.message);
+                try {
+                    // Fallback to IP-based geolocation
+                    const ipGeoResponse = await fetch('https://ipapi.co/json/');
+                    const ipGeoData = await ipGeoResponse.json();
+                    if (ipGeoData && ipGeoData.latitude && ipGeoData.longitude) {
+                        latitude = ipGeoData.latitude;
+                        longitude = ipGeoData.longitude;
+                        alert('Localização aproximada por IP obtida com sucesso!');
+                    } else {
+                        alert('Não foi possível obter sua localização aproximada por IP.');
+                    }
+                } catch (ipError) {
+                    console.error('Erro ao obter localização por IP:', ipError);
+                    alert('Erro ao obter localização por IP: ' + ipError.message);
                 }
-            } finally {
-                performCheckinBtn.disabled = false;
-                performCheckinBtn.innerHTML = originalBtnContent;
             }
+
+            const checkinTime = firebase.firestore.FieldValue.serverTimestamp();
+
+            const preceptorDoc = await db.collection('professores').doc(preceptorId).get();
+            const preceptorData = preceptorDoc.data();
+            const preceptorName = preceptorData ? preceptorData.fullname : 'Preceptor Desconhecido';
+
+            const checkinData = {
+                studentId: appState.currentUser.id,
+                studentName: appState.userData.fullname,
+                studentRegistration: appState.userData.registration,
+                studentCourse: appState.userData.course,
+                preceptorId: preceptorId,
+                preceptorName: preceptorName,
+                checkinTime: checkinTime,
+                latitude: latitude,
+                longitude: longitude,
+                locationType: locationType, // Store how location was obtained
+                status: 'pending', // pending, approved, denied
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            const checkinRef = await db.collection('checkins').add(checkinData);
+
+            await db.collection('notifications').add({
+                userId: preceptorId,
+                type: 'new_checkin',
+                checkinId: checkinRef.id,
+                studentId: appState.currentUser.id,
+                studentName: appState.userData.fullname,
+                title: 'Novo Check-in Pendente',
+                message: `${appState.userData.fullname} realizou um check-in e aguarda sua aprovação.`,
+                read: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert('Check-in enviado para aprovação do preceptor!');
+            // No need to call loadCheckinHistory() here, the listener will handle it
+            
+            performCheckinBtn.disabled = false;
+            performCheckinBtn.innerHTML = originalBtnContent;
         }
 
-        // New: Load Check-in History for current student
-        async function loadCheckinHistory() {
+        // New: Load Check-in History for current student with real-time listener
+        function loadCheckinHistory() {
             if (!appState.currentUser) return;
 
             const checkinHistoryList = document.getElementById('checkin-history-list');
             checkinHistoryList.innerHTML = '<div class="spinner"></div>';
 
-            try {
-                const snapshot = await db.collection('checkins')
-                    .where('studentId', '==', appState.currentUser.id)
-                    .orderBy('checkinTime', 'desc')
-                    .get();
-
-                const checkins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                appState.checkins = checkins; // Store for pagination
-
-                updateCheckinHistoryList();
-
-            } catch (error) {
-                console.error('Erro ao carregar histórico de check-ins:', error);
-                checkinHistoryList.innerHTML = `<p>Erro ao carregar histórico: ${error.message}</p>`;
+            // Detach previous listener if exists
+            if (appState.checkinHistoryListener) {
+                appState.checkinHistoryListener();
             }
+
+            appState.checkinHistoryListener = db.collection('checkins')
+                .where('studentId', '==', appState.currentUser.id)
+                .orderBy('checkinTime', 'desc')
+                .onSnapshot(snapshot => {
+                    const checkins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    appState.checkins = checkins; // Update stored checkins
+
+                    updateCheckinHistoryList(); // Re-render the list
+                }, error => {
+                    console.error('Erro ao carregar histórico de check-ins em tempo real:', error);
+                    checkinHistoryList.innerHTML = `<p>Erro ao carregar histórico: ${error.message}</p>`;
+                });
         }
 
         // New: Update Check-in History List (with pagination)
@@ -5319,7 +5345,7 @@
                         <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDateTime(checkin.checkinTime)}</div>
                     </div>
                     <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                        Localização: ${checkin.latitude}, ${checkin.longitude}
+                        Localização: ${checkin.latitude}, ${checkin.longitude} ${checkin.locationType === 'ip' ? '(Aproximada por IP)' : ''}
                     </div>
                     <div style="margin-top: 10px; display: flex; gap: 10px;">
                         ${statusBadge}
@@ -5393,7 +5419,7 @@
                                 <div>Matrícula: ${checkin.studentRegistration}</div>
                                 <div>Curso: ${getCourseName(checkin.studentCourse)}</div>
                                 <div>Hora: ${formatDateTime(checkin.checkinTime)}</div>
-                                <div>Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a></div>
+                                <div>Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a> ${checkin.locationType === 'ip' ? '(Aproximada por IP)' : ''}</div>
                             </div>
                             <div class="approval-buttons">
                                 <button class="btn btn-success" onclick="approveCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
