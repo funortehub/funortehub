@@ -2128,7 +2128,7 @@
     <!-- PWA Install Prompt HTML -->
     <div id="pwa-install-prompt" class="pwa-install-modal">
         <div class="pwa-install-content">
-            <span class="close-btn" onclick="hidePWAInstallPrompt()">&times;</span>
+            <span class="close-btn" id="pwa-close-btn">&times;</span>
             <h2 id="pwa-prompt-title">Instale o Funorte Hub!</h2>
             <p id="pwa-prompt-text">Adicione este aplicativo à sua tela inicial para uma experiência completa e acesso rápido.</p>
 
@@ -2152,7 +2152,7 @@
 
             <div class="action-buttons">
                 <button class="btn btn-primary" id="install-pwa-btn" style="display:none;">Instalar Agora</button>
-                <button class="btn btn-secondary" onclick="hidePWAInstallPrompt()">Agora Não</button>
+                <button class="btn btn-secondary" id="pwa-now-not-btn">Agora Não</button>
             </div>
         </div>
     </div>
@@ -2517,7 +2517,6 @@
         function showDiaryModal(title, date, content, author, grade, comments, images) {
             document.getElementById('diary-modal-title').textContent = title;
             document.getElementById('diary-modal-date').textContent = formatDate(date);
-            document.getElementById('diary-modal-author').textContent = author;
             document.getElementById('diary-modal-content').textContent = content; // Conteúdo do diário
             
             const gradeContainer = document.getElementById('diary-modal-grade');
@@ -4752,6 +4751,8 @@
             // PWA Install Prompt Logic
             const pwaInstallPrompt = document.getElementById('pwa-install-prompt');
             const installPWAButton = document.getElementById('install-pwa-btn');
+            const pwaCloseBtn = document.getElementById('pwa-close-btn'); // Get the close button
+            const pwaNowNotBtn = document.getElementById('pwa-now-not-btn'); // Get the "Agora Não" button
             const iosInstructions = document.getElementById('ios-instructions');
             const androidInstructions = document.getElementById('android-instructions');
 
@@ -4829,6 +4830,10 @@
                     hidePWAInstallPrompt(); // Hide your custom prompt
                 }
             });
+
+            // Add event listeners for the close button and "Agora Não" button
+            pwaCloseBtn.addEventListener('click', hidePWAInstallPrompt);
+            pwaNowNotBtn.addEventListener('click', hidePWAInstallPrompt);
 
             // Detect if the app is launched as a PWA (standalone mode)
             window.addEventListener('appinstalled', () => {
