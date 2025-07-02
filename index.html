@@ -1886,6 +1886,12 @@
                         <div class="card-content" id="student-diaries-list">
                             <div class="spinner"></div>
                         </div>
+                        <!-- Paginação para Diários de Campo do Aluno -->
+                        <div id="student-diaries-pagination" class="pagination" style="display:none">
+                            <button class="page-btn" onclick="prevStudentDiaryPage()" id="prev-student-diary-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
+                            <span id="student-diaries-page-info">Página 1 de 1</span>
+                            <button class="page-btn" onclick="nextStudentDiaryPage()" id="next-student-diary-btn" disabled="disabled"><i class="fas fa-chevron-right"></i></button>
+                        </div>
                     </div>
                     <div id="admin-actions-container" style="display:none">
                         <div class="card">
@@ -2424,6 +2430,8 @@
             userSubmissionsPage: 1, // Student's submissions pagination
             checkinHistoryPage: 1, 
             studentCheckinHistoryPage: 1, 
+            studentDiariesPage: 1, // New: Page for student's diaries in student-view-screen
+            studentDiaries: [], // New: Array to hold all student's diaries for pagination
             pageSize: 5, // Alterado para 5 itens por página
             touchStartX: 0,
             currentNotificationId: null,
@@ -2464,6 +2472,7 @@
             appState.userSubmissionsPage = 1;
             appState.checkinHistoryPage = 1;
             appState.studentCheckinHistoryPage = 1;
+            appState.studentDiariesPage = 1; // New: Reset student diaries page
 
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.add('hidden');
@@ -3840,82 +3849,113 @@
             diariesList.innerHTML = '<div class="spinner"></div>';
             
             try {
-                // Este listener não precisa ser desativado ao mudar de tela, pois é específico da tela de visualização do aluno
-                // e será recarregado ao reentrar na tela de visualização de outro aluno.
-                // No entanto, se houver um listener ativo para o MESMO aluno, ele deve ser desativado antes de criar um novo.
-                // Para simplificar, vamos manter a lógica de recarregar sempre que a tela é exibida.
-                
                 const snapshot = await db.collection('Diario')
                     .where('userId', '==', studentId)
                     .orderBy('createdAt', 'desc')
                     .get();
                 
-                const diaries = snapshot.docs.map(doc => ({ 
+                appState.studentDiaries = snapshot.docs.map(doc => ({ 
                     id: doc.id, 
                     ...doc.data() 
                 }));
                 
-                diariesList.innerHTML = '';
-                
-                if (diaries.length === 0) {
-                    diariesList.innerHTML = '<p>Nenhum diário enviado por este aluno.</p>';
-                    return;
-                }
-                
-                diaries.forEach(diary => {
-                    const diaryItem = document.createElement('div');
-                    diaryItem.className = 'submission-item';
-                    diaryItem.style.padding = '15px';
-                    diaryItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                    diaryItem.style.cursor = 'pointer';
-                    diaryItem.onclick = () => viewDiaryForEvaluation(diary);
-                    
-                    let statusBadge = '';
-                    if (diary.status === 'pending') {
-                        statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                            <i class="fas fa-clock"></i> Pendente
-                        </div>`;
-                    } else if (diary.status === 'reviewed') {
-                        statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                            <i class="fas fa-check-circle"></i> Visualizado
-                        </div>`;
-                    }
-                    
-                    let gradeBadge = '';
-                    if (diary.grade !== undefined && diary.grade !== null) {
-                        gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                            Nota: ${diary.grade}
-                        </div>`;
-                    }
-                    
-                    let imagesBadge = '';
-                    if (diary.images && diary.images.length > 0) {
-                        imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                            <i class="fas fa-camera"></i> ${diary.images.length}
-                        </div>`;
-                    }
-                    
-                    diaryItem.innerHTML = `
-                        <div style="display: flex; justify-content: space-between;">
-                            <div style="font-weight: 500;">${diary.title}</div>
-                            <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(diary.date)}</div>
-                        </div>
-                        <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                            ${diary.text.substring(0, 50)}${diary.text.length > 50 ? '...' : ''}
-                        </div>
-                        <div style="margin-top: 10px; display: flex; gap: 10px;">
-                            ${statusBadge}
-                            ${gradeBadge}
-                            ${imagesBadge}
-                        </div>
-                    `;
-                    
-                    diariesList.appendChild(diaryItem);
-                });
+                updateStudentDiariesList();
                 
             } catch (error) {
                 console.error('Erro ao carregar diários do aluno:', error);
                 diariesList.innerHTML = `<p>Erro ao carregar diários do aluno: ${error.message}</p>`;
+            }
+        }
+
+        function updateStudentDiariesList() {
+            const diariesList = document.getElementById('student-diaries-list');
+            const pagination = document.getElementById('student-diaries-pagination');
+            const prevBtn = document.getElementById('prev-student-diary-btn');
+            const nextBtn = document.getElementById('next-student-diary-btn');
+            const pageInfo = document.getElementById('student-diaries-page-info');
+
+            const startIndex = (appState.studentDiariesPage - 1) * appState.pageSize;
+            const endIndex = startIndex + appState.pageSize;
+            const paginatedDiaries = appState.studentDiaries.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(appState.studentDiaries.length / appState.pageSize);
+
+            diariesList.innerHTML = '';
+
+            if (paginatedDiaries.length === 0) {
+                diariesList.innerHTML = '<p>Nenhum diário enviado por este aluno.</p>';
+                pagination.style.display = 'none';
+                return;
+            }
+
+            paginatedDiaries.forEach(diary => {
+                const diaryItem = document.createElement('div');
+                diaryItem.className = 'submission-item';
+                diaryItem.style.padding = '15px';
+                diaryItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                diaryItem.style.cursor = 'pointer';
+                diaryItem.onclick = () => viewDiaryForEvaluation(diary);
+                
+                let statusBadge = '';
+                if (diary.status === 'pending') {
+                    statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-clock"></i> Pendente
+                    </div>`;
+                } else if (diary.status === 'reviewed') {
+                    statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-check-circle"></i> Visualizado
+                    </div>`;
+                }
+                
+                let gradeBadge = '';
+                if (diary.grade !== undefined && diary.grade !== null) {
+                    gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        Nota: ${diary.grade}
+                    </div>`;
+                }
+                
+                let imagesBadge = '';
+                if (diary.images && diary.images.length > 0) {
+                    imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-camera"></i> ${diary.images.length}
+                    </div>`;
+                }
+                
+                diaryItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="font-weight: 500;">${diary.title}</div>
+                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(diary.date)}</div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                        ${diary.text.substring(0, 50)}${diary.text.length > 50 ? '...' : ''}
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        ${statusBadge}
+                        ${gradeBadge}
+                        ${imagesBadge}
+                    </div>
+                `;
+                
+                diariesList.appendChild(diaryItem);
+            });
+
+            pageInfo.textContent = `Página ${appState.studentDiariesPage} de ${totalPages}`;
+            prevBtn.disabled = appState.studentDiariesPage === 1;
+            nextBtn.disabled = appState.studentDiariesPage === totalPages;
+            pagination.style.display = 'flex';
+        }
+
+        function prevStudentDiaryPage() {
+            if (appState.studentDiariesPage > 1) {
+                appState.studentDiariesPage--;
+                updateStudentDiariesList();
+            }
+        }
+
+        function nextStudentDiaryPage() {
+            const totalPages = Math.ceil(appState.studentDiaries.length / appState.pageSize);
+            if (appState.studentDiariesPage < totalPages) {
+                appState.studentDiariesPage++;
+                updateStudentDiariesList();
             }
         }
 
