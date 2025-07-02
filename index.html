@@ -195,6 +195,11 @@
             transform: scale(.98);
         }
 
+        .btn.disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
         .footer {
             text-align: center;
             padding: 10px 20px;
@@ -474,6 +479,7 @@
             align-items: center;
             font-size: 2rem;
             cursor: pointer;
+            position: relative; /* Added for badge positioning */
         }
 
         .profile-info {
@@ -1091,6 +1097,21 @@
             }
         }
 
+        /* Internato Badge */
+        .internato-badge {
+            position: absolute;
+            bottom: -10px; /* Adjust as needed */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--info); /* Blue color */
+            color: var(--white);
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+            box-shadow: var(--shadow);
+        }
+
         @media (min-width:1024px) {
             body {
                 display: flex;
@@ -1196,7 +1217,8 @@
             #student-view-screen .profile-container,
             #submissions-screen .card,
             #teacher-screen .card,
-            #teacher-view-screen .profile-container {
+            #teacher-view-screen .profile-container,
+            #checkin-screen .form-container { /* Added checkin-screen */
                 padding: 20px;
                 margin: 15px auto;
                 max-width: 700px;
@@ -1636,6 +1658,15 @@
                         </div>
                     </div>
                 </div>
+                <!-- New Check-in Pendentes Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Check-ins Pendentes</div>
+                    </div>
+                    <div class="card-content" id="pending-checkins-list">
+                        <p>Nenhum check-in pendente.</p>
+                    </div>
+                </div>
             </div>
 
             <div id="approval-screen" class="screen hidden">
@@ -1669,6 +1700,7 @@
                     <div class="module-card" id="submissions-card" onclick='showScreen("submissions-screen")'><i class="fas fa-history"></i><div>Meus Envios</div></div>
                     <div class="module-card" onclick="showProfile()"><i class="fas fa-user"></i><div>Meu Perfil</div></div>
                     <div class="module-card" id="virtualclass-card" onclick="openVirtualClass()"><i class="fas fa-globe"></i><div>VirtualClass</div></div>
+                    <div class="module-card" id="checkin-card" onclick="handleCheckinClick()"><i class="fas fa-map-marker-alt"></i><div>Check-in (Internato)</div></div>
                     <div class="module-card disabled"><i class="fas fa-comments"></i><div>Fórum</div><span class="beta-badge">Beta</span></div>
                     <div class="module-card" onclick="logout()"><i class="fas fa-sign-out-alt"></i><div>Sair</div></div>
                 </div>
@@ -1737,7 +1769,7 @@
                 </div>
                 <div class="profile-container">
                     <div class="profile-header">
-                        <div class="profile-avatar" id="profile-avatar" onclick="showIconSelector()"><i class="fas fa-user" id="profile-icon"></i></div>
+                        <div class="profile-avatar" id="profile-avatar" onclick="showIconSelector()"><i class="fas fa-user" id="profile-icon"></i><span id="internato-badge" class="internato-badge" style="display:none;">Interno</span></div>
                         <div class="profile-info">
                             <div class="profile-name" id="profile-name">Nome do Aluno</div>
                             <div class="profile-course" id="profile-course">Curso</div>
@@ -1797,7 +1829,7 @@
                 </div>
                 <div class="profile-container">
                     <div class="profile-header">
-                        <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                        <div class="profile-avatar"><i class="fas fa-user" id="student-view-icon"></i><span id="student-view-internato-badge" class="internato-badge" style="display:none;">Interno</span></div>
                         <div class="profile-info">
                             <div class="profile-name" id="student-view-name">Nome do Aluno</div>
                             <div class="profile-course" id="student-view-course">Curso</div>
@@ -1820,6 +1852,10 @@
                                 <label>Matrícula</label>
                                 <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-registration"></div>
                             </div>
+                            <div class="form-group">
+                                <label>Tipo de Aluno</label>
+                                <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-type"></div>
+                            </div>
                             <div id="student-view-block-reason" class="form-group" style="display:none">
                                 <label>Motivo do Bloqueio</label>
                                 <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-block-reason"></div>
@@ -1832,6 +1868,15 @@
                         </div>
                         <div class="card-content" id="student-diaries-list">
                             <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <!-- New Check-in History Card for Admin/Teacher -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Histórico de Check-ins</div>
+                        </div>
+                        <div class="card-content" id="student-checkin-history-list">
+                            <p>Nenhum check-in registrado.</p>
                         </div>
                     </div>
                     <div id="admin-actions-container" style="display:none">
@@ -1884,6 +1929,14 @@
                             <option value="nutrition">Nutrição</option>
                             <option value="bis">BIS</option>
                             <option value="bacimed">BACIMED</option>
+                        </select>
+                    </div>
+                    <!-- New field for student type, visible only to admin -->
+                    <div class="form-group" id="edit-student-type-group" style="display:none;">
+                        <label for="edit-student-type">Tipo de Aluno</label>
+                        <select id="edit-student-type" class="form-control">
+                            <option value="academic">Acadêmico</option>
+                            <option value="intern">Interno</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -2073,6 +2126,37 @@
                     </div>
                     <div class="card-content" id="active-messages-list">
                         <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Check-in Screen -->
+            <div id="checkin-screen" class="screen hidden">
+                <div class="header">
+                    <h1><i class="fas fa-arrow-left" onclick='showScreen("hub-screen")'></i>Check-in (Internato)</h1>
+                </div>
+                <div class="form-container">
+                    <div class="assistant-message">
+                        <div class="assistant-icon"><i class="fas fa-info-circle"></i></div>
+                        <div class="assistant-text">Realize seu check-in diário para registrar sua presença no internato.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkin-preceptor">Preceptor</label>
+                        <select id="checkin-preceptor" class="form-control">
+                            <option value="">Selecione o preceptor</option>
+                        </select>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-primary" id="do-checkin-btn" onclick="doCheckin()"><i class="fas fa-map-marker-alt"></i>Fazer Check-in</button>
+                    </div>
+                    <div id="checkin-loading-spinner" class="spinner" style="display:none;"></div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Histórico de Check-ins</div>
+                        </div>
+                        <div class="card-content" id="my-checkin-history-list">
+                            <p>Nenhum check-in realizado ainda.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2331,6 +2415,7 @@
             submissionsListener: null,
             messagesListener: null,
             userRegistrationStatusListener: null, // Novo listener para status de registro
+            pendingCheckinsListener: null, // Listener para check-ins pendentes
             selectedIcon: null,
             diaryImages: [],
             carouselImages: [],
@@ -2371,6 +2456,7 @@
                     loadTeachers();
                 }
                 loadStudents();
+                loadPendingCheckins(); // Load pending check-ins for teachers
                 setupMessagesListener();
             } else if (screenId === 'profile-screen') {
                 loadProfileData();
@@ -2389,15 +2475,9 @@
                 loadActiveMessages();
             } else if (screenId === 'approval-screen') {
                 loadPendingStudents();
-            } else {
-                if (appState.messagesListener) {
-                    appState.messagesListener();
-                    appState.messagesListener = null;
-                }
-                if (appState.userRegistrationStatusListener) { // Para o caso de sair da hub-screen
-                    appState.userRegistrationStatusListener();
-                    appState.userRegistrationStatusListener = null;
-                }
+            } else if (screenId === 'checkin-screen') { // New check-in screen
+                loadProfessorsForCheckin();
+                loadMyCheckinHistory();
             }
             
             hideApprovedMessage();
@@ -2411,6 +2491,7 @@
             const diaryCard = document.getElementById('diary-card');
             const submissionsCard = document.getElementById('submissions-card');
             const virtualclassCard = document.getElementById('virtualclass-card');
+            const checkinCard = document.getElementById('checkin-card'); // New checkin card
             
             if (appState.userData.registrationStatus === 'pending') {
                 pendingAlert.style.display = 'block';
@@ -2421,6 +2502,8 @@
                 submissionsCard.onclick = null;
                 virtualclassCard.classList.add('disabled');
                 virtualclassCard.onclick = null;
+                checkinCard.classList.add('disabled'); // Disable checkin for pending
+                checkinCard.onclick = () => alert('Sua conta precisa ser aprovada para usar o Check-in.');
             } else if (appState.userData.registrationStatus === 'approved') {
                 pendingAlert.style.display = 'none';
                 approvedAlert.style.display = 'block';
@@ -2430,6 +2513,16 @@
                 submissionsCard.onclick = () => showScreen('submissions-screen');
                 virtualclassCard.classList.remove('disabled');
                 virtualclassCard.onclick = () => openVirtualClass(); // Chama a função que abre em nova aba
+
+                // Check internato status for checkin card
+                if (appState.userData.studentType === 'intern') {
+                    checkinCard.classList.remove('disabled');
+                    checkinCard.onclick = () => showScreen('checkin-screen');
+                } else {
+                    checkinCard.classList.add('disabled');
+                    checkinCard.onclick = () => alert('Esta função é exclusiva para alunos do internato.');
+                }
+
                 setTimeout(hideApprovedMessage, 10000);
             } else { // Caso o status seja algo diferente de 'pending' ou 'approved' (ex: 'denied' ou não definido)
                 pendingAlert.style.display = 'block'; // Considera como pendente ou não aprovado
@@ -2440,6 +2533,17 @@
                 submissionsCard.onclick = null;
                 virtualclassCard.classList.add('disabled');
                 virtualclassCard.onclick = null;
+                checkinCard.classList.add('disabled'); // Disable checkin for other statuses
+                checkinCard.onclick = () => alert('Sua conta precisa ser aprovada para usar o Check-in.');
+            }
+        }
+
+        // New function to handle checkin button click
+        function handleCheckinClick() {
+            if (appState.userData.studentType === 'intern') {
+                showScreen('checkin-screen');
+            } else {
+                alert('Esta função é exclusiva para alunos do internato.');
             }
         }
 
@@ -2455,9 +2559,10 @@
             appState.userRegistrationStatusListener = db.collection('alunos').doc(appState.currentUser.id)
                 .onSnapshot(doc => {
                     if (doc.exists) {
-                        const newStatus = doc.data().registrationStatus;
-                        if (newStatus !== appState.userData.registrationStatus) {
-                            appState.userData.registrationStatus = newStatus;
+                        const newData = doc.data();
+                        if (newData.registrationStatus !== appState.userData.registrationStatus || newData.studentType !== appState.userData.studentType) {
+                            appState.userData.registrationStatus = newData.registrationStatus;
+                            appState.userData.studentType = newData.studentType; // Update studentType
                             setupHubScreen(); // Re-aplica as configurações da tela Hub com o novo status
                         }
                     }
@@ -2749,6 +2854,27 @@
             }
         }
 
+        function formatDateTime(dateInput) {
+            if (!dateInput) return 'Não informado';
+            
+            try {
+                let date;
+                if (dateInput.toDate) {
+                    date = dateInput.toDate();
+                } else {
+                    date = new Date(dateInput);
+                }
+
+                const offset = -3;
+                const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+                const brasiliaTime = new Date(utc + (3600000 * offset));
+                return brasiliaTime.toLocaleString('pt-BR');
+            } catch (e) {
+                console.error('Erro ao formatar data e hora:', e);
+                return 'Data/hora inválida';
+            }
+        }
+
         function formatWaitingTime(createdAt) {
             const now = new Date();
             const createdDate = createdAt.toDate();
@@ -2783,6 +2909,14 @@
             const profileIcon = document.getElementById('profile-icon');
             if (appState.userData.profileIcon) {
                 profileIcon.className = appState.userData.profileIcon;
+            }
+
+            // Show internato badge if studentType is 'intern'
+            const internatoBadge = document.getElementById('internato-badge');
+            if (appState.userData.studentType === 'intern') {
+                internatoBadge.style.display = 'block';
+            } else {
+                internatoBadge.style.display = 'none';
             }
         }
 
@@ -2868,6 +3002,26 @@
             }
         }
 
+        async function loadProfessorsForCheckin() {
+            try {
+                const preceptorSelect = document.getElementById('checkin-preceptor');
+                preceptorSelect.innerHTML = '<option value="">Selecione o preceptor</option>';
+                
+                const snapshot = await db.collection('professores').get();
+                
+                snapshot.forEach(doc => {
+                    const professor = doc.data();
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    option.textContent = `Dr(a). ${professor.fullname}`;
+                    preceptorSelect.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar preceptores:', error);
+            }
+        }
+
         async function registerUser() {
             const fullname = document.getElementById('fullname').value;
             const birthdate = document.getElementById('birthdate').value;
@@ -2906,7 +3060,8 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'active',
                     registrationStatus: 'pending',
-                    profileIcon: 'fas fa-user'
+                    profileIcon: 'fas fa-user',
+                    studentType: 'academic' // Default to academic
                 };
 
                 const userRef = await db.collection('alunos').add(userData);
@@ -2970,7 +3125,8 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'active',
                     registrationStatus: role === 'student' ? 'pending' : 'approved',
-                    profileIcon: role === 'student' ? 'fas fa-user' : 'fas fa-chalkboard-teacher'
+                    profileIcon: role === 'student' ? 'fas fa-user' : 'fas fa-chalkboard-teacher',
+                    studentType: role === 'student' ? 'academic' : null // Default for students
                 };
 
                 let userRef;
@@ -3096,7 +3252,8 @@
             if (appState.submissionsListener) appState.submissionsListener();
             if (appState.messagesListener) appState.messagesListener();
             if (appState.userRegistrationStatusListener) appState.userRegistrationStatusListener(); // Desativa o listener ao deslogar
-            
+            if (appState.pendingCheckinsListener) appState.pendingCheckinsListener(); // Desativa o listener de check-ins pendentes
+
             appState.currentUser = null;
             appState.userData = null;
             appState.currentStudent = null;
@@ -3541,6 +3698,21 @@
             document.getElementById('student-view-birthdate').textContent = formatDate(student.birthdate);
             document.getElementById('student-view-cpf').textContent = student.cpf;
             document.getElementById('student-view-registration').textContent = student.registration;
+            document.getElementById('student-view-type').textContent = student.studentType === 'intern' ? 'Interno' : 'Acadêmico';
+
+            const studentViewIcon = document.getElementById('student-view-icon');
+            if (student.profileIcon) {
+                studentViewIcon.className = student.profileIcon;
+            } else {
+                studentViewIcon.className = 'fas fa-user'; // Default icon
+            }
+
+            const studentViewInternatoBadge = document.getElementById('student-view-internato-badge');
+            if (student.studentType === 'intern') {
+                studentViewInternatoBadge.style.display = 'block';
+            } else {
+                studentViewInternatoBadge.style.display = 'none';
+            }
             
             if (student.status === 'blocked') {
                 document.getElementById('student-view-block-reason').style.display = 'block';
@@ -3564,6 +3736,7 @@
             }
             
             loadStudentDiaries(student.id);
+            loadStudentCheckinHistory(student.id); // Load check-in history for the student
             showScreen('student-view-screen');
         }
 
@@ -4272,6 +4445,15 @@
             document.getElementById('edit-student-username').value = appState.currentStudent.username || '';
             document.getElementById('edit-student-created').textContent = formatDate(appState.currentStudent.createdAt) || 'Não disponível';
             document.getElementById('current-password-display').textContent = appState.currentStudent.password || 'Não disponível';
+
+            // Show student type field only for admin
+            const studentTypeGroup = document.getElementById('edit-student-type-group');
+            if (appState.userData.role === 'admin') {
+                studentTypeGroup.style.display = 'flex';
+                document.getElementById('edit-student-type').value = appState.currentStudent.studentType || 'academic';
+            } else {
+                studentTypeGroup.style.display = 'none';
+            }
             
             showScreen('edit-student-screen');
         }
@@ -4286,6 +4468,7 @@
             const course = document.getElementById('edit-student-course').value;
             let username = document.getElementById('edit-student-username').value;
             const password = document.getElementById('edit-student-password').value;
+            const studentType = document.getElementById('edit-student-type').value; // Get student type
 
             if (!fullname || !birthdate || !cpf || !registration || !course || !username) {
                 alert('Por favor, preencha todos os campos obrigatórios!');
@@ -4308,6 +4491,10 @@
 
                 if (password) {
                     updateData.password = password;
+                }
+
+                if (appState.userData.role === 'admin') { // Only admin can change student type
+                    updateData.studentType = studentType;
                 }
 
                 await db.collection('alunos').doc(appState.currentStudent.id).update(updateData);
@@ -4834,6 +5021,331 @@
 
         function hideImageCarousel() {
             document.getElementById('image-carousel-modal').style.display = 'none';
+        }
+
+        // Check-in Functionality
+        async function doCheckin() {
+            if (!appState.currentUser || appState.userData.studentType !== 'intern') {
+                alert('Esta função é exclusiva para alunos do internato.');
+                return;
+            }
+
+            const preceptorId = document.getElementById('checkin-preceptor').value;
+            if (!preceptorId) {
+                alert('Por favor, selecione um preceptor.');
+                return;
+            }
+
+            const doCheckinBtn = document.getElementById('do-checkin-btn');
+            const loadingSpinner = document.getElementById('checkin-loading-spinner');
+            doCheckinBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                });
+
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+                const checkinData = {
+                    studentId: appState.currentUser.id,
+                    studentName: appState.userData.fullname,
+                    studentRegistration: appState.userData.registration,
+                    studentCourse: appState.userData.course,
+                    preceptorId: preceptorId,
+                    latitude: latitude,
+                    longitude: longitude,
+                    timestamp: timestamp,
+                    status: 'pending', // pending, accepted, rejected
+                    acceptedBy: null,
+                    acceptedAt: null,
+                    rejectionReason: null
+                };
+
+                const checkinRef = await db.collection('checkins').add(checkinData);
+
+                // Notify preceptor
+                await db.collection('notifications').add({
+                    userId: preceptorId,
+                    type: 'new_checkin',
+                    checkinId: checkinRef.id,
+                    studentId: appState.currentUser.id,
+                    studentName: appState.userData.fullname,
+                    title: 'Novo pedido de Check-in',
+                    message: `${appState.userData.fullname} solicitou um check-in.`,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('Check-in enviado para aprovação!');
+                loadMyCheckinHistory(); // Refresh history
+            } catch (error) {
+                console.error('Erro ao fazer check-in:', error);
+                if (error.code === 1) { // PERMISSION_DENIED
+                    alert('Permissão de localização negada. Por favor, permita o acesso à sua localização para fazer o check-in.');
+                } else if (error.code === 2) { // POSITION_UNAVAILABLE
+                    alert('Localização indisponível. Não foi possível obter sua localização.');
+                } else if (error.code === 3) { // TIMEOUT
+                    alert('Tempo limite excedido ao tentar obter a localização. Tente novamente.');
+                } else {
+                    alert('Erro ao fazer check-in: ' + error.message);
+                }
+            } finally {
+                doCheckinBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        async function loadMyCheckinHistory() {
+            if (!appState.currentUser) return;
+
+            const historyList = document.getElementById('my-checkin-history-list');
+            historyList.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const snapshot = await db.collection('checkins')
+                    .where('studentId', '==', appState.currentUser.id)
+                    .orderBy('timestamp', 'desc')
+                    .get();
+
+                if (snapshot.empty) {
+                    historyList.innerHTML = '<p>Nenhum check-in realizado ainda.</p>';
+                    return;
+                }
+
+                historyList.innerHTML = '';
+                for (const doc of snapshot.docs) {
+                    const checkin = { id: doc.id, ...doc.data() };
+                    const preceptorDoc = await db.collection('professores').doc(checkin.preceptorId).get();
+                    const preceptorName = preceptorDoc.exists ? preceptorDoc.data().fullname : 'Desconhecido';
+
+                    let statusText = '';
+                    let statusColor = '';
+                    if (checkin.status === 'pending') {
+                        statusText = 'Pendente';
+                        statusColor = 'rgba(255,255,255,0.1)';
+                    } else if (checkin.status === 'accepted') {
+                        statusText = 'Aceito';
+                        statusColor = 'var(--success)';
+                    } else if (checkin.status === 'rejected') {
+                        statusText = 'Recusado';
+                        statusColor = 'var(--error)';
+                    }
+
+                    const checkinItem = document.createElement('div');
+                    checkinItem.className = 'submission-item';
+                    checkinItem.style.padding = '15px';
+                    checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                    checkinItem.innerHTML = `
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="font-weight: 500;">Check-in em ${formatDateTime(checkin.timestamp)}</div>
+                            <div style="background-color: ${statusColor}; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                                ${statusText}
+                            </div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                            Preceptor: Dr(a). ${preceptorName}
+                        </div>
+                        ${checkin.acceptedBy ? `<div style="font-size: 0.8rem; opacity: 0.7;">Aprovado por: ${checkin.acceptedBy} em ${formatDateTime(checkin.acceptedAt)}</div>` : ''}
+                        ${checkin.rejectionReason ? `<div style="font-size: 0.8rem; opacity: 0.7; color: var(--error);">Motivo da Recusa: ${checkin.rejectionReason}</div>` : ''}
+                        <div style="font-size: 0.8rem; opacity: 0.7;">
+                            Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a>
+                        </div>
+                    `;
+                    historyList.appendChild(checkinItem);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar histórico de check-ins:', error);
+                historyList.innerHTML = `<p>Erro ao carregar histórico: ${error.message}</p>`;
+            }
+        }
+
+        async function loadPendingCheckins() {
+            if (!appState.currentUser || (appState.userData.role !== 'teacher' && appState.userData.role !== 'admin')) return;
+
+            const pendingCheckinsList = document.getElementById('pending-checkins-list');
+            pendingCheckinsList.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                if (appState.pendingCheckinsListener) {
+                    appState.pendingCheckinsListener(); // Detach previous listener
+                }
+
+                let query = db.collection('checkins')
+                    .where('status', '==', 'pending')
+                    .orderBy('timestamp', 'asc');
+
+                if (appState.userData.role === 'teacher') {
+                    query = query.where('preceptorId', '==', appState.currentUser.id);
+                }
+
+                appState.pendingCheckinsListener = query.onSnapshot(async (snapshot) => {
+                    if (snapshot.empty) {
+                        pendingCheckinsList.innerHTML = '<p>Nenhum check-in pendente.</p>';
+                        return;
+                    }
+
+                    pendingCheckinsList.innerHTML = '';
+                    for (const doc of snapshot.docs) {
+                        const checkin = { id: doc.id, ...doc.data() };
+                        const studentDoc = await db.collection('alunos').doc(checkin.studentId).get();
+                        const studentName = studentDoc.exists ? studentDoc.data().fullname : 'Aluno Desconhecido';
+
+                        const checkinItem = document.createElement('div');
+                        checkinItem.className = 'submission-item';
+                        checkinItem.style.padding = '15px';
+                        checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                        checkinItem.innerHTML = `
+                            <div style="font-weight: 500;">${studentName} - ${formatDateTime(checkin.timestamp)}</div>
+                            <div style="margin-top: 5px; font-size: 0.9rem;">
+                                Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a>
+                            </div>
+                            <div class="approval-buttons">
+                                <button class="btn btn-success" onclick="acceptCheckin('${checkin.id}', '${studentName}')">
+                                    <i class="fas fa-check"></i> Aceitar
+                                </button>
+                                <button class="btn btn-secondary" onclick="rejectCheckin('${checkin.id}', '${studentName}')">
+                                    <i class="fas fa-times"></i> Recusar
+                                </button>
+                            </div>
+                        `;
+                        pendingCheckinsList.appendChild(checkinItem);
+                    }
+                }, (error) => {
+                    console.error('Erro ao carregar check-ins pendentes:', error);
+                    pendingCheckinsList.innerHTML = `<p>Erro ao carregar check-ins: ${error.message}</p>`;
+                });
+            } catch (error) {
+                console.error('Erro ao configurar listener de check-ins pendentes:', error);
+                pendingCheckinsList.innerHTML = `<p>Erro: ${error.message}</p>`;
+            }
+        }
+
+        async function acceptCheckin(checkinId, studentName) {
+            try {
+                await db.collection('checkins').doc(checkinId).update({
+                    status: 'accepted',
+                    acceptedBy: appState.userData.fullname,
+                    acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                const checkinDoc = await db.collection('checkins').doc(checkinId).get();
+                const checkinData = checkinDoc.data();
+
+                await db.collection('notifications').add({
+                    userId: checkinData.studentId,
+                    type: 'checkin_accepted',
+                    checkinId: checkinId,
+                    teacherId: appState.currentUser.id,
+                    teacherName: appState.userData.fullname,
+                    title: 'Check-in Aceito!',
+                    message: `Seu check-in de ${formatDateTime(checkinData.timestamp)} foi aceito por Dr(a). ${appState.userData.fullname}.`,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert(`Check-in de ${studentName} aceito com sucesso!`);
+            } catch (error) {
+                console.error('Erro ao aceitar check-in:', error);
+                alert('Erro ao aceitar check-in: ' + error.message);
+            }
+        }
+
+        async function rejectCheckin(checkinId, studentName) {
+            const reason = prompt('Informe o motivo da recusa (opcional):') || 'Recusado pelo preceptor.';
+            try {
+                await db.collection('checkins').doc(checkinId).update({
+                    status: 'rejected',
+                    rejectionReason: reason,
+                    acceptedBy: appState.userData.fullname, // Still record who rejected
+                    acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                const checkinDoc = await db.collection('checkins').doc(checkinId).get();
+                const checkinData = checkinDoc.data();
+
+                await db.collection('notifications').add({
+                    userId: checkinData.studentId,
+                    type: 'checkin_rejected',
+                    checkinId: checkinId,
+                    teacherId: appState.currentUser.id,
+                    teacherName: appState.userData.fullname,
+                    title: 'Check-in Recusado',
+                    message: `Seu check-in de ${formatDateTime(checkinData.timestamp)} foi recusado por Dr(a). ${appState.userData.fullname}. Motivo: ${reason}`,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert(`Check-in de ${studentName} recusado com sucesso!`);
+            } catch (error) {
+                console.error('Erro ao recusar check-in:', error);
+                alert('Erro ao recusar check-in: ' + error.message);
+            }
+        }
+
+        async function loadStudentCheckinHistory(studentId) {
+            const historyList = document.getElementById('student-checkin-history-list');
+            historyList.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const snapshot = await db.collection('checkins')
+                    .where('studentId', '==', studentId)
+                    .orderBy('timestamp', 'desc')
+                    .get();
+
+                if (snapshot.empty) {
+                    historyList.innerHTML = '<p>Nenhum check-in registrado para este aluno.</p>';
+                    return;
+                }
+
+                historyList.innerHTML = '';
+                for (const doc of snapshot.docs) {
+                    const checkin = { id: doc.id, ...doc.data() };
+                    const preceptorDoc = await db.collection('professores').doc(checkin.preceptorId).get();
+                    const preceptorName = preceptorDoc.exists ? preceptorDoc.data().fullname : 'Desconhecido';
+
+                    let statusText = '';
+                    let statusColor = '';
+                    if (checkin.status === 'pending') {
+                        statusText = 'Pendente';
+                        statusColor = 'rgba(255,255,255,0.1)';
+                    } else if (checkin.status === 'accepted') {
+                        statusText = 'Aceito';
+                        statusColor = 'var(--success)';
+                    } else if (checkin.status === 'rejected') {
+                        statusText = 'Recusado';
+                        statusColor = 'var(--error)';
+                    }
+
+                    const checkinItem = document.createElement('div');
+                    checkinItem.className = 'submission-item';
+                    checkinItem.style.padding = '15px';
+                    checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                    checkinItem.innerHTML = `
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="font-weight: 500;">Check-in em ${formatDateTime(checkin.timestamp)}</div>
+                            <div style="background-color: ${statusColor}; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                                ${statusText}
+                            </div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                            Preceptor: Dr(a). ${preceptorName}
+                        </div>
+                        ${checkin.acceptedBy ? `<div style="font-size: 0.8rem; opacity: 0.7;">Aprovado por: ${checkin.acceptedBy} em ${formatDateTime(checkin.acceptedAt)}</div>` : ''}
+                        ${checkin.rejectionReason ? `<div style="font-size: 0.8rem; opacity: 0.7; color: var(--error);">Motivo da Recusa: ${checkin.rejectionReason}</div>` : ''}
+                        <div style="font-size: 0.8rem; opacity: 0.7;">
+                            Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a>
+                        </div>
+                    `;
+                    historyList.appendChild(checkinItem);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar histórico de check-ins do aluno:', error);
+                historyList.innerHTML = `<p>Erro ao carregar histórico: ${error.message}</p>`;
+            }
         }
 
         // PWA Install Prompt Logic
