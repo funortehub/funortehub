@@ -4882,7 +4882,9 @@
                 localStorage.setItem('pwaInstallPromptDontShowAgain', 'true');
             } else {
                 // Se clicou em "Entendi", remove a opção de "Não mostrar novamente" para que apareça na próxima visita
-                localStorage.removeItem('pwaInstallPromptDontShowAgain');
+                // A lógica foi alterada para que o pop-up apareça sempre, a menos que "Não mostrar novamente" seja clicado.
+                // Portanto, esta linha não é mais necessária para o comportamento desejado.
+                // localStorage.removeItem('pwaInstallPromptDontShowAgain'); 
             }
         }
 
