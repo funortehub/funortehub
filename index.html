@@ -1060,6 +1060,29 @@
             opacity: .8;
         }
 
+        /* New styles for the home screen image card */
+        .home-image-card {
+            background-color: var(--primary-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .home-image-card img {
+            width: 150%; /* 50% larger than original 100% */
+            max-width: 300px; /* Adjust max-width as needed */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         @media (min-width:1024px) {
             body {
                 display: flex;
@@ -1416,6 +1439,10 @@
                 <div class="assistant-message fade-in">
                     <div class="assistant-icon"><i class="fas fa-robot"></i></div>
                     <div class="assistant-text">Bem-vindo ao espaço virtual da Funorte! Aqui você pode registrar seus diários de campo, acompanhar suas atividades e muito mais.</div>
+                </div>
+                <!-- New card for the Funorte Hub brain image -->
+                <div class="home-image-card">
+                    <img src="https://i.imgur.com/INUxxnc.png" alt="Funorte Hub Brain Logo">
                 </div>
                 <div class="btn-container">
                     <button class="btn btn-primary" onclick='showScreen("login-screen")'><i class="fas fa-sign-in-alt"></i>Login</button>
