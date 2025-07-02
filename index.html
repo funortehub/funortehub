@@ -1759,9 +1759,9 @@
                         <div class="spinner"></div>
                     </div>
                     <div id="my-submissions-pagination" class="pagination" style="display:none">
-                        <button class="page-btn" onclick="prevMySubmissionsPage()" id="prev-my-submission-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
-                        <span id="my-submissions-page-info">Página 1 de 1</span>
-                        <button class="page-btn" onclick="nextMySubmissionsPage()" id="next-my-submission-btn" disabled="disabled"><i class="fas fa-chevron-right"></i></button>
+                        <button class="page-btn" onclick="prevUserSubmissionsPage()" id="prev-user-submission-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
+                        <span id="user-submissions-page-info">Página 1 de 1</span>
+                        <button class="page-btn" onclick="nextUserSubmissionsPage()" id="next-user-submission-btn" disabled="disabled"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -1885,11 +1885,6 @@
                         </div>
                         <div class="card-content" id="student-diaries-list">
                             <div class="spinner"></div>
-                        </div>
-                        <div id="student-diaries-pagination" class="pagination" style="display:none">
-                            <button class="page-btn" onclick="prevStudentDiariesPage()" id="prev-student-diaries-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
-                            <span id="student-diaries-page-info">Página 1 de 1</span>
-                            <button class="page-btn" onclick="nextStudentDiariesPage()" id="next-student-diaries-btn" disabled="disabled"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                     <div id="admin-actions-container" style="display:none">
@@ -2415,8 +2410,8 @@
         const appState = {
             currentUser: null,
             userData: null,
-            submissions: [], // All submissions for the current user (student)
-            mySubmissionsPage: 1, // Pagination for "Meus Envios"
+            submissions: [], // Submissions for teacher view
+            userSubmissions: [], // Submissions for student's "Meus Envios"
             students: [],
             teachers: [],
             currentStudent: null,
@@ -2425,28 +2420,23 @@
             notifications: [],
             studentsPage: 1,
             teachersPage: 1,
-            submissionsPage: 1, // Pagination for teacher's evaluation screen
-            checkins: [], // All checkins for the current user (student)
-            checkinHistoryPage: 1, // Pagination for student's check-in history
-            studentCheckins: [], // All checkins for the viewed student (teacher)
-            studentCheckinHistoryPage: 1, // Pagination for student view check-in history
-            studentDiaries: [], // All diaries for the viewed student (teacher)
-            studentDiariesPage: 1, // Pagination for student view diaries
-            pendingCheckins: [], // All pending checkins for teacher/admin
-            pendingCheckinsPage: 1, // Pagination for pending checkins
-            pageSize: 5, // Changed to 5 items per page
+            submissionsPage: 1, // Teacher's submissions pagination
+            userSubmissionsPage: 1, // Student's submissions pagination
+            checkinHistoryPage: 1, 
+            studentCheckinHistoryPage: 1, 
+            pageSize: 5, // Alterado para 5 itens por página
             touchStartX: 0,
             currentNotificationId: null,
             blockTargetId: null,
             blockTargetType: null,
             studentsListener: null,
             teachersListener: null,
-            submissionsListener: null,
+            submissionsListener: null, // Teacher's submissions listener
+            userSubmissionsListener: null, // Student's submissions listener
             messagesListener: null,
-            userRegistrationStatusListener: null,
-            checkinHistoryListener: null,
+            userRegistrationStatusListener: null, 
+            checkinHistoryListener: null, 
             pendingCheckinsListener: null, // New: Listener for pending check-ins
-            studentDiariesListener: null, // New: Listener for student diaries in student view
             selectedIcon: null,
             diaryImages: [],
             carouselImages: [],
@@ -2457,6 +2447,24 @@
 
         // Navegação entre telas
         function showScreen(screenId) {
+            // Desativa todos os listeners antes de mudar de tela para evitar duplicação e vazamento de memória
+            if (appState.studentsListener) appState.studentsListener();
+            if (appState.teachersListener) appState.teachersListener();
+            if (appState.submissionsListener) appState.submissionsListener();
+            if (appState.userSubmissionsListener) appState.userSubmissionsListener(); // Desativa o listener de "Meus Envios"
+            if (appState.messagesListener) appState.messagesListener();
+            if (appState.userRegistrationStatusListener) appState.userRegistrationStatusListener();
+            if (appState.checkinHistoryListener) appState.checkinHistoryListener();
+            if (appState.pendingCheckinsListener) appState.pendingCheckinsListener(); // Desativa o listener de check-ins pendentes
+
+            // Reset pagination pages when changing screens
+            appState.studentsPage = 1;
+            appState.teachersPage = 1;
+            appState.submissionsPage = 1;
+            appState.userSubmissionsPage = 1;
+            appState.checkinHistoryPage = 1;
+            appState.studentCheckinHistoryPage = 1;
+
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.add('hidden');
                 screen.classList.remove('active');
@@ -2464,32 +2472,17 @@
             document.getElementById(screenId).classList.remove('hidden');
             document.getElementById(screenId).classList.add('active');
             
-            // Stop previous listeners if navigating away from their screens
-            if (appState.checkinHistoryListener) {
-                appState.checkinHistoryListener(); // Detach listener
-                appState.checkinHistoryListener = null;
-            }
-            if (appState.pendingCheckinsListener) { // Detach pending checkins listener
-                appState.pendingCheckinsListener();
-                appState.pendingCheckinsListener = null;
-            }
-            if (appState.studentDiariesListener) { // Detach student diaries listener
-                appState.studentDiariesListener();
-                appState.studentDiariesListener = null;
-            }
-
             if (screenId === 'home-screen') {
-                checkPWAInstallPrompt(); // Verifica e exibe o pop-up de instalação do PWA na tela inicial
+                checkPWAInstallPrompt(); 
             } else if (screenId === 'hub-screen' && appState.currentUser) {
                 updateUserGreeting();
                 checkNotifications();
                 loadPersistentMessages();
-                loadProfessors(); // Still needed for diary screen
+                loadProfessors(); 
                 setupMessagesListener();
-                setupUserRegistrationStatusListener(); // Inicia o listener de status de registro
+                setupUserRegistrationStatusListener(); 
             } else if (screenId === 'submissions-screen') {
-                appState.mySubmissionsPage = 1; // Reset page for "Meus Envios"
-                loadUserSubmissions();
+                loadUserSubmissions(); // Carrega os diários do aluno com paginação
             } else if (screenId === 'teacher-screen') {
                 checkNotifications();
                 if (appState.userData.role === 'admin') {
@@ -2498,14 +2491,15 @@
                     document.getElementById('send-message-btn').style.display = 'block';
                     document.getElementById('manage-messages-btn').style.display = 'block';
                     document.getElementById('teachers-card').style.display = 'block';
-                    document.getElementById('pending-checkins-card').style.display = 'block'; // Show pending checkins card
+                    document.getElementById('pending-checkins-card').style.display = 'block'; 
                     loadTeachers();
                     loadPendingCheckins(); // Load pending check-ins for admin/teacher
                 } else if (appState.userData.role === 'teacher') {
-                    document.getElementById('pending-checkins-card').style.display = 'block'; // Show pending checkins card for teachers
+                    document.getElementById('pending-checkins-card').style.display = 'block'; 
                     loadPendingCheckins(); // Load pending check-ins for teacher
                 }
                 loadStudents();
+                loadSubmissions(); // Carrega as submissões para avaliação do professor
                 setupMessagesListener();
             } else if (screenId === 'profile-screen') {
                 loadProfileData();
@@ -2513,7 +2507,7 @@
                 loadNotifications();
             } else if (screenId === 'diary-screen') {
                 loadProfessors();
-                displayCurrentDate(); // Chama a função para exibir a data atual
+                displayCurrentDate(); 
                 appState.diaryImages = [];
                 renderImageUploads();
                 setupImageInput();
@@ -2524,10 +2518,9 @@
                 loadActiveMessages();
             } else if (screenId === 'approval-screen') {
                 loadPendingStudents();
-            } else if (screenId === 'checkin-screen') { // New: Check-in screen logic
+            } else if (screenId === 'checkin-screen') { 
                 loadPreceptorsForCheckin();
-                appState.checkinHistoryPage = 1; // Reset page for student's checkin history
-                loadCheckinHistory(); // This will now set up the real-time listener
+                loadCheckinHistory(); 
             }
             
             hideApprovedMessage();
@@ -2541,7 +2534,7 @@
             const diaryCard = document.getElementById('diary-card');
             const submissionsCard = document.getElementById('submissions-card');
             const virtualclassCard = document.getElementById('virtualclass-card');
-            const checkinInternatoCard = document.getElementById('checkin-internato-card'); // New: Check-in Internato card
+            const checkinInternatoCard = document.getElementById('checkin-internato-card'); 
             
             if (appState.userData.registrationStatus === 'pending') {
                 pendingAlert.style.display = 'block';
@@ -2552,7 +2545,7 @@
                 submissionsCard.onclick = null;
                 virtualclassCard.classList.add('disabled');
                 virtualclassCard.onclick = null;
-                checkinInternatoCard.classList.add('disabled'); // Disable check-in for pending
+                checkinInternatoCard.classList.add('disabled'); 
                 checkinInternatoCard.onclick = () => alert('Seu registro está pendente de aprovação. Você não pode usar esta função.');
             } else if (appState.userData.registrationStatus === 'approved') {
                 pendingAlert.style.display = 'none';
@@ -2562,9 +2555,8 @@
                 submissionsCard.classList.remove('disabled');
                 submissionsCard.onclick = () => showScreen('submissions-screen');
                 virtualclassCard.classList.remove('disabled');
-                virtualclassCard.onclick = () => openVirtualClass(); // Chama a função que abre em nova aba
+                virtualclassCard.onclick = () => openVirtualClass(); 
 
-                // New: Enable/Disable Check-in Internato based on internatoType
                 if (appState.userData.internatoType === 'interno') {
                     checkinInternatoCard.classList.remove('disabled');
                     checkinInternatoCard.onclick = () => showScreen('checkin-screen');
@@ -2574,8 +2566,8 @@
                 }
 
                 setTimeout(hideApprovedMessage, 10000);
-            } else { // Caso o status seja algo diferente de 'pending' ou 'approved' (ex: 'denied' ou não definido)
-                pendingAlert.style.display = 'block'; // Considera como pendente ou não aprovado
+            } else { 
+                pendingAlert.style.display = 'block'; 
                 approvedAlert.style.display = 'none';
                 diaryCard.classList.add('disabled');
                 diaryCard.onclick = null;
@@ -2583,12 +2575,11 @@
                 submissionsCard.onclick = null;
                 virtualclassCard.classList.add('disabled');
                 virtualclassCard.onclick = null;
-                checkinInternatoCard.classList.add('disabled'); // Disable check-in for other statuses
+                checkinInternatoCard.classList.add('disabled'); 
                 checkinInternatoCard.onclick = () => alert('Seu registro não está aprovado. Você não pode usar esta função.');
             }
         }
 
-        // New: Handle click for Check-in Internato button
         function handleCheckinInternatoClick() {
             if (appState.userData.internatoType === 'interno') {
                 showScreen('checkin-screen');
@@ -2597,11 +2588,9 @@
             }
         }
 
-        // Novo listener para o status de registro do usuário logado
         function setupUserRegistrationStatusListener() {
             if (!appState.currentUser || appState.userData.role !== 'student') return;
 
-            // Se já existe um listener, desativa-o para evitar duplicação
             if (appState.userRegistrationStatusListener) {
                 appState.userRegistrationStatusListener();
             }
@@ -2611,12 +2600,12 @@
                     if (doc.exists) {
                         const newData = doc.data();
                         const newStatus = newData.registrationStatus;
-                        const newInternatoType = newData.internatoType; // New: Get internatoType
+                        const newInternatoType = newData.internatoType; 
                         if (newStatus !== appState.userData.registrationStatus || newInternatoType !== appState.userData.internatoType) {
                             appState.userData.registrationStatus = newStatus;
-                            appState.userData.internatoType = newInternatoType; // Update internatoType
-                            setupHubScreen(); // Re-aplica as configurações da tela Hub com o novo status
-                            loadProfileData(); // Update profile data if internatoType changes
+                            appState.userData.internatoType = newInternatoType; 
+                            setupHubScreen(); 
+                            loadProfileData(); 
                         }
                     }
                 }, error => {
@@ -2776,16 +2765,13 @@
             }
         }
 
-        // Modificação aqui: Abre o VirtualClass em uma nova aba do navegador externo
         function openVirtualClass() {
             window.open("https://appfunorte.virtualclass.com.br/Index20.jsp", "_blank");
         }
 
-        // Função para exibir a data atual no campo "Data do Registro"
         function displayCurrentDate() {
             const now = new Date();
-            // Ajusta para o fuso horário de Brasília (UTC-3)
-            const offset = -3 * 60; // em minutos
+            const offset = -3 * 60; 
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const brasiliaTime = new Date(utc + (3600000 * offset / 60));
             
@@ -2807,7 +2793,7 @@
             document.getElementById('diary-modal-title').textContent = title;
             document.getElementById('diary-modal-date').textContent = formatDate(date);
             document.getElementById('diary-modal-author').textContent = author;
-            document.getElementById('diary-modal-content').textContent = content; // Conteúdo do diário
+            document.getElementById('diary-modal-content').textContent = content; 
             
             const gradeContainer = document.getElementById('diary-modal-grade');
             const commentsContainer = document.getElementById('diary-modal-comments');
@@ -2965,7 +2951,6 @@
                 profileIcon.className = appState.userData.profileIcon;
             }
 
-            // New: Add internato badge if applicable
             const existingBadge = profileAvatar.querySelector('.internato-badge');
             if (existingBadge) {
                 existingBadge.remove();
@@ -3060,7 +3045,6 @@
             }
         }
 
-        // New: Load Preceptors for Check-in Screen
         async function loadPreceptorsForCheckin() {
             try {
                 const preceptorSelect = document.getElementById('checkin-preceptor');
@@ -3095,9 +3079,8 @@
                 return;
             }
 
-            // Normalize username
             username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-            document.getElementById('username').value = username; // Update input field
+            document.getElementById('username').value = username; 
 
             try {
                 const userQuery = await db.collection('users').where('username', '==', username).get();
@@ -3120,7 +3103,7 @@
                     status: 'active',
                     registrationStatus: 'pending',
                     profileIcon: 'fas fa-user',
-                    internatoType: 'academico' // New: Default to academico
+                    internatoType: 'academico' 
                 };
 
                 const userRef = await db.collection('alunos').add(userData);
@@ -3160,9 +3143,8 @@
                 return;
             }
 
-            // Normalize username
             username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-            document.getElementById('new-user-username').value = username; // Update input field
+            document.getElementById('new-user-username').value = username; 
 
             try {
                 const userQuery = await db.collection('users').where('username', '==', username).get();
@@ -3185,7 +3167,7 @@
                     status: 'active',
                     registrationStatus: role === 'student' ? 'pending' : 'approved',
                     profileIcon: role === 'student' ? 'fas fa-user' : 'fas fa-chalkboard-teacher',
-                    internatoType: role === 'student' ? 'academico' : null // New: Default to academico for students
+                    internatoType: role === 'student' ? 'academico' : null 
                 };
 
                 let userRef;
@@ -3234,7 +3216,7 @@
                     role: 'admin',
                     course: 'all',
                     registrationStatus: 'approved',
-                    internatoType: null // Admin doesn't have internatoType
+                    internatoType: null 
                 };
                 showScreen('teacher-screen');
                 document.getElementById('create-user-btn').style.display = 'block';
@@ -3242,9 +3224,9 @@
                 document.getElementById('send-message-btn').style.display = 'block';
                 document.getElementById('manage-messages-btn').style.display = 'block';
                 document.getElementById('teachers-card').style.display = 'block';
-                document.getElementById('pending-checkins-card').style.display = 'block'; // Show pending checkins card for admin
+                document.getElementById('pending-checkins-card').style.display = 'block'; 
                 loadTeachers();
-                loadPendingCheckins(); // Load pending check-ins for admin
+                loadPendingCheckins(); 
                 return;
             }
 
@@ -3296,12 +3278,12 @@
                         document.getElementById('send-message-btn').style.display = 'block';
                         document.getElementById('manage-messages-btn').style.display = 'block';
                         document.getElementById('teachers-card').style.display = 'block';
-                        document.getElementById('pending-checkins-card').style.display = 'block'; // Show pending checkins card for admin
+                        document.getElementById('pending-checkins-card').style.display = 'block'; 
                         loadTeachers();
-                        loadPendingCheckins(); // Load pending check-ins for admin
+                        loadPendingCheckins(); 
                     } else if (appState.userData.role === 'teacher') {
-                        document.getElementById('pending-checkins-card').style.display = 'block'; // Show pending checkins card for teachers
-                        loadPendingCheckins(); // Load pending check-ins for teacher
+                        document.getElementById('pending-checkins-card').style.display = 'block'; 
+                        loadPendingCheckins(); 
                     }
                 } else {
                     showScreen('hub-screen');
@@ -3314,14 +3296,15 @@
         }
 
         function logout() {
+            // Desativa todos os listeners ao deslogar
             if (appState.studentsListener) appState.studentsListener();
             if (appState.teachersListener) appState.teachersListener();
             if (appState.submissionsListener) appState.submissionsListener();
+            if (appState.userSubmissionsListener) appState.userSubmissionsListener();
             if (appState.messagesListener) appState.messagesListener();
-            if (appState.userRegistrationStatusListener) appState.userRegistrationStatusListener(); // Desativa o listener ao deslogar
-            if (appState.checkinHistoryListener) appState.checkinHistoryListener(); // Desativa o listener do check-in
-            if (appState.pendingCheckinsListener) appState.pendingCheckinsListener(); // Desativa o listener de check-ins pendentes
-            if (appState.studentDiariesListener) appState.studentDiariesListener(); // Desativa o listener de diários do aluno
+            if (appState.userRegistrationStatusListener) appState.userRegistrationStatusListener(); 
+            if (appState.checkinHistoryListener) appState.checkinHistoryListener(); 
+            if (appState.pendingCheckinsListener) appState.pendingCheckinsListener(); 
             
             appState.currentUser = null;
             appState.userData = null;
@@ -3336,7 +3319,7 @@
             document.getElementById('professor').selectedIndex = 0;
             appState.diaryImages = [];
             renderImageUploads();
-            displayCurrentDate(); // Garante que a data seja atualizada ao limpar os campos
+            displayCurrentDate(); 
         }
 
         function backFromDiaryScreen() {
@@ -3355,7 +3338,6 @@
                 return;
             }
             
-            // A data será o timestamp do envio
             const title = document.getElementById('diary-title').value;
             const text = document.getElementById('diary-text').value;
             const professor = document.getElementById('professor').value;
@@ -3384,7 +3366,7 @@
                     userName: appState.userData.fullname,
                     userRegistration: appState.userData.registration,
                     userCourse: appState.userData.course,
-                    date: firebase.firestore.FieldValue.serverTimestamp(), // Data do envio
+                    date: firebase.firestore.FieldValue.serverTimestamp(), 
                     title: title,
                     text: text,
                     images: imageUrls,
@@ -3524,11 +3506,11 @@
             submissionsList.innerHTML = '<div class="spinner"></div>';
             
             try {
-                if (appState.submissionsListener) {
-                    appState.submissionsListener();
+                if (appState.userSubmissionsListener) {
+                    appState.userSubmissionsListener();
                 }
                 
-                appState.submissionsListener = db.collection('Diario')
+                appState.userSubmissionsListener = db.collection('Diario')
                     .where('userId', '==', appState.currentUser.id)
                     .orderBy('createdAt', 'desc')
                     .onSnapshot(snapshot => {
@@ -3538,12 +3520,12 @@
                             return;
                         }
                         
-                        appState.submissions = snapshot.docs.map(doc => ({ 
+                        appState.userSubmissions = snapshot.docs.map(doc => ({ 
                             id: doc.id, 
                             ...doc.data() 
                         }));
                         
-                        updateMySubmissionsList();
+                        updateUserSubmissionsList();
                     }, error => {
                         console.error('Erro ao carregar envios:', error);
                         submissionsList.innerHTML = `<p>Erro ao carregar seus diários: ${error.message}</p>`;
@@ -3555,17 +3537,17 @@
             }
         }
 
-        function updateMySubmissionsList() {
+        function updateUserSubmissionsList() {
             const submissionsList = document.getElementById('my-submissions-list');
             const pagination = document.getElementById('my-submissions-pagination');
-            const prevBtn = document.getElementById('prev-my-submission-btn');
-            const nextBtn = document.getElementById('next-my-submission-btn');
-            const pageInfo = document.getElementById('my-submissions-page-info');
+            const prevBtn = document.getElementById('prev-user-submission-btn');
+            const nextBtn = document.getElementById('next-user-submission-btn');
+            const pageInfo = document.getElementById('user-submissions-page-info');
             
-            const startIndex = (appState.mySubmissionsPage - 1) * appState.pageSize;
+            const startIndex = (appState.userSubmissionsPage - 1) * appState.pageSize;
             const endIndex = startIndex + appState.pageSize;
-            const paginatedSubmissions = appState.submissions.slice(startIndex, endIndex);
-            const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
+            const paginatedSubmissions = appState.userSubmissions.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(appState.userSubmissions.length / appState.pageSize);
             
             submissionsList.innerHTML = '';
             
@@ -3633,25 +3615,25 @@
                 
                 submissionsList.appendChild(submissionItem);
             });
-
-            pageInfo.textContent = `Página ${appState.mySubmissionsPage} de ${totalPages}`;
-            prevBtn.disabled = appState.mySubmissionsPage === 1;
-            nextBtn.disabled = appState.mySubmissionsPage === totalPages;
+            
+            pageInfo.textContent = `Página ${appState.userSubmissionsPage} de ${totalPages}`;
+            prevBtn.disabled = appState.userSubmissionsPage === 1;
+            nextBtn.disabled = appState.userSubmissionsPage === totalPages;
             pagination.style.display = 'flex';
         }
 
-        function prevMySubmissionsPage() {
-            if (appState.mySubmissionsPage > 1) {
-                appState.mySubmissionsPage--;
-                updateMySubmissionsList();
+        function prevUserSubmissionsPage() {
+            if (appState.userSubmissionsPage > 1) {
+                appState.userSubmissionsPage--;
+                updateUserSubmissionsList();
             }
         }
 
-        function nextMySubmissionsPage() {
-            const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
-            if (appState.mySubmissionsPage < totalPages) {
-                appState.mySubmissionsPage++;
-                updateMySubmissionsList();
+        function nextUserSubmissionsPage() {
+            const totalPages = Math.ceil(appState.userSubmissions.length / appState.pageSize);
+            if (appState.userSubmissionsPage < totalPages) {
+                appState.userSubmissionsPage++;
+                updateUserSubmissionsList();
             }
         }
 
@@ -3697,7 +3679,7 @@
             const searchTerm = document.getElementById('search-student-alunos').value.toLowerCase();
             const filteredStudents = appState.students.filter(student => 
                 student.fullname.toLowerCase().includes(searchTerm)
-            ).sort((a, b) => a.fullname.localeCompare(b.fullname)); // Ensure filtered list is also sorted
+            ).sort((a, b) => a.fullname.localeCompare(b.fullname)); 
             
             const studentsList = document.getElementById('students-list');
             studentsList.innerHTML = '';
@@ -3809,7 +3791,7 @@
             document.getElementById('student-view-birthdate').textContent = formatDate(student.birthdate);
             document.getElementById('student-view-cpf').textContent = student.cpf;
             document.getElementById('student-view-registration').textContent = student.registration;
-            document.getElementById('student-view-internato-type').textContent = student.internatoType === 'interno' ? 'Interno' : 'Acadêmico'; // New: Display internatoType
+            document.getElementById('student-view-internato-type').textContent = student.internatoType === 'interno' ? 'Interno' : 'Acadêmico'; 
 
             const studentViewAvatar = document.getElementById('student-view-avatar');
             const studentViewIcon = document.getElementById('student-view-icon');
@@ -3848,10 +3830,8 @@
                 document.getElementById('admin-actions-container').style.display = 'none';
             }
             
-            appState.studentDiariesPage = 1; // Reset page for student diaries
             loadStudentDiaries(student.id);
-            appState.studentCheckinHistoryPage = 1; // Reset page for student checkin history
-            loadStudentCheckinHistory(student.id); // New: Load student's check-in history
+            loadStudentCheckinHistory(student.id); 
             showScreen('student-view-screen');
         }
 
@@ -3860,30 +3840,78 @@
             diariesList.innerHTML = '<div class="spinner"></div>';
             
             try {
-                if (appState.studentDiariesListener) { // Use specific listener for student diaries
-                    appState.studentDiariesListener();
-                }
+                // Este listener não precisa ser desativado ao mudar de tela, pois é específico da tela de visualização do aluno
+                // e será recarregado ao reentrar na tela de visualização de outro aluno.
+                // No entanto, se houver um listener ativo para o MESMO aluno, ele deve ser desativado antes de criar um novo.
+                // Para simplificar, vamos manter a lógica de recarregar sempre que a tela é exibida.
                 
-                appState.studentDiariesListener = db.collection('Diario')
+                const snapshot = await db.collection('Diario')
                     .where('userId', '==', studentId)
                     .orderBy('createdAt', 'desc')
-                    .onSnapshot(snapshot => {
-                        if (snapshot.empty) {
-                            diariesList.innerHTML = '<p>Nenhum diário enviado por este aluno.</p>';
-                            document.getElementById('student-diaries-pagination').style.display = 'none';
-                            return;
-                        }
-                        
-                        appState.studentDiaries = snapshot.docs.map(doc => ({ 
-                            id: doc.id, 
-                            ...doc.data() 
-                        }));
-                        
-                        updateStudentDiariesList();
-                    }, error => {
-                        console.error('Erro ao carregar diários do aluno:', error);
-                        diariesList.innerHTML = `<p>Erro ao carregar diários do aluno: ${error.message}</p>`;
-                    });
+                    .get();
+                
+                const diaries = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data() 
+                }));
+                
+                diariesList.innerHTML = '';
+                
+                if (diaries.length === 0) {
+                    diariesList.innerHTML = '<p>Nenhum diário enviado por este aluno.</p>';
+                    return;
+                }
+                
+                diaries.forEach(diary => {
+                    const diaryItem = document.createElement('div');
+                    diaryItem.className = 'submission-item';
+                    diaryItem.style.padding = '15px';
+                    diaryItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                    diaryItem.style.cursor = 'pointer';
+                    diaryItem.onclick = () => viewDiaryForEvaluation(diary);
+                    
+                    let statusBadge = '';
+                    if (diary.status === 'pending') {
+                        statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                            <i class="fas fa-clock"></i> Pendente
+                        </div>`;
+                    } else if (diary.status === 'reviewed') {
+                        statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                            <i class="fas fa-check-circle"></i> Visualizado
+                        </div>`;
+                    }
+                    
+                    let gradeBadge = '';
+                    if (diary.grade !== undefined && diary.grade !== null) {
+                        gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                            Nota: ${diary.grade}
+                        </div>`;
+                    }
+                    
+                    let imagesBadge = '';
+                    if (diary.images && diary.images.length > 0) {
+                        imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                            <i class="fas fa-camera"></i> ${diary.images.length}
+                        </div>`;
+                    }
+                    
+                    diaryItem.innerHTML = `
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="font-weight: 500;">${diary.title}</div>
+                            <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(diary.date)}</div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                            ${diary.text.substring(0, 50)}${diary.text.length > 50 ? '...' : ''}
+                        </div>
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                            ${statusBadge}
+                            ${gradeBadge}
+                            ${imagesBadge}
+                        </div>
+                    `;
+                    
+                    diariesList.appendChild(diaryItem);
+                });
                 
             } catch (error) {
                 console.error('Erro ao carregar diários do aluno:', error);
@@ -3891,99 +3919,6 @@
             }
         }
 
-        function updateStudentDiariesList() {
-            const diariesList = document.getElementById('student-diaries-list');
-            const pagination = document.getElementById('student-diaries-pagination');
-            const prevBtn = document.getElementById('prev-student-diaries-btn');
-            const nextBtn = document.getElementById('next-student-diaries-btn');
-            const pageInfo = document.getElementById('student-diaries-page-info');
-            
-            const startIndex = (appState.studentDiariesPage - 1) * appState.pageSize;
-            const endIndex = startIndex + appState.pageSize;
-            const paginatedDiaries = appState.studentDiaries.slice(startIndex, endIndex);
-            const totalPages = Math.ceil(appState.studentDiaries.length / appState.pageSize);
-            
-            diariesList.innerHTML = '';
-            
-            if (paginatedDiaries.length === 0) {
-                diariesList.innerHTML = '<p>Nenhum diário enviado por este aluno.</p>';
-                pagination.style.display = 'none';
-                return;
-            }
-            
-            paginatedDiaries.forEach(diary => {
-                const diaryItem = document.createElement('div');
-                diaryItem.className = 'submission-item';
-                diaryItem.style.padding = '15px';
-                diaryItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                diaryItem.style.cursor = 'pointer';
-                diaryItem.onclick = () => viewDiaryForEvaluation(diary);
-                
-                let statusBadge = '';
-                if (diary.status === 'pending') {
-                    statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-clock"></i> Pendente
-                    </div>`;
-                } else if (diary.status === 'reviewed') {
-                    statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-check-circle"></i> Visualizado
-                    </div>`;
-                }
-                
-                let gradeBadge = '';
-                if (diary.grade !== undefined && diary.grade !== null) {
-                    gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        Nota: ${diary.grade}
-                    </div>`;
-                }
-                
-                let imagesBadge = '';
-                if (diary.images && diary.images.length > 0) {
-                    imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-camera"></i> ${diary.images.length}
-                    </div>`;
-                }
-                
-                diaryItem.innerHTML = `
-                    <div style="display: flex; justify-content: space-between;">
-                        <div style="font-weight: 500;">${diary.title}</div>
-                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(diary.date)}</div>
-                    </div>
-                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                        ${diary.text.substring(0, 50)}${diary.text.length > 50 ? '...' : ''}
-                    </div>
-                    <div style="margin-top: 10px; display: flex; gap: 10px;">
-                        ${statusBadge}
-                        ${gradeBadge}
-                        ${imagesBadge}
-                    </div>
-                `;
-                
-                diariesList.appendChild(diaryItem);
-            });
-            
-            pageInfo.textContent = `Página ${appState.studentDiariesPage} de ${totalPages}`;
-            prevBtn.disabled = appState.studentDiariesPage === 1;
-            nextBtn.disabled = appState.studentDiariesPage === totalPages;
-            pagination.style.display = 'flex';
-        }
-
-        function prevStudentDiariesPage() {
-            if (appState.studentDiariesPage > 1) {
-                appState.studentDiariesPage--;
-                updateStudentDiariesList();
-            }
-        }
-
-        function nextStudentDiariesPage() {
-            const totalPages = Math.ceil(appState.studentDiaries.length / appState.pageSize);
-            if (appState.studentDiariesPage < totalPages) {
-                appState.studentDiariesPage++;
-                updateStudentDiariesList();
-            }
-        }
-
-        // New: Load Student Check-in History
         async function loadStudentCheckinHistory(studentId) {
             const checkinHistoryList = document.getElementById('student-checkin-history-list');
             checkinHistoryList.innerHTML = '<div class="spinner"></div>';
@@ -3995,7 +3930,7 @@
                     .get();
 
                 const checkins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                appState.studentCheckins = checkins; // Store for pagination
+                appState.studentCheckins = checkins; 
 
                 updateStudentCheckinHistoryList();
 
@@ -4005,7 +3940,6 @@
             }
         }
 
-        // New: Update Student Check-in History List (with pagination)
         function updateStudentCheckinHistoryList() {
             const checkinHistoryList = document.getElementById('student-checkin-history-list');
             const pagination = document.getElementById('student-checkin-history-pagination');
@@ -4028,7 +3962,7 @@
 
             paginatedCheckins.forEach(checkin => {
                 const checkinItem = document.createElement('div');
-                checkinItem.className = 'submission-item'; // Reusing submission-item style
+                checkinItem.className = 'submission-item'; 
                 checkinItem.style.padding = '15px';
                 checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
 
@@ -4074,7 +4008,6 @@
             pagination.style.display = 'flex';
         }
 
-        // New: Pagination functions for student check-in history
         function prevStudentCheckinPage() {
             if (appState.studentCheckinHistoryPage > 1) {
                 appState.studentCheckinHistoryPage--;
@@ -4474,7 +4407,7 @@
             document.getElementById('evaluation-date').textContent = formatDate(diary.date);
             document.getElementById('evaluation-student-name').textContent = diary.userName;
             document.getElementById('evaluation-student-registration').textContent = diary.userRegistration;
-            document.getElementById('evaluation-text').textContent = diary.text; // Conteúdo do diário
+            document.getElementById('evaluation-text').textContent = diary.text; 
             
             const statusElement = document.getElementById('evaluation-status');
             if (diary.status === 'pending') {
@@ -4710,7 +4643,6 @@
             document.getElementById('edit-student-created').textContent = formatDate(appState.currentStudent.createdAt) || 'Não disponível';
             document.getElementById('current-password-display').textContent = appState.currentStudent.password || 'Não disponível';
 
-            // New: Show internatoType field only for admin
             const internatoTypeGroup = document.getElementById('edit-student-internato-type-group');
             const internatoTypeSelect = document.getElementById('edit-student-internato-type');
             if (appState.userData.role === 'admin') {
@@ -4733,14 +4665,13 @@
             const course = document.getElementById('edit-student-course').value;
             let username = document.getElementById('edit-student-username').value;
             const password = document.getElementById('edit-student-password').value;
-            const internatoType = document.getElementById('edit-student-internato-type').value; // New: Get internatoType
+            const internatoType = document.getElementById('edit-student-internato-type').value; 
 
             if (!fullname || !birthdate || !cpf || !registration || !course || !username) {
                 alert('Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
 
-            // Normalize username
             username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
 
             try {
@@ -4758,13 +4689,12 @@
                     updateData.password = password;
                 }
                 
-                if (appState.userData.role === 'admin') { // Only admin can update internatoType
+                if (appState.userData.role === 'admin') { 
                     updateData.internatoType = internatoType;
                 }
 
                 await db.collection('alunos').doc(appState.currentStudent.id).update(updateData);
                 
-                // Update the user entry in the 'users' collection as well
                 const userQuery = await db.collection('users').where('userId', '==', appState.currentStudent.id).get();
                 if (!userQuery.empty) {
                     const userDocRef = userQuery.docs[0].ref;
@@ -4777,7 +4707,7 @@
                 };
 
                 alert('Alterações salvas com sucesso!');
-                viewStudent(appState.currentStudent); // Go back to student view with updated data
+                viewStudent(appState.currentStudent); 
 
             } catch (error) {
                 console.error('Erro ao salvar alterações do aluno:', error);
@@ -4814,7 +4744,6 @@
                 return;
             }
 
-            // Normalize username
             username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
 
             try {
@@ -4833,7 +4762,6 @@
 
                 await db.collection('professores').doc(appState.currentTeacher.id).update(updateData);
                 
-                // Update the user entry in the 'users' collection as well
                 const userQuery = await db.collection('users').where('userId', '==', appState.currentTeacher.id).get();
                 if (!userQuery.empty) {
                     const userDocRef = userQuery.docs[0].ref;
@@ -4846,7 +4774,7 @@
                 };
 
                 alert('Alterações salvas com sucesso!');
-                viewTeacher(appState.currentTeacher); // Go back to teacher view with updated data
+                viewTeacher(appState.currentTeacher); 
 
             } catch (error) {
                 console.error('Erro ao salvar alterações do professor:', error);
@@ -4888,7 +4816,6 @@
                 
                 await db.collection(collectionName).doc(target.id).update(updateData);
 
-                // Update the corresponding entry in the 'users' collection
                 const userQuery = await db.collection('users').where('userId', '==', target.id).get();
                 if (!userQuery.empty) {
                     const userDocRef = userQuery.docs[0].ref;
@@ -5288,7 +5215,6 @@
             document.getElementById('image-carousel-modal').style.display = 'none';
         }
 
-        // New: Check-in Internato Functions
         async function performCheckin() {
             if (!appState.currentUser || appState.userData.internatoType !== 'interno') {
                 alert('Esta função é exclusiva para alunos do internato.');
@@ -5308,10 +5234,9 @@
 
             let latitude = 'Não disponível';
             let longitude = 'Não disponível';
-            let locationType = 'unknown'; // 'gps', 'ip', 'unknown'
+            let locationType = 'unknown'; 
 
             try {
-                // Try to get precise GPS location
                 const position = await new Promise((resolve, reject) => {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
@@ -5330,7 +5255,6 @@
                 locationType = 'ip';
 
                 try {
-                    // Fallback to IP-based geolocation
                     const ipGeoResponse = await fetch('https://ipapi.co/json/');
                     const ipGeoData = await ipGeoResponse.json();
                     if (ipGeoData && ipGeoData.latitude && ipGeoData.longitude) {
@@ -5362,8 +5286,8 @@
                 checkinTime: checkinTime,
                 latitude: latitude,
                 longitude: longitude,
-                locationType: locationType, // Store how location was obtained
-                status: 'pending', // pending, approved, denied
+                locationType: locationType, 
+                status: 'pending', 
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -5382,20 +5306,17 @@
             });
 
             alert('Check-in enviado para aprovação do preceptor!');
-            // No need to call loadCheckinHistory() here, the listener will handle it
             
             performCheckinBtn.disabled = false;
             performCheckinBtn.innerHTML = originalBtnContent;
         }
 
-        // New: Load Check-in History for current student with real-time listener
         function loadCheckinHistory() {
             if (!appState.currentUser) return;
 
             const checkinHistoryList = document.getElementById('checkin-history-list');
             checkinHistoryList.innerHTML = '<div class="spinner"></div>';
 
-            // Detach previous listener if exists
             if (appState.checkinHistoryListener) {
                 appState.checkinHistoryListener();
             }
@@ -5405,16 +5326,15 @@
                 .orderBy('checkinTime', 'desc')
                 .onSnapshot(snapshot => {
                     const checkins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    appState.checkins = checkins; // Update stored checkins
+                    appState.checkins = checkins; 
 
-                    updateCheckinHistoryList(); // Re-render the list
+                    updateCheckinHistoryList(); 
                 }, error => {
                     console.error('Erro ao carregar histórico de check-ins em tempo real:', error);
                     checkinHistoryList.innerHTML = `<p>Erro ao carregar histórico: ${error.message}</p>`;
                 });
         }
 
-        // New: Update Check-in History List (with pagination)
         function updateCheckinHistoryList() {
             const checkinHistoryList = document.getElementById('checkin-history-list');
             const pagination = document.getElementById('checkin-history-pagination');
@@ -5437,7 +5357,7 @@
 
             paginatedCheckins.forEach(checkin => {
                 const checkinItem = document.createElement('div');
-                checkinItem.className = 'submission-item'; // Reusing submission-item style
+                checkinItem.className = 'submission-item'; 
                 checkinItem.style.padding = '15px';
                 checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
 
@@ -5483,7 +5403,6 @@
             pagination.style.display = 'flex';
         }
 
-        // New: Pagination functions for check-in history
         function prevCheckinPage() {
             if (appState.checkinHistoryPage > 1) {
                 appState.checkinHistoryPage--;
@@ -5499,16 +5418,14 @@
             }
         }
 
-        // New: Load Pending Check-ins for Teachers/Admins with real-time listener
-        async function loadPendingCheckins() {
+        function loadPendingCheckins() {
             if (!appState.currentUser || (appState.userData.role !== 'teacher' && appState.userData.role !== 'admin')) return;
 
             const pendingCheckinsList = document.getElementById('pending-checkins-list');
             pendingCheckinsList.innerHTML = '<div class="spinner"></div>';
 
-            // Detach previous listener if exists
             if (appState.pendingCheckinsListener) {
-                appState.pendingCheckinsListener();
+                appState.pendingCheckinsListener(); // Desativa o listener anterior
             }
 
             let query = db.collection('checkins').where('status', '==', 'pending');
@@ -5518,68 +5435,49 @@
             }
 
             appState.pendingCheckinsListener = query.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                if (snapshot.empty) {
+                appState.pendingCheckins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (appState.pendingCheckins.length === 0) {
                     pendingCheckinsList.innerHTML = '<p>Nenhum check-in pendente.</p>';
                     return;
                 }
 
-                appState.pendingCheckins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updatePendingCheckinsList(); // Re-render the list
+                pendingCheckinsList.innerHTML = '';
+
+                appState.pendingCheckins.forEach(checkin => {
+                    const checkinItem = document.createElement('div');
+                    checkinItem.className = 'submission-item';
+                    checkinItem.style.padding = '15px';
+                    checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+
+                    checkinItem.innerHTML = `
+                        <div>
+                            <div style="font-weight: 500;">Check-in de ${checkin.studentName}</div>
+                            <div style="margin-top: 5px; font-size: 0.9rem;">
+                                <div>Matrícula: ${checkin.studentRegistration}</div>
+                                <div>Curso: ${getCourseName(checkin.studentCourse)}</div>
+                                <div>Hora: ${formatDateTime(checkin.checkinTime)}</div>
+                                <div>Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a> ${checkin.locationType === 'ip' ? '(Aproximada por IP)' : ''}</div>
+                            </div>
+                            <div class="approval-buttons">
+                                <button class="btn btn-success" onclick="approveCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </button>
+                                <button class="btn btn-secondary" onclick="denyCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
+                                    <i class="fas fa-times"></i> Recusar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    pendingCheckinsList.appendChild(checkinItem);
+                });
+
             }, error => {
                 console.error('Erro ao carregar check-ins pendentes em tempo real:', error);
                 pendingCheckinsList.innerHTML = `<p>Erro: ${error.message}</p>`;
             });
         }
 
-        // New: Update Pending Check-ins List (with pagination)
-        function updatePendingCheckinsList() {
-            const pendingCheckinsList = document.getElementById('pending-checkins-list');
-            const pagination = document.getElementById('pending-checkins-pagination'); // Assuming you'll add pagination for this too
-            // const prevBtn = document.getElementById('prev-pending-checkin-btn');
-            // const nextBtn = document.getElementById('next-pending-checkin-btn');
-            // const pageInfo = document.getElementById('pending-checkins-page-info');
-
-            // For simplicity, not adding pagination to pending checkins for now, just displaying all
-            // If needed, implement pagination similar to other lists.
-
-            pendingCheckinsList.innerHTML = '';
-
-            if (appState.pendingCheckins.length === 0) {
-                pendingCheckinsList.innerHTML = '<p>Nenhum check-in pendente.</p>';
-                // pagination.style.display = 'none';
-                return;
-            }
-
-            appState.pendingCheckins.forEach(checkin => {
-                const checkinItem = document.createElement('div');
-                checkinItem.className = 'submission-item';
-                checkinItem.style.padding = '15px';
-                checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-
-                checkinItem.innerHTML = `
-                    <div>
-                        <div style="font-weight: 500;">Check-in de ${checkin.studentName}</div>
-                        <div style="margin-top: 5px; font-size: 0.9rem;">
-                            <div>Matrícula: ${checkin.studentRegistration}</div>
-                            <div>Curso: ${getCourseName(checkin.studentCourse)}</div>
-                            <div>Hora: ${formatDateTime(checkin.checkinTime)}</div>
-                            <div>Localização: <a href="https://www.google.com/maps/search/?api=1&query=${checkin.latitude},${checkin.longitude}" target="_blank" style="color: var(--info);">Ver no Mapa</a> ${checkin.locationType === 'ip' ? '(Aproximada por IP)' : ''}</div>
-                        </div>
-                        <div class="approval-buttons">
-                            <button class="btn btn-success" onclick="approveCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
-                                <i class="fas fa-check"></i> Aprovar
-                            </button>
-                            <button class="btn btn-secondary" onclick="denyCheckin('${checkin.id}', '${checkin.studentId}', '${checkin.studentName}')">
-                                <i class="fas fa-times"></i> Recusar
-                            </button>
-                        </div>
-                    </div>
-                `;
-                pendingCheckinsList.appendChild(checkinItem);
-            });
-        }
-
-        // New: Approve Check-in
         async function approveCheckin(checkinId, studentId, studentName) {
             try {
                 await db.collection('checkins').doc(checkinId).update({
@@ -5602,14 +5500,13 @@
                 });
 
                 alert('Check-in aprovado com sucesso!');
-                // loadPendingCheckins() will be triggered by the listener
+                // loadPendingCheckins() will be called by the listener
             } catch (error) {
                 console.error('Erro ao aprovar check-in:', error);
                 alert('Erro ao aprovar check-in: ' + error.message);
             }
         }
 
-        // New: Deny Check-in
         async function denyCheckin(checkinId, studentId, studentName) {
             const reason = prompt('Informe o motivo da recusa (obrigatório):');
             if (!reason) {
@@ -5639,41 +5536,31 @@
                 });
 
                 alert('Check-in recusado com sucesso!');
-                // loadPendingCheckins() will be triggered by the listener
+                // loadPendingCheckins() will be called by the listener
             } catch (error) {
                 console.error('Erro ao recusar check-in:', error);
                 alert('Erro ao recusar check-in: ' + error.message);
             }
         }
 
-        // PWA Install Prompt Logic
         let deferredPrompt;
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
-            // Stash the event so it can be triggered later.
             deferredPrompt = e;
-            // Update UI notify the user they can install the PWA
-            // showInstallPromotion(); // We will control when to show it
         });
 
         window.addEventListener('appinstalled', () => {
-            // Hide the app-provided install promotion
-            hidePWAInstallPrompt(true); // Hide and set "don't show again"
-            // Clear the deferredPrompt so it can be garbage collected
+            hidePWAInstallPrompt(true); 
             deferredPrompt = null;
-            // Optionally, send analytics event to indicate successful install
             console.log('PWA was installed');
         });
 
         function isMobile() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            // Android detection
             if (/android/i.test(userAgent)) {
                 return true;
             }
-            // iOS detection
             if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
                 return true;
             }
@@ -5681,13 +5568,9 @@
         }
 
         function isPWAInstalled() {
-            // For standalone mode (installed PWA)
             if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
                 return true;
             }
-            // For some browsers, appinstalled event might not fire, but this check works
-            // Check if the app is running in a browser that supports PWA installation and it's already installed
-            // This is a heuristic and might not be 100% accurate for all browsers/OS
             if (document.referrer.startsWith('android-app://') || document.referrer.startsWith('ios-app://')) {
                 return true;
             }
@@ -5695,23 +5578,19 @@
         }
 
         function checkPWAInstallPrompt() {
-            // Apenas verifica se o usuário clicou em "Não mostrar novamente"
             const dontShowAgain = localStorage.getItem('pwaInstallPromptDontShowAgain');
 
             if (!isMobile() || isPWAInstalled() || dontShowAgain === 'true') {
-                return; // Não mostra em desktop, se já instalado, ou se o usuário optou por não mostrar novamente
+                return; 
             }
 
-            // Se não optou por não mostrar novamente, exibe o pop-up
             showPWAInstallPrompt();
         }
 
         function showPWAInstallPrompt() {
             const pwaModal = document.getElementById('pwa-install-modal');
             pwaModal.style.display = 'flex';
-            // Não salvamos mais o 'lastShown' para que apareça sempre
 
-            // Detect OS and show relevant steps
             if (/(iPhone|iPad|iPod)/i.test(navigator.userAgent)) {
                 showPWAInstallSteps('ios');
             } else if (/Android/i.test(navigator.userAgent)) {
@@ -5724,12 +5603,7 @@
             pwaModal.style.display = 'none';
             if (dontShowAgain) {
                 localStorage.setItem('pwaInstallPromptDontShowAgain', 'true');
-            } else {
-                // Se clicou em "Entendi", remove a opção de "Não mostrar novamente" para que apareça na próxima visita
-                // A lógica foi alterada para que o pop-up apareça sempre, a menos que "Não mostrar novamente" seja clicado.
-                // Portanto, esta linha não é mais necessária para o comportamento desejado.
-                // localStorage.removeItem('pwaInstallPromptDontShowAgain'); 
-            }
+            } 
         }
 
         function showPWAInstallSteps(os) {
@@ -5747,12 +5621,11 @@
             }
         }
 
-        // CPF formatting and Username normalization
         document.addEventListener('DOMContentLoaded', () => {
             const cpfInputs = document.querySelectorAll('#cpf, #new-user-cpf, #edit-cpf, #edit-student-cpf, #edit-teacher-cpf');
             cpfInputs.forEach(input => {
                 input.addEventListener('input', (e) => {
-                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                    let value = e.target.value.replace(/\D/g, ''); 
                     if (value.length > 11) value = value.slice(0, 11);
 
                     if (value.length > 9) {
@@ -5771,16 +5644,13 @@
             const usernameInputs = document.querySelectorAll('#login-username, #username, #new-user-username, #edit-username, #edit-student-username, #edit-teacher-username');
             usernameInputs.forEach(input => {
                 input.addEventListener('input', (e) => {
-                    // Convert to lowercase and allow only letters, numbers, '.', ',', '_'
                     e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
                 });
             });
 
-            // Initial check for PWA install prompt when the page loads
             checkPWAInstallPrompt();
         });
 
-        // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
