@@ -1122,7 +1122,7 @@
                 max-width: 1400px;
                 background-color: var(--primary-dark);
                 border-radius: 15px;
-                box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+                box-shadow: 0 0 30px rgba(0, 0, 0, .3);
                 overflow: hidden;
             }
 
@@ -1569,6 +1569,7 @@
                         <button class="notification-btn" onclick="showNotifications()" style="display:none"><i class="fas fa-bell"></i><span id="notification-count" class="notification-badge" style="display:none">0</span></button>
                     </div>
                 </div>
+                <div id="persistent-messages-container-teacher"></div> <!-- Added for teacher messages -->
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Alunos</div>
@@ -2487,9 +2488,9 @@
             } else if (screenId === 'hub-screen' && appState.currentUser) {
                 updateUserGreeting();
                 checkNotifications();
-                loadPersistentMessages();
+                loadPersistentMessages(); // Load messages for student hub
                 loadProfessors(); 
-                setupMessagesListener();
+                setupMessagesListener('student'); // Setup listener for student hub
                 setupUserRegistrationStatusListener(); 
                 setupHubScreen(); // Call setupHubScreen here to ensure buttons are correctly enabled/disabled
             } else if (screenId === 'submissions-screen') {
@@ -2511,7 +2512,7 @@
                 }
                 loadStudents();
                 loadSubmissions(); // Carrega as submissões para avaliação do professor
-                setupMessagesListener();
+                setupMessagesListener('teacher'); // Setup listener for teacher panel
             } else if (screenId === 'profile-screen') {
                 loadProfileData();
             } else if (screenId === 'notifications-screen') {
@@ -3268,6 +3269,7 @@
                 document.getElementById('pending-checkins-card').style.display = 'block'; 
                 loadTeachers();
                 loadPendingCheckins(); 
+                setupMessagesListener('teacher'); // Setup listener for admin teacher panel
                 return;
             }
 
@@ -3326,6 +3328,7 @@
                         document.getElementById('pending-checkins-card').style.display = 'block'; 
                         loadPendingCheckins(); 
                     }
+                    setupMessagesListener('teacher'); // Setup listener for teacher panel
                 } else {
                     showScreen('hub-screen');
                 }
@@ -5104,20 +5107,26 @@
             }
         }
 
-        function setupMessagesListener() {
+        function setupMessagesListener(panelType) { // Added panelType parameter
             if (!appState.currentUser || !appState.userData) return;
             
             if (appState.messagesListener) {
-                appState.messagesListener();
+                appState.messagesListener(); // Detach previous listener
             }
             
-            const messagesContainer = document.getElementById('persistent-messages-container');
+            const messagesContainer = panelType === 'student' ? 
+                                      document.getElementById('persistent-messages-container') : 
+                                      document.getElementById('persistent-messages-container-teacher');
+            
+            if (!messagesContainer) return; // Ensure container exists
+
+            messagesContainer.innerHTML = ''; // Clear previous messages
             const now = new Date();
             
             appState.messagesListener = db.collection('messages')
                 .where('expiration', '>', now)
                 .onSnapshot(snapshot => {
-                    messagesContainer.innerHTML = '';
+                    messagesContainer.innerHTML = ''; // Clear messages on each update
                     
                     snapshot.forEach(doc => {
                         const message = doc.data();
@@ -5146,10 +5155,16 @@
                             messagesContainer.appendChild(messageElement);
                         }
                     });
+                }, error => {
+                    console.error('Erro ao carregar mensagens persistentes em tempo real:', error);
+                    messagesContainer.innerHTML = `<p>Erro ao carregar mensagens: ${error.message}</p>`;
                 });
         }
 
         async function loadPersistentMessages() {
+            // This function is now redundant as setupMessagesListener handles initial load and real-time updates.
+            // It's kept for backward compatibility if other parts of the code still call it,
+            // but its logic is now primarily handled by setupMessagesListener.
             if (!appState.currentUser) return;
             
             try {
