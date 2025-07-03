@@ -167,7 +167,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 15px; /* Increased gap for icon and text */
             box-shadow: var(--shadow);
         }
 
@@ -317,6 +317,7 @@
         .module-card i {
             font-size: 2rem;
             color: var(--accent);
+            margin-bottom: 10px; /* Added margin for icon */
         }
 
         .module-card.disabled {
@@ -2271,7 +2272,7 @@
             <div class="form-container">
                 <div class="form-group">
                     <label for="message-recipients">Destinatários</label>
-                    <select id="message-recipients" class="form-control">
+                    <select id="message-recipients" class="form-control" onchange="toggleCourseSelect()">
                         <option value="all">Todos os usuários</option>
                         <option value="students">Todos os alunos</option>
                         <option value="teachers">Todos os professores</option>
@@ -2866,10 +2867,23 @@
 
         function showSendMessageModal() {
             document.getElementById('send-message-modal').style.display = 'flex';
+            // Ensure course select is hidden by default when opening modal
+            document.getElementById('course-select-container').style.display = 'none';
+            document.getElementById('message-recipients').value = 'all'; // Reset to default
         }
 
         function hideSendMessageModal() {
             document.getElementById('send-message-modal').style.display = 'none';
+        }
+
+        function toggleCourseSelect() {
+            const recipients = document.getElementById('message-recipients').value;
+            const courseSelectContainer = document.getElementById('course-select-container');
+            if (recipients === 'course') {
+                courseSelectContainer.style.display = 'flex';
+            } else {
+                courseSelectContainer.style.display = 'none';
+            }
         }
 
         function showBlockModal() {
@@ -4950,7 +4964,10 @@
         }
 
         async function sendMessage() {
-            if (!appState.currentUser || appState.userData.role !== 'admin') return;
+            if (!appState.currentUser || appState.userData.role !== 'admin') {
+                alert('Você não tem permissão para enviar mensagens.');
+                return;
+            }
             
             const recipients = document.getElementById('message-recipients').value;
             const course = document.getElementById('message-course').value;
@@ -4960,6 +4977,11 @@
             
             if (!title || !content) {
                 alert('Por favor, preencha o título e o conteúdo da mensagem!');
+                return;
+            }
+
+            if (recipients === 'course' && !course) {
+                alert('Por favor, selecione um curso para enviar a mensagem.');
                 return;
             }
             
