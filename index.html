@@ -54,20 +54,30 @@
             font-family: Roboto, sans-serif;
             background-color: var(--primary-dark);
             color: var(--white);
-            height: 100vh;
-            overflow: hidden;
+            /* Ajuste para altura em dispositivos móveis */
+            height: 100%; /* Usar 100% e controlar com o app-container */
+            min-height: 100vh; /* Fallback para navegadores que não suportam -webkit-fill-available */
+            min-height: -webkit-fill-available; /* Altura real da viewport em iOS */
+            overflow: hidden; /* Controlar overflow no app-container */
             position: relative;
-            touch-action: pan-y;
+            /* Removido para evitar conflitos com overscroll-behavior */
+            /* touch-action: pan-y; */
+            overscroll-behavior-y: contain; /* Impede o "pull-to-refresh" e o espaço vazio */
         }
 
         .app-container {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: 100%; /* Ocupa 100% da altura do body */
             max-width: 100%;
-            overflow: hidden;
+            overflow: hidden; /* Controla o overflow principal */
             position: relative;
-            padding-bottom: 1cm;
+            padding-bottom: 1cm; /* Mantido se necessário para o footer */
+            /* Ajuste para altura em dispositivos móveis */
+            height: 100vh; /* Fallback */
+            height: -webkit-fill-available; /* Altura real da viewport em iOS */
+            max-height: 100vh; /* Garante que não exceda a altura da tela */
+            max-height: -webkit-fill-available;
         }
 
         .screen {
@@ -80,9 +90,10 @@
             flex-direction: column;
             transition: transform .5s ease, opacity .5s ease;
             background-color: var(--primary-dark);
-            overflow-y: auto;
+            overflow-y: auto; /* Permite rolagem dentro da tela */
             padding: 0;
             z-index: 10;
+            -webkit-overflow-scrolling: touch; /* Suaviza a rolagem em iOS */
         }
 
         .screen.hidden {
@@ -362,6 +373,8 @@
                 max-width: 480px;
                 margin: 0 auto;
                 box-shadow: 0 0 30px rgba(0, 0, 0, .3);
+                height: 100vh; /* Em desktop, 100vh é consistente */
+                max-height: 100vh;
             }
 
             .header h1 {
@@ -1113,6 +1126,10 @@
                 justify-content: center;
                 align-items: center;
                 overflow: hidden;
+                height: 100vh; /* Em desktop, 100vh é consistente */
+                min-height: 100vh;
+                min-height: initial; /* Reset para desktop */
+                overscroll-behavior-y: auto; /* Reset para desktop */
             }
 
             .main-desktop-container {
@@ -1133,6 +1150,8 @@
                 box-shadow: none;
                 padding-bottom: 0;
                 position: relative;
+                height: 100%; /* Em desktop, 100% do main-desktop-container */
+                max-height: 100%;
             }
 
             .screen {
