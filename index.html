@@ -5368,26 +5368,13 @@
             let longitude = 'Não disponível';
             let locationType = 'unknown'; 
 
-            // --- MODIFICAÇÃO AQUI: Solicitação de permissão de localização ---
             try {
-                if (!navigator.geolocation) {
-                    throw new Error('Geolocalização não suportada pelo seu navegador.');
-                }
-
                 const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(
-                        resolve, 
-                        (error) => {
-                            // Trata erros de permissão ou outros erros de geolocalização
-                            if (error.code === error.PERMISSION_DENIED) {
-                                alert('Permissão de localização negada. Por favor, conceda permissão nas configurações do seu dispositivo para usar o check-in.');
-                            } else {
-                                alert('Erro ao obter sua localização: ' + error.message + '. Tentando localização aproximada por IP.');
-                            }
-                            reject(error);
-                        }, 
-                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                    );
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                    } else {
+                        reject(new Error('Geolocalização não suportada pelo seu navegador.'));
+                    }
                 });
                 latitude = position.coords.latitude;
                 longitude = position.coords.longitude;
@@ -5396,7 +5383,8 @@
 
             } catch (geoError) {
                 console.warn('Erro ao obter localização GPS:', geoError.message);
-                locationType = 'ip'; // Fallback para IP se GPS falhar ou for negado
+                alert('Não foi possível obter sua localização exata. Tentando localização aproximada por IP.');
+                locationType = 'ip';
 
                 try {
                     const ipGeoResponse = await fetch('https://ipapi.co/json/');
@@ -5413,7 +5401,6 @@
                     alert('Erro ao obter localização por IP: ' + ipError.message);
                 }
             }
-            // --- FIM DA MODIFICAÇÃO ---
 
             const checkinTime = firebase.firestore.FieldValue.serverTimestamp();
 
