@@ -321,10 +321,17 @@
             transform: scale(.97);
         }
 
+        /* Estilo para as imagens dos módulos */
+        .module-card img {
+            width: 60px; /* Ajuste o tamanho conforme necessário */
+            height: 60px; /* Ajuste o tamanho conforme necessário */
+            margin-bottom: 10px;
+            object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+        }
+
+        /* Remover estilos de ícones Font Awesome para os módulos */
         .module-card i {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 10px; /* Added margin for icon */
+            display: none; /* Esconde os ícones Font Awesome */
         }
 
         .module-card.disabled {
@@ -332,8 +339,8 @@
             cursor: not-allowed;
         }
 
-        .module-card.disabled i {
-            color: var(--light-gray);
+        .module-card.disabled img {
+            filter: grayscale(100%); /* Deixa a imagem em preto e branco quando desabilitada */
         }
 
         .beta-badge {
@@ -1699,17 +1706,17 @@
                 <div id="pending-registration-alert" class="pending-registration-alert" style="display:none">Seu registro está pendente de aprovação. Você não pode acessar todas as funcionalidades até ser aprovado.</div>
                 <div id="approved-registration-alert" class="approved-registration-alert" style="display:none">Tudo certo por aqui! Seu perfil foi aprovado pelo nosso sistema.</div>
                 <div class="module-grid">
-                    <div class="module-card" id="diary-card" onclick='showScreen("diary-screen")'><i class="fas fa-book-medical"></i><div>Registro de Diário de Campo</div></div>
-                    <div class="module-card" id="submissions-card" onclick='showScreen("submissions-screen")'><i class="fas fa-history"></i><div>Meus Envios</div></div>
+                    <div class="module-card" id="diary-card" onclick='showScreen("diary-screen")'><img src="diary.png" alt="Registro de Diário de Campo"><div>Registro de Diário de Campo</div></div>
+                    <div class="module-card" id="submissions-card" onclick='showScreen("submissions-screen")'><img src="history.png" alt="Meus Envios"><div>Meus Envios</div></div>
                     <div class="module-card" id="profile-card" onclick="showProfile()"><i class="fas fa-user"></i><div>Meu Perfil</div></div>
-                    <div class="module-card" id="virtualclass-card" onclick="openVirtualClass()"><i class="fas fa-globe"></i><div>VirtualClass</div></div>
+                    <div class="module-card" id="virtualclass-card" onclick="openVirtualClass()"><img src="virtualclass.png" alt="VirtualClass"><div>VirtualClass</div></div>
                     <!-- New: Check-in Internato button -->
                     <div class="module-card" id="checkin-internato-card" onclick="handleCheckinInternatoClick()">
-                        <i class="fas fa-map-marker-alt"></i>
+                        <img src="checkin.png" alt="Check-in (Internato)">
                         <div>Check-in (Internato)</div>
                     </div>
-                    <div class="module-card disabled"><i class="fas fa-comments"></i><div>Fórum</div><span class="beta-badge">Beta</span></div>
-                    <div class="module-card" id="logout-card" onclick="logout()"><i class="fas fa-sign-out-alt"></i><div>Sair</div></div>
+                    <div class="module-card disabled"><img src="forum.png" alt="Fórum"><div>Fórum</div><span class="beta-badge">Beta</span></div>
+                    <div class="module-card" id="logout-card" onclick="logout()"><img src="logout.png" alt="Sair"><div>Sair</div></div>
                 </div>
             </div>
 
