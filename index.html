@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#0d1b2a">
     <title>Funorte Hub</title>
     <link rel="manifest" href="app.webmanifest">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/INUxxnc.png">
-    <link rel="icon" href="https://i.imgur.com/INUxxnc.png">
+    <link rel="apple-touch-icon" href="appicon.png">
+    <link rel="icon" href="appicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -319,12 +319,12 @@
             transform: scale(.97)
         }
 
-        /* Estilo para as imagens dos módulos */
+        /* Aumenta o tamanho das imagens dos botões em 20% */
         .module-card img {
-            width: 50px; /* Ajuste o tamanho conforme necessário */
-            height: 50px; /* Ajuste o tamanho conforme necessário */
+            width: 60px; /* 50px * 1.2 = 60px */
+            height: 60px; /* 50px * 1.2 = 60px */
             margin-bottom: 10px;
-            object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+            object-fit: contain
         }
 
         .module-card.disabled {
@@ -333,7 +333,7 @@
         }
 
         .module-card.disabled img {
-            filter: grayscale(100%); /* Deixa a imagem em tons de cinza quando desabilitada */
+            filter: grayscale(100%)
         }
 
         .beta-badge {
@@ -1459,18 +1459,16 @@
                 </div>
                 <div class="form-group"><label for="registration">Número de Matrícula</label><input type="text" id="registration" class="form-control" placeholder="Digite sua matrícula"></div>
                 <div class="form-group">
-                    <label for="course">Curso</label>
-                    <select id="course" class="form-control">
-                        <option value="">Selecione seu curso</option>
-                        <option value="medicine">Medicina</option>
-                        <option value="nursing">Enfermagem</option>
-                        <option value="dentistry">Odontologia</option>
-                        <option value="physiotherapy">Fisioterapia</option>
-                        <option value="nutrition">Nutrição</option>
-                        <option value="bis">BIS</option>
-                        <option value="bacimed">BACIMED</option>
-                    </select>
-                </div>
+                    <label for="course">Curso</label><select id="course" class="form-control">
+                    <option value="">Selecione seu curso</option>
+                    <option value="medicine">Medicina</option>
+                    <option value="nursing">Enfermagem</option>
+                    <option value="dentistry">Odontologia</option>
+                    <option value="physiotherapy">Fisioterapia</option>
+                    <option value="nutrition">Nutrição</option>
+                    <option value="bis">BIS</option>
+                    <option value="bacimed">BACIMED</option>
+                </select></div>
                 <div class="form-group"><label for="username">Nome de Usuário</label><input type="text" id="username" class="form-control" placeholder="Crie um nome de usuário"></div>
                 <div class="form-group"><label for="password">Senha</label><input type="password" id="password" class="form-control" placeholder="Crie uma senha"></div>
                 <div class="btn-container">
@@ -1496,8 +1494,7 @@
             <div id="blocked-message" class="blocked-message" style="display:none">Sua conta está bloqueada. Motivo:<span id="block-reason"></span></div>
         </div>
         <div id="teacher-screen" class="screen hidden">
-            <div class="header">
-                <h1><i class="fas fa-arrow-left" onclick="logout()"></i>Painel do Professor</h1>
+            <div class="header"><h1><i class="fas fa-arrow-left" onclick="logout()"></i>Painel do Professor</h1>
                 <div style="display:flex;gap:10px">
                     <button id="create-user-btn" class="btn btn-primary" onclick="showCreateUserModal()" style="padding:8px 12px;font-size:.9rem;display:none"><i class="fas fa-user-plus"></i></button>
                     <button id="approval-btn" class="btn btn-info" onclick='showScreen("approval-screen")' style="padding:8px 12px;font-size:.9rem;display:none"><i class="fas fa-clock"></i></button>
@@ -1508,7 +1505,9 @@
             </div>
             <div id="persistent-messages-container-teacher"></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Alunos</div></div>
+                <div class="card-header">
+                    <div class="card-title">Alunos</div>
+                </div>
                 <div class="card-content">
                     <div class="form-group">
                         <select id="teacher-course-select" class="form-control" onchange="loadStudents()">
@@ -1532,7 +1531,9 @@
                 </div>
             </div>
             <div id="teachers-card" class="card" style="display:none">
-                <div class="card-header"><div class="card-title">Professores</div></div>
+                <div class="card-header">
+                    <div class="card-title">Professores</div>
+                </div>
                 <div class="card-content">
                     <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" id="search-professor" class="search-input" placeholder="Buscar professor..." oninput="filterTeachers()"></div>
                     <div id="teachers-list"><p>Carregando professores...</p></div>
@@ -1544,11 +1545,15 @@
                 </div>
             </div>
             <div id="pending-checkins-card" class="card" style="display:none">
-                <div class="card-header"><div class="card-title">Check-ins Pendentes</div></div>
+                <div class="card-header">
+                    <div class="card-title">Check-ins Pendentes</div>
+                </div>
                 <div class="card-content" id="pending-checkins-list"><p>Nenhum check-in pendente.</p></div>
             </div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Avaliação</div></div>
+                <div class="card-header">
+                    <div class="card-title">Avaliação</div>
+                </div>
                 <div class="card-content">
                     <div class="form-group">
                         <select id="evaluation-course-select" class="form-control" onchange="loadSubmissions()">
@@ -1576,13 +1581,16 @@
         <div id="approval-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("teacher-screen")'></i>Aprovar Registros</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Alunos Pendentes</div></div>
-                <div class="card-content" id="pending-students-list"><div class="spinner"></div></div>
+                <div class="card-header">
+                    <div class="card-title">Alunos Pendentes</div>
+                </div>
+                <div class="card-content" id="pending-students-list">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </div>
         <div id="hub-screen" class="screen hidden">
-            <div class="header">
-                <h1><i class="fas fa-arrow-left" onclick="logout()"></i>Funorte Hub</h1>
+            <div class="header"><h1><i class="fas fa-arrow-left" onclick="logout()"></i>Funorte Hub</h1>
                 <button class="notification-btn" onclick="showNotifications()"><i class="fas fa-bell"></i><span id="student-notification-count" class="notification-badge" style="display:none">0</span></button>
             </div>
             <div class="assistant-message">
@@ -1593,33 +1601,25 @@
             <div id="pending-registration-alert" class="pending-registration-alert" style="display:none">Seu registro está pendente de aprovação. Você não pode acessar todas as funcionalidades até ser aprovado.</div>
             <div id="approved-registration-alert" class="approved-registration-alert" style="display:none">Tudo certo por aqui! Seu perfil foi aprovado pelo nosso sistema.</div>
             <div class="module-grid">
-                <div class="module-card" id="diary-card" onclick='showScreen("diary-screen")'>
-                    <img src="diary.png" alt="Registro de Diário de Campo">
+                <div class="module-card" id="diary-card" onclick='showScreen("diary-screen")'><img src="diary.png" alt="Registro de Diário de Campo">
                     <div>Registro de Diário de Campo</div>
                 </div>
-                <div class="module-card" id="submissions-card" onclick='showScreen("submissions-screen")'>
-                    <img src="history.png" alt="Meus Envios">
+                <div class="module-card" id="submissions-card" onclick='showScreen("submissions-screen")'><img src="history.png" alt="Meus Envios">
                     <div>Meus Envios</div>
                 </div>
-                <div class="module-card" id="profile-card" onclick="showProfile()">
-                    <img src="profile.png" alt="Meu Perfil">
+                <div class="module-card" id="profile-card" onclick="showProfile()"><img src="profile.png" alt="Meu Perfil">
                     <div>Meu Perfil</div>
                 </div>
-                <div class="module-card" id="virtualclass-card" onclick="openVirtualClass()">
-                    <img src="virtualclass.png" alt="VirtualClass">
+                <div class="module-card" id="virtualclass-card" onclick="openVirtualClass()"><img src="virtualclass.png" alt="VirtualClass">
                     <div>VirtualClass</div>
                 </div>
-                <div class="module-card" id="checkin-internato-card" onclick="handleCheckinInternatoClick()">
-                    <img src="checkin.png" alt="Check-in (Internato)">
+                <div class="module-card" id="checkin-internato-card" onclick="handleCheckinInternatoClick()"><img src="checkin.png" alt="Check-in (Internato)">
                     <div>Check-in (Internato)</div>
                 </div>
-                <div class="module-card disabled">
-                    <img src="forum.png" alt="Fórum">
+                <div class="module-card disabled"><img src="forum.png" alt="Fórum">
                     <div>Fórum</div>
-                    <span class="beta-badge">Beta</span>
-                </div>
-                <div class="module-card" id="logout-card" onclick="logout()">
-                    <img src="logout.png" alt="Sair">
+                    <span class="beta-badge">Beta</span></div>
+                <div class="module-card" id="logout-card" onclick="logout()"><img src="logout.png" alt="Sair">
                     <div>Sair</div>
                 </div>
             </div>
@@ -1631,20 +1631,19 @@
                     <div class="assistant-icon"><img src="https://i.imgur.com/i9gtoYv.png" alt="Assistant Icon"></div>
                     <div class="assistant-text">Verifique com seu preceptor ou coordenador do curso o prazo máximo para envio do diário de campo. Submissões fora do prazo podem não ser aceitas!</div>
                 </div>
-                <div class="form-group"><label for="diary-date-display">Data do Registro</label><div id="diary-date-display" class="form-control" style="background-color:transparent;border:none;padding:0;color:var(--white)"></div></div>
+                <div class="form-group"><label for="diary-date-display">Data do Registro</label>
+                    <div id="diary-date-display" class="form-control" style="background-color:transparent;border:none;padding:0;color:var(--white)"></div>
+                </div>
                 <div class="form-group"><label for="diary-title">Título</label><input type="text" id="diary-title" class="form-control" placeholder="Título da atividade"></div>
                 <div class="form-group"><label for="diary-text">Descrição</label><textarea id="diary-text" class="form-control" rows="6" placeholder="Descreva bem a sua prática, não deixe de informar a data, horário e local da atividade!"></textarea></div>
-                <div class="form-group">
-                    <label>Upload de Fotos (Máximo 5)</label>
+                <div class="form-group"><label>Upload de Fotos (Máximo 5)</label>
                     <div id="image-upload-container" class="images-container">
                         <div class="image-upload-btn" onclick='document.getElementById("image-input").click()'><i class="fas fa-plus"></i></div>
                     </div>
-                    <input type="file" id="image-input" class="image-upload-input" accept="image/*" multiple="multiple">
-                </div>
-                <div class="form-group">
-                    <label for="professor">Professor Responsável</label>
-                    <select id="professor" class="form-control"><option value="">Selecione o professor</option></select>
-                </div>
+                    <input type="file" id="image-input" class="image-upload-input" accept="image/*" multiple="multiple"></div>
+                <div class="form-group"><label for="professor">Professor Responsável</label><select id="professor" class="form-control">
+                    <option value="">Selecione o professor</option>
+                </select></div>
                 <div class="btn-container">
                     <button class="btn btn-secondary" onclick="backFromDiaryScreen()"><i class="fas fa-times"></i>Cancelar</button>
                     <button class="btn btn-primary" id="submit-diary-btn" onclick="submitDiary()"><i class="fas fa-paper-plane"></i>Enviar Diário</button>
@@ -1654,8 +1653,12 @@
         <div id="submissions-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("hub-screen")'></i>Meus Envios</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Diários de Campo</div><i class="fas fa-filter"></i></div>
-                <div class="card-content" id="my-submissions-list"><div class="spinner"></div></div>
+                <div class="card-header">
+                    <div class="card-title">Diários de Campo</div>
+                    <i class="fas fa-filter"></i></div>
+                <div class="card-content" id="my-submissions-list">
+                    <div class="spinner"></div>
+                </div>
                 <div id="my-submissions-pagination" class="pagination" style="display:none">
                     <button class="page-btn" onclick="prevUserSubmissionsPage()" id="prev-user-submission-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
                     <span id="user-submissions-page-info">Página 1 de 1</span>
@@ -1681,18 +1684,15 @@
                         <div class="form-group"><label for="edit-cpf">CPF</label><input type="text" id="edit-cpf" class="form-control" maxlength="14"></div>
                     </div>
                     <div class="form-group"><label for="edit-registration">Número de Matrícula</label><input type="text" id="edit-registration" class="form-control"></div>
-                    <div class="form-group">
-                        <label for="edit-course">Curso</label>
-                        <select id="edit-course" class="form-control" disabled="disabled">
-                            <option value="medicine">Medicina</option>
-                            <option value="nursing">Enfermagem</option>
-                            <option value="dentistry">Odontologia</option>
-                            <option value="physiotherapy">Fisioterapia</option>
-                            <option value="nutrition">Nutrição</option>
-                            <option value="bis">BIS</option>
-                            <option value="bacimed">BACIMED</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label for="edit-course">Curso</label><select id="edit-course" class="form-control" disabled="disabled">
+                        <option value="medicine">Medicina</option>
+                        <option value="nursing">Enfermagem</option>
+                        <option value="dentistry">Odontologia</option>
+                        <option value="physiotherapy">Fisioterapia</option>
+                        <option value="nutrition">Nutrição</option>
+                        <option value="bis">BIS</option>
+                        <option value="bacimed">BACIMED</option>
+                    </select></div>
                     <div class="form-group"><label for="edit-username">Nome de Usuário</label><input type="text" id="edit-username" class="form-control"></div>
                     <div class="form-group"><label for="edit-password">Nova Senha</label><input type="password" id="edit-password" class="form-control" placeholder="Deixe em branco para manter a atual"></div>
                     <div class="btn-container">
@@ -1713,17 +1713,31 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Informações do Aluno</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Informações do Aluno</div>
+                    </div>
                     <div class="card-content">
-                        <div class="form-group"><label>Data de Nascimento</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-birthdate"></div></div>
-                        <div class="form-group"><label>CPF</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-cpf"></div></div>
-                        <div class="form-group"><label>Matrícula</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-registration"></div></div>
-                        <div class="form-group"><label>Tipo de Aluno</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-internato-type"></div></div>
-                        <div id="student-view-block-reason" class="form-group" style="display:none"><label>Motivo do Bloqueio</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-block-reason"></div></div>
+                        <div class="form-group"><label>Data de Nascimento</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-birthdate"></div>
+                        </div>
+                        <div class="form-group"><label>CPF</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-cpf"></div>
+                        </div>
+                        <div class="form-group"><label>Matrícula</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-registration"></div>
+                        </div>
+                        <div class="form-group"><label>Tipo de Aluno</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-internato-type"></div>
+                        </div>
+                        <div id="student-view-block-reason" class="form-group" style="display:none"><label>Motivo do Bloqueio</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-block-reason"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Histórico de Check-ins</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Histórico de Check-ins</div>
+                    </div>
                     <div class="card-content" id="student-checkin-history-list"><p>Nenhum check-in registrado.</p></div>
                     <div id="student-checkin-history-pagination" class="pagination" style="display:none">
                         <button class="page-btn" onclick="prevStudentCheckinPage()" id="prev-student-checkin-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
@@ -1732,8 +1746,12 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Diários de Campo</div></div>
-                    <div class="card-content" id="student-diaries-list"><div class="spinner"></div></div>
+                    <div class="card-header">
+                        <div class="card-title">Diários de Campo</div>
+                    </div>
+                    <div class="card-content" id="student-diaries-list">
+                        <div class="spinner"></div>
+                    </div>
                     <div id="student-diaries-pagination" class="pagination" style="display:none">
                         <button class="page-btn" onclick="prevStudentDiaryPage()" id="prev-student-diary-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
                         <span id="student-diaries-page-info">Página 1 de 1</span>
@@ -1742,7 +1760,9 @@
                 </div>
                 <div id="admin-actions-container" style="display:none">
                     <div class="card">
-                        <div class="card-header"><div class="card-title">Ações Administrativas</div></div>
+                        <div class="card-header">
+                            <div class="card-title">Ações Administrativas</div>
+                        </div>
                         <div class="card-content">
                             <div class="admin-actions">
                                 <button class="admin-btn admin-btn-primary" onclick="editStudent()"><i class="fas fa-edit"></i>Editar Aluno</button>
@@ -1763,29 +1783,27 @@
                     <div class="form-group"><label for="edit-student-cpf">CPF</label><input type="text" id="edit-student-cpf" class="form-control" maxlength="14"></div>
                 </div>
                 <div class="form-group"><label for="edit-student-registration">Número de Matrícula</label><input type="text" id="edit-student-registration" class="form-control"></div>
-                <div class="form-group">
-                    <label for="edit-student-course">Curso</label>
-                    <select id="edit-student-course" class="form-control">
-                        <option value="medicine">Medicina</option>
-                        <option value="nursing">Enfermagem</option>
-                        <option value="dentistry">Odontologia</option>
-                        <option value="physiotherapy">Fisioterapia</option>
-                        <option value="nutrition">Nutrição</option>
-                        <option value="bis">BIS</option>
-                        <option value="bacimed">BACIMED</option>
-                    </select>
-                </div>
-                <div class="form-group" id="edit-student-internato-type-group" style="display:none">
-                    <label for="edit-student-internato-type">Tipo de Aluno</label>
-                    <select id="edit-student-internato-type" class="form-control">
-                        <option value="academico">Acadêmico</option>
-                        <option value="interno">Interno</option>
-                    </select>
-                </div>
+                <div class="form-group"><label for="edit-student-course">Curso</label><select id="edit-student-course" class="form-control">
+                    <option value="medicine">Medicina</option>
+                    <option value="nursing">Enfermagem</option>
+                    <option value="dentistry">Odontologia</option>
+                    <option value="physiotherapy">Fisioterapia</option>
+                    <option value="nutrition">Nutrição</option>
+                    <option value="bis">BIS</option>
+                    <option value="bacimed">BACIMED</option>
+                </select></div>
+                <div class="form-group" id="edit-student-internato-type-group" style="display:none"><label for="edit-student-internato-type">Tipo de Aluno</label><select id="edit-student-internato-type" class="form-control">
+                    <option value="academico">Acadêmico</option>
+                    <option value="interno">Interno</option>
+                </select></div>
                 <div class="form-group"><label for="edit-student-username">Nome de Usuário</label><input type="text" id="edit-student-username" class="form-control"></div>
                 <div class="form-group"><label for="edit-student-password">Nova Senha</label><input type="password" id="edit-student-password" class="form-control" placeholder="Deixe em branco para manter a atual"></div>
-                <div class="form-group"><label>Senha Atual</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="current-password-display"></div></div>
-                <div class="form-group"><label>Data de Criação</label><div id="edit-student-created" class="form-control" style="background-color:transparent;border:none;padding:0;opacity:.7" readonly="readonly"></div></div>
+                <div class="form-group"><label>Senha Atual</label>
+                    <div class="form-control" style="background-color:transparent;border:none;padding:0" id="current-password-display"></div>
+                </div>
+                <div class="form-group"><label>Data de Criação</label>
+                    <div id="edit-student-created" class="form-control" style="background-color:transparent;border:none;padding:0;opacity:.7" readonly="readonly"></div>
+                </div>
                 <div class="btn-container">
                     <button class="btn btn-secondary" onclick='showScreen("student-view-screen")'><i class="fas fa-times"></i>Cancelar</button>
                     <button class="btn btn-primary" onclick="saveStudentChanges()"><i class="fas fa-save"></i>Salvar Alterações</button>
@@ -1803,17 +1821,29 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Informações do Professor</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Informações do Professor</div>
+                    </div>
                     <div class="card-content">
-                        <div class="form-group"><label>Data de Nascimento</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-birthdate"></div></div>
-                        <div class="form-group"><label>CPF</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-cpf"></div></div>
-                        <div class="form-group"><label>Matrícula</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-registration"></div></div>
-                        <div id="teacher-view-block-reason" class="form-group" style="display:none"><label>Motivo do Bloqueio</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-block-reason"></div></div>
+                        <div class="form-group"><label>Data de Nascimento</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-birthdate"></div>
+                        </div>
+                        <div class="form-group"><label>CPF</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-cpf"></div>
+                        </div>
+                        <div class="form-group"><label>Matrícula</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-registration"></div>
+                        </div>
+                        <div id="teacher-view-block-reason" class="form-group" style="display:none"><label>Motivo do Bloqueio</label>
+                            <div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-block-reason"></div>
+                        </div>
                     </div>
                 </div>
                 <div id="admin-actions-container-teacher">
                     <div class="card">
-                        <div class="card-header"><div class="card-title">Ações Administrativas</div></div>
+                        <div class="card-header">
+                            <div class="card-title">Ações Administrativas</div>
+                        </div>
                         <div class="card-content">
                             <div class="admin-actions">
                                 <button class="admin-btn admin-btn-primary" onclick="editTeacher()"><i class="fas fa-edit"></i>Editar Professor</button>
@@ -1836,8 +1866,12 @@
                 <div class="form-group"><label for="edit-teacher-registration">Número de Matrícula</label><input type="text" id="edit-teacher-registration" class="form-control"></div>
                 <div class="form-group"><label for="edit-teacher-username">Nome de Usuário</label><input type="text" id="edit-teacher-username" class="form-control"></div>
                 <div class="form-group"><label for="edit-teacher-password">Nova Senha</label><input type="password" id="edit-teacher-password" class="form-control" placeholder="Deixe em branco para manter a atual"></div>
-                <div class="form-group"><label>Senha Atual</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="current-teacher-password-display"></div></div>
-                <div class="form-group"><label>Data de Criação</label><div id="edit-teacher-created" class="form-control" style="background-color:transparent;border:none;padding:0;opacity:.7" readonly="readonly"></div></div>
+                <div class="form-group"><label>Senha Atual</label>
+                    <div class="form-control" style="background-color:transparent;border:none;padding:0" id="current-teacher-password-display"></div>
+                </div>
+                <div class="form-group"><label>Data de Criação</label>
+                    <div id="edit-teacher-created" class="form-control" style="background-color:transparent;border:none;padding:0;opacity:.7" readonly="readonly"></div>
+                </div>
                 <div class="btn-container">
                     <button class="btn btn-secondary" onclick='showScreen("teacher-view-screen")'><i class="fas fa-times"></i>Cancelar</button>
                     <button class="btn btn-primary" onclick="saveTeacherChanges()"><i class="fas fa-save"></i>Salvar Alterações</button>
@@ -1856,7 +1890,9 @@
                     </div>
                     <div class="evaluation-status" id="evaluation-status" style="margin-top:5px;display:inline-block;padding:3px 8px;border-radius:5px;font-size:.8rem"><i class="fas fa-clock"></i>Pendente</div>
                 </div>
-                <div class="evaluation-content"><div class="evaluation-text" id="evaluation-text">Conteúdo do diário de campo será exibido aqui.</div></div>
+                <div class="evaluation-content">
+                    <div class="evaluation-text" id="evaluation-text">Conteúdo do diário de campo será exibido aqui.</div>
+                </div>
                 <div class="thumbnail-container" id="evaluation-images-container"></div>
                 <div class="form-group"><label for="evaluation-grade">Nota (0-10)</label><input type="number" id="evaluation-grade" class="form-control" min="0" max="10" step="0.1" placeholder="Digite a nota"></div>
                 <div class="form-group"><label for="evaluation-comment">Comentários</label><textarea id="evaluation-comment" class="form-control" rows="4" placeholder="Digite seus comentários sobre o diário"></textarea></div>
@@ -1869,20 +1905,28 @@
         <div id="notifications-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick="goBackFromNotifications()"></i>Notificações</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Minhas Notificações</div></div>
+                <div class="card-header">
+                    <div class="card-title">Minhas Notificações</div>
+                </div>
                 <div class="card-content" id="notifications-list"><p>Carregando notificações...</p></div>
             </div>
         </div>
         <div id="virtualclass-screen" class="screen hidden">
-            <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("hub-screen")'></i>VirtualClass</h1><button id="reload-virtualclass" style="background:0 0;border:none;color:#fff;font-size:1.2rem"><i class="fas fa-sync-alt"></i></button></div>
+            <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("hub-screen")'></i>VirtualClass</h1>
+                <button id="reload-virtualclass" style="background:0 0;border:none;color:#fff;font-size:1.2rem"><i class="fas fa-sync-alt"></i></button>
+            </div>
             <div id="virtualclass-loader" class="spinner"></div>
             <iframe id="virtualclass-iframe" class="webview-container" src="https://appfunorte.virtualclass.com.br/Index20.jsp"></iframe>
         </div>
         <div id="messages-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("teacher-screen")'></i>Mensagens Ativas</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Mensagens Ativas</div></div>
-                <div class="card-content" id="active-messages-list"><div class="spinner"></div></div>
+                <div class="card-header">
+                    <div class="card-title">Mensagens Ativas</div>
+                </div>
+                <div class="card-content" id="active-messages-list">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </div>
         <div id="checkin-screen" class="screen hidden">
@@ -1892,15 +1936,16 @@
                     <div class="assistant-icon"><img src="https://i.imgur.com/i9gtoYv.png" alt="Assistant Icon"></div>
                     <div class="assistant-text">Selecione seu preceptor e realize o check-in. Sua localização será registrada.</div>
                 </div>
-                <div class="form-group">
-                    <label for="checkin-preceptor">Preceptor</label>
-                    <select id="checkin-preceptor" class="form-control"><option value="">Selecione seu preceptor</option></select>
-                </div>
+                <div class="form-group"><label for="checkin-preceptor">Preceptor</label><select id="checkin-preceptor" class="form-control">
+                    <option value="">Selecione seu preceptor</option>
+                </select></div>
                 <div class="btn-container">
                     <button class="btn btn-primary" id="perform-checkin-btn" onclick="performCheckin()"><i class="fas fa-map-marker-alt"></i>Fazer Check-in</button>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Histórico de Check-ins</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Histórico de Check-ins</div>
+                    </div>
                     <div class="card-content" id="checkin-history-list"><p>Nenhum check-in registrado.</p></div>
                     <div id="checkin-history-pagination" class="pagination" style="display:none">
                         <button class="page-btn" onclick="prevCheckinPage()" id="prev-checkin-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
@@ -1925,28 +1970,22 @@
                 <div class="form-group"><label for="new-user-cpf">CPF</label><input type="text" id="new-user-cpf" class="form-control" placeholder="000.000.000-00" maxlength="14"></div>
             </div>
             <div class="form-group"><label for="new-user-registration">Número de Matrícula</label><input type="text" id="new-user-registration" class="form-control" placeholder="Digite a matrícula"></div>
-            <div class="form-group">
-                <label for="new-user-course">Curso</label>
-                <select id="new-user-course" class="form-control">
-                    <option value="">Selecione o curso</option>
-                    <option value="medicine">Medicina</option>
-                    <option value="nursing">Enfermagem</option>
-                    <option value="dentistry">Odontologia</option>
-                    <option value="physiotherapy">Fisioterapia</option>
-                    <option value="nutrition">Nutrição</option>
-                    <option value="bis">BIS</option>
-                    <option value="bacimed">BACIMED</option>
-                </select>
-            </div>
+            <div class="form-group"><label for="new-user-course">Curso</label><select id="new-user-course" class="form-control">
+                <option value="">Selecione o curso</option>
+                <option value="medicine">Medicina</option>
+                <option value="nursing">Enfermagem</option>
+                <option value="dentistry">Odontologia</option>
+                <option value="physiotherapy">Fisioterapia</option>
+                <option value="nutrition">Nutrição</option>
+                <option value="bis">BIS</option>
+                <option value="bacimed">BACIMED</option>
+            </select></div>
             <div class="form-group"><label for="new-user-username">Nome de Usuário</label><input type="text" id="new-user-username" class="form-control" placeholder="Crie um nome de usuário"></div>
             <div class="form-group"><label for="new-user-password">Senha</label><input type="password" id="new-user-password" class="form-control" placeholder="Crie uma senha"></div>
-            <div class="form-group">
-                <label for="new-user-role">Tipo de Usuário</label>
-                <select id="new-user-role" class="form-control">
-                    <option value="student">Aluno</option>
-                    <option value="teacher">Professor</option>
-                </select>
-            </div>
+            <div class="form-group"><label for="new-user-role">Tipo de Usuário</label><select id="new-user-role" class="form-control">
+                <option value="student">Aluno</option>
+                <option value="teacher">Professor</option>
+            </select></div>
             <div class="btn-container">
                 <button class="btn btn-secondary" onclick="hideCreateUserModal()"><i class="fas fa-times"></i>Cancelar</button>
                 <button class="btn btn-primary" onclick="createNewUser()"><i class="fas fa-check"></i>Criar Usuário</button>
@@ -1977,27 +2016,21 @@
             <div class="modal-close" onclick="hideSendMessageModal()">&times;</div>
         </div>
         <div class="form-container">
-            <div class="form-group">
-                <label for="message-recipients">Destinatários</label>
-                <select id="message-recipients" class="form-control" onchange="toggleCourseSelect()">
-                    <option value="all">Todos os usuários</option>
-                    <option value="students">Todos os alunos</option>
-                    <option value="teachers">Todos os professores</option>
-                    <option value="course">Por curso</option>
-                </select>
-            </div>
-            <div id="course-select-container" class="form-group" style="display:none">
-                <label for="message-course">Curso</label>
-                <select id="message-course" class="form-control">
-                    <option value="medicine">Medicina</option>
-                    <option value="nursing">Enfermagem</option>
-                    <option value="dentistry">Odontologia</option>
-                    <option value="physiotherapy">Fisioterapia</option>
-                    <option value="nutrition">Nutrição</option>
-                    <option value="bis">BIS</option>
-                    <option value="bacimed">BACIMED</option>
-                </select>
-            </div>
+            <div class="form-group"><label for="message-recipients">Destinatários</label><select id="message-recipients" class="form-control" onchange="toggleCourseSelect()">
+                <option value="all">Todos os usuários</option>
+                <option value="students">Todos os alunos</option>
+                <option value="teachers">Todos os professores</option>
+                <option value="course">Por curso</option>
+            </select></div>
+            <div id="course-select-container" class="form-group" style="display:none"><label for="message-course">Curso</label><select id="message-course" class="form-control">
+                <option value="medicine">Medicina</option>
+                <option value="nursing">Enfermagem</option>
+                <option value="dentistry">Odontologia</option>
+                <option value="physiotherapy">Fisioterapia</option>
+                <option value="nutrition">Nutrição</option>
+                <option value="bis">BIS</option>
+                <option value="bacimed">BACIMED</option>
+            </select></div>
             <div class="form-group"><label for="message-title">Título</label><input type="text" id="message-title" class="form-control" placeholder="Título da mensagem"></div>
             <div class="form-group"><label for="message-content">Mensagem</label><textarea id="message-content" class="form-control" rows="4" placeholder="Digite sua mensagem"></textarea></div>
             <div class="form-group"><label for="message-duration">Duração (dias)</label><input type="number" id="message-duration" class="form-control" min="1" value="1"></div>
@@ -2039,8 +2072,7 @@
     </div>
 </div>
 <div id="pwa-install-modal" class="pwa-install-modal">
-    <div class="pwa-install-content">
-        <span class="pwa-install-close" onclick="hidePWAInstallPrompt(!0)">&times;</span>
+    <div class="pwa-install-content"><span class="pwa-install-close" onclick="hidePWAInstallPrompt(!0)">&times;</span>
         <div class="pwa-install-title">Instale o Funorte Hub!</div>
         <div class="pwa-install-description">Adicione o aplicativo à sua tela inicial para uma experiência completa e rápida.</div>
         <div class="pwa-device-selector">
@@ -2523,7 +2555,6 @@
     function showDiaryModal(title, date, content, author, grade, comments, images) {
         document.getElementById('diary-modal-title').textContent = title;
         document.getElementById('diary-modal-date').textContent = formatDate(date);
-        document.getElementById('diary-modal-author').textContent = author;
         document.getElementById('diary-modal-content').textContent = content;
 
         const gradeContainer = document.getElementById('diary-modal-grade');
@@ -3963,419 +3994,419 @@
             blockBtn.innerHTML = '<i class="fas fa-unlock"></i> Desbloquear';
             blockBtn.className = 'admin-btn admin-btn-success';
         } else {
-            blockBtn.innerHTML = '<i class="fas fa-ban"></i> Bloquear';
-            blockBtn.className = 'admin-btn admin-btn-warning';
+                blockBtn.innerHTML = '<i class="fas fa-ban"></i> Bloquear';
+                blockBtn.className = 'admin-btn admin-btn-warning';
+            }
+
+            showScreen('teacher-view-screen');
         }
 
-        showScreen('teacher-view-screen');
-    }
+        function loadSubmissions() {
+            const course = document.getElementById('evaluation-course-select').value;
+            if (!course) return;
 
-    function loadSubmissions() {
-        const course = document.getElementById('evaluation-course-select').value;
-        if (!course) return;
+            const filterMyStudents = document.getElementById('filter-my-students').checked;
 
-        const filterMyStudents = document.getElementById('filter-my-students').checked;
+            const submissionsList = document.getElementById('submissions-list');
+            submissionsList.innerHTML = '<div class="spinner"></div>';
 
-        const submissionsList = document.getElementById('submissions-list');
-        submissionsList.innerHTML = '<div class="spinner"></div>';
-
-        try {
-            if (appState.submissionsListener) {
-                appState.submissionsListener();
-            }
-
-            let query = db.collection('Diario')
-                .where('userCourse', '==', course)
-                .orderBy('status')
-                .orderBy('createdAt', 'desc');
-
-            if (filterMyStudents && appState.userData.role === 'teacher') {
-                query = query.where('professor', '==', appState.currentUser.id);
-            }
-
-            appState.submissionsListener = query.onSnapshot(snapshot => {
-                if (snapshot.empty) {
-                    submissionsList.innerHTML = '<p>Nenhuma submissão encontrada.</p>';
-                    document.getElementById('submissions-pagination').style.display = 'none';
-                    return;
+            try {
+                if (appState.submissionsListener) {
+                    appState.submissionsListener();
                 }
 
-                const submissions = snapshot.docs.map(doc => ({
+                let query = db.collection('Diario')
+                    .where('userCourse', '==', course)
+                    .orderBy('status')
+                    .orderBy('createdAt', 'desc');
+
+                if (filterMyStudents && appState.userData.role === 'teacher') {
+                    query = query.where('professor', '==', appState.currentUser.id);
+                }
+
+                appState.submissionsListener = query.onSnapshot(snapshot => {
+                    if (snapshot.empty) {
+                        submissionsList.innerHTML = '<p>Nenhuma submissão encontrada.</p>';
+                        document.getElementById('submissions-pagination').style.display = 'none';
+                        return;
+                    }
+
+                    const submissions = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+
+                    appState.submissions = submissions.sort((a, b) => {
+                        if (a.status === 'pending' && b.status !== 'pending') return -1;
+                        if (a.status !== 'pending' && b.status === 'pending') return 1;
+                        return 0;
+                    });
+
+                    updateSubmissionsList();
+                }, error => {
+                    console.error('Erro ao carregar submissões:', error);
+                    submissionsList.innerHTML = `<p>Erro ao carregar submissões: ${error.message}</p>`;
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar submissões:', error);
+                submissionsList.innerHTML = `<p>Erro ao carregar submissões: ${error.message}</p>`;
+            }
+        }
+
+        function updateSubmissionsList() {
+            const submissionsList = document.getElementById('submissions-list');
+            const pagination = document.getElementById('submissions-pagination');
+            const prevBtn = document.getElementById('prev-submission-btn');
+            const nextBtn = document.getElementById('next-submission-btn');
+            const pageInfo = document.getElementById('submissions-page-info');
+
+            const startIndex = (appState.submissionsPage - 1) * appState.pageSize;
+            const endIndex = startIndex + appState.pageSize;
+            const paginatedSubmissions = appState.submissions.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
+
+            submissionsList.innerHTML = '';
+
+            if (paginatedSubmissions.length === 0) {
+                submissionsList.innerHTML = '<p>Nenhuma submissão encontrada.</p>';
+                pagination.style.display = 'none';
+                return;
+            }
+
+            paginatedSubmissions.forEach(submission => {
+                const submissionItem = document.createElement('div');
+                submissionItem.className = 'submission-item';
+                submissionItem.style.padding = '15px';
+                submissionItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                submissionItem.style.cursor = 'pointer';
+                submissionItem.onclick = () => viewDiaryForEvaluation(submission);
+
+                let statusBadge = '';
+                if (submission.status === 'pending') {
+                    statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-clock"></i> Pendente
+                    </div>`;
+                } else if (submission.status === 'reviewed') {
+                    statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-check-circle"></i> Visualizado
+                    </div>`;
+                }
+
+                let gradeBadge = '';
+                if (submission.grade !== undefined && submission.grade !== null) {
+                    gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        Nota: ${submission.grade}
+                    </div>`;
+                }
+
+                let imagesBadge = '';
+                if (submission.images && submission.images.length > 0) {
+                    imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-camera"></i> ${submission.images.length}
+                    </div>`;
+                }
+
+                submissionItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="font-weight: 500;">${submission.userName} - ${submission.title}</div>
+                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(submission.date)}</div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                        ${submission.text.substring(0, 50)}${submission.text.length > 50 ? '...' : ''}
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        ${statusBadge}
+                        ${gradeBadge}
+                        ${imagesBadge}
+                    </div>
+                `;
+
+                submissionsList.appendChild(submissionItem);
+            });
+
+            pageInfo.textContent = `Página ${appState.submissionsPage} de ${totalPages}`;
+            prevBtn.disabled = appState.submissionsPage === 1;
+            nextBtn.disabled = appState.submissionsPage === totalPages;
+            pagination.style.display = 'flex';
+        }
+
+        function prevSubmissionsPage() {
+            if (appState.submissionsPage > 1) {
+                appState.submissionsPage--;
+                updateSubmissionsList();
+            }
+        }
+
+        function nextSubmissionsPage() {
+            const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
+            if (appState.submissionsPage < totalPages) {
+                appState.submissionsPage++;
+                updateSubmissionsList();
+            }
+        }
+
+        function filterSubmissions() {
+            const searchTerm = document.getElementById('search-student').value.toLowerCase();
+            const filteredSubmissions = appState.submissions.filter(submission =>
+                submission.userName.toLowerCase().includes(searchTerm)
+            );
+
+            const submissionsList = document.getElementById('submissions-list');
+            submissionsList.innerHTML = '';
+
+            if (filteredSubmissions.length === 0) {
+                submissionsList.innerHTML = '<p>Nenhuma submissão encontrada para este critério de busca.</p>';
+                return;
+            }
+
+            filteredSubmissions.forEach(submission => {
+                const submissionItem = document.createElement('div');
+                submissionItem.className = 'submission-item';
+                submissionItem.style.padding = '15px';
+                submissionItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                submissionItem.style.cursor = 'pointer';
+                submissionItem.onclick = () => viewDiaryForEvaluation(submission);
+
+                let statusBadge = '';
+                if (submission.status === 'pending') {
+                    statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-clock"></i> Pendente
+                    </div>`;
+                } else if (submission.status === 'reviewed') {
+                    statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-check-circle"></i> Visualizado
+                    </div>`;
+                }
+
+                let gradeBadge = '';
+                if (submission.grade !== undefined && submission.grade !== null) {
+                    gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        Nota: ${submission.grade}
+                    </div>`;
+                }
+
+                let imagesBadge = '';
+                if (submission.images && submission.images.length > 0) {
+                    imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                        <i class="fas fa-camera"></i> ${submission.images.length}
+                    </div>`;
+                }
+
+                submissionItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="font-weight: 500;">${submission.userName} - ${submission.title}</div>
+                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(submission.date)}</div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+                        ${submission.text.substring(0, 50)}${submission.text.length > 50 ? '...' : ''}
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        ${statusBadge}
+                        ${gradeBadge}
+                        ${imagesBadge}
+                    </div>
+                `;
+
+                submissionsList.appendChild(submissionItem);
+            });
+        }
+
+        function viewDiaryForEvaluation(diary) {
+            appState.currentDiary = diary;
+
+            document.getElementById('evaluation-title').textContent = diary.title;
+            document.getElementById('evaluation-date').textContent = formatDate(diary.date);
+            document.getElementById('evaluation-student-name').textContent = diary.userName;
+            document.getElementById('evaluation-student-registration').textContent = diary.userRegistration;
+            document.getElementById('evaluation-text').textContent = diary.text;
+
+            const statusElement = document.getElementById('evaluation-status');
+            if (diary.status === 'pending') {
+                statusElement.innerHTML = '<i class="fas fa-clock"></i> Pendente';
+                statusElement.style.backgroundColor = 'rgba(255,255,255,0.1)';
+            } else {
+                statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Avaliado';
+                statusElement.style.backgroundColor = 'var(--success)';
+            }
+
+            document.getElementById('evaluation-grade').value = diary.grade || '';
+            document.getElementById('evaluation-comment').value = diary.comments || '';
+
+            const imagesContainer = document.getElementById('evaluation-images-container');
+            imagesContainer.innerHTML = '';
+
+            if (diary.images && diary.images.length > 0) {
+                diary.images.forEach((img, index) => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = img;
+                    imgElement.className = 'thumbnail';
+                    imgElement.style.cursor = 'pointer';
+                    imgElement.onclick = function() {
+                        showImageCarousel(diary.images, index);
+                    };
+                    imagesContainer.appendChild(imgElement);
+                });
+            } else {
+                imagesContainer.innerHTML = '<p>Nenhuma imagem anexada.</p>';
+            }
+
+            showScreen('evaluation-screen');
+        }
+
+        async function saveEvaluation() {
+            if (!appState.currentDiary || !appState.currentUser) return;
+
+            const grade = document.getElementById('evaluation-grade').value;
+            const comments = document.getElementById('evaluation-comment').value;
+
+            try {
+                await db.collection('Diario').doc(appState.currentDiary.id).update({
+                    status: 'reviewed',
+                    grade: grade ? parseFloat(grade) : null,
+                    comments: comments || '',
+                    reviewedBy: appState.userData.fullname,
+                    reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await db.collection('notifications').add({
+                    userId: appState.currentDiary.userId,
+                    type: 'diary_reviewed',
+                    diaryId: appState.currentDiary.id,
+                    teacherId: appState.currentUser.id,
+                    teacherName: appState.userData.fullname,
+                    title: 'Diário avaliado',
+                    message: `Seu diário "${appState.currentDiary.title}" foi avaliado pelo professor.`,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('Avaliação salva com sucesso!');
+                showScreen('teacher-screen');
+
+            } catch (error) {
+                console.error('Erro ao salvar avaliação:', error);
+                alert('Erro ao salvar avaliação: ' + error.message);
+            }
+        }
+
+        async function checkNotifications() {
+            if (!appState.currentUser) return;
+
+            try {
+                const snapshot = await db.collection('notifications')
+                    .where('userId', '==', appState.currentUser.id)
+                    .where('read', '==', false)
+                    .get();
+
+                const count = snapshot.size;
+
+                if (appState.userData.role === 'teacher' || appState.userData.role === 'admin') {
+                    const badge = document.getElementById('notification-count');
+                    if (count > 0) {
+                        badge.textContent = count;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } else {
+                    const badge = document.getElementById('student-notification-count');
+                    if (count > 0) {
+                        badge.textContent = count;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+
+            } catch (error) {
+                console.error('Erro ao verificar notificações:', error);
+            }
+        }
+
+        async function loadNotifications() {
+            if (!appState.currentUser) return;
+
+            const notificationsList = document.getElementById('notifications-list');
+            notificationsList.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const snapshot = await db.collection('notifications')
+                    .where('userId', '==', appState.currentUser.id)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                const notifications = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
 
-                appState.submissions = submissions.sort((a, b) => {
-                    if (a.status === 'pending' && b.status !== 'pending') return -1;
-                    if (a.status !== 'pending' && b.status === 'pending') return 1;
-                    return 0;
+                const batch = db.batch();
+                notifications.forEach(notification => {
+                    if (!notification.read) {
+                        const notificationRef = db.collection('notifications').doc(notification.id);
+                        batch.update(notificationRef, {
+                            read: true,
+                            readAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
                 });
+                await batch.commit();
 
-                updateSubmissionsList();
-            }, error => {
-                console.error('Erro ao carregar submissões:', error);
-                submissionsList.innerHTML = `<p>Erro ao carregar submissões: ${error.message}</p>`;
-            });
+                checkNotifications();
 
-        } catch (error) {
-            console.error('Erro ao carregar submissões:', error);
-            submissionsList.innerHTML = `<p>Erro ao carregar submissões: ${error.message}</p>`;
-        }
-    }
+                notificationsList.innerHTML = '';
 
-    function updateSubmissionsList() {
-        const submissionsList = document.getElementById('submissions-list');
-        const pagination = document.getElementById('submissions-pagination');
-        const prevBtn = document.getElementById('prev-submission-btn');
-        const nextBtn = document.getElementById('next-submission-btn');
-        const pageInfo = document.getElementById('submissions-page-info');
-
-        const startIndex = (appState.submissionsPage - 1) * appState.pageSize;
-        const endIndex = startIndex + appState.pageSize;
-        const paginatedSubmissions = appState.submissions.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
-
-        submissionsList.innerHTML = '';
-
-        if (paginatedSubmissions.length === 0) {
-            submissionsList.innerHTML = '<p>Nenhuma submissão encontrada.</p>';
-            pagination.style.display = 'none';
-            return;
-        }
-
-        paginatedSubmissions.forEach(submission => {
-            const submissionItem = document.createElement('div');
-            submissionItem.className = 'submission-item';
-            submissionItem.style.padding = '15px';
-            submissionItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-            submissionItem.style.cursor = 'pointer';
-            submissionItem.onclick = () => viewDiaryForEvaluation(submission);
-
-            let statusBadge = '';
-            if (submission.status === 'pending') {
-                statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-clock"></i> Pendente
-                    </div>`;
-            } else if (submission.status === 'reviewed') {
-                statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-check-circle"></i> Visualizado
-                    </div>`;
-            }
-
-            let gradeBadge = '';
-            if (submission.grade !== undefined && submission.grade !== null) {
-                gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        Nota: ${submission.grade}
-                    </div>`;
-            }
-
-            let imagesBadge = '';
-            if (submission.images && submission.images.length > 0) {
-                imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-camera"></i> ${submission.images.length}
-                    </div>`;
-            }
-
-            submissionItem.innerHTML = `
-                    <div style="display: flex; justify-content: space-between;">
-                        <div style="font-weight: 500;">${submission.userName} - ${submission.title}</div>
-                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(submission.date)}</div>
-                    </div>
-                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                        ${submission.text.substring(0, 50)}${submission.text.length > 50 ? '...' : ''}
-                    </div>
-                    <div style="margin-top: 10px; display: flex; gap: 10px;">
-                        ${statusBadge}
-                        ${gradeBadge}
-                        ${imagesBadge}
-                    </div>
-                `;
-
-            submissionsList.appendChild(submissionItem);
-        });
-
-        pageInfo.textContent = `Página ${appState.submissionsPage} de ${totalPages}`;
-        prevBtn.disabled = appState.submissionsPage === 1;
-        nextBtn.disabled = appState.submissionsPage === totalPages;
-        pagination.style.display = 'flex';
-    }
-
-    function prevSubmissionsPage() {
-        if (appState.submissionsPage > 1) {
-            appState.submissionsPage--;
-            updateSubmissionsList();
-        }
-    }
-
-    function nextSubmissionsPage() {
-        const totalPages = Math.ceil(appState.submissions.length / appState.pageSize);
-        if (appState.submissionsPage < totalPages) {
-            appState.submissionsPage++;
-            updateSubmissionsList();
-        }
-    }
-
-    function filterSubmissions() {
-        const searchTerm = document.getElementById('search-student').value.toLowerCase();
-        const filteredSubmissions = appState.submissions.filter(submission =>
-            submission.userName.toLowerCase().includes(searchTerm)
-        );
-
-        const submissionsList = document.getElementById('submissions-list');
-        submissionsList.innerHTML = '';
-
-        if (filteredSubmissions.length === 0) {
-            submissionsList.innerHTML = '<p>Nenhuma submissão encontrada para este critério de busca.</p>';
-            return;
-        }
-
-        filteredSubmissions.forEach(submission => {
-            const submissionItem = document.createElement('div');
-            submissionItem.className = 'submission-item';
-            submissionItem.style.padding = '15px';
-            submissionItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-            submissionItem.style.cursor = 'pointer';
-            submissionItem.onclick = () => viewDiaryForEvaluation(submission);
-
-            let statusBadge = '';
-            if (submission.status === 'pending') {
-                statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-clock"></i> Pendente
-                    </div>`;
-            } else if (submission.status === 'reviewed') {
-                statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-check-circle"></i> Visualizado
-                    </div>`;
-            }
-
-            let gradeBadge = '';
-            if (submission.grade !== undefined && submission.grade !== null) {
-                gradeBadge = `<div style="background-color: var(--warning); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        Nota: ${submission.grade}
-                    </div>`;
-            }
-
-            let imagesBadge = '';
-            if (submission.images && submission.images.length > 0) {
-                imagesBadge = `<div style="background-color: #3498db; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
-                        <i class="fas fa-camera"></i> ${submission.images.length}
-                    </div>`;
-            }
-
-            submissionItem.innerHTML = `
-                    <div style="display: flex; justify-content: space-between;">
-                        <div style="font-weight: 500;">${submission.userName} - ${submission.title}</div>
-                        <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(submission.date)}</div>
-                    </div>
-                    <div style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-                        ${submission.text.substring(0, 50)}${submission.text.length > 50 ? '...' : ''}
-                    </div>
-                    <div style="margin-top: 10px; display: flex; gap: 10px;">
-                        ${statusBadge}
-                        ${gradeBadge}
-                        ${imagesBadge}
-                    </div>
-                `;
-
-            submissionsList.appendChild(submissionItem);
-        });
-    }
-
-    function viewDiaryForEvaluation(diary) {
-        appState.currentDiary = diary;
-
-        document.getElementById('evaluation-title').textContent = diary.title;
-        document.getElementById('evaluation-date').textContent = formatDate(diary.date);
-        document.getElementById('evaluation-student-name').textContent = diary.userName;
-        document.getElementById('evaluation-student-registration').textContent = diary.userRegistration;
-        document.getElementById('evaluation-text').textContent = diary.text;
-
-        const statusElement = document.getElementById('evaluation-status');
-        if (diary.status === 'pending') {
-            statusElement.innerHTML = '<i class="fas fa-clock"></i> Pendente';
-            statusElement.style.backgroundColor = 'rgba(255,255,255,0.1)';
-        } else {
-            statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Avaliado';
-            statusElement.style.backgroundColor = 'var(--success)';
-        }
-
-        document.getElementById('evaluation-grade').value = diary.grade || '';
-        document.getElementById('evaluation-comment').value = diary.comments || '';
-
-        const imagesContainer = document.getElementById('evaluation-images-container');
-        imagesContainer.innerHTML = '';
-
-        if (diary.images && diary.images.length > 0) {
-            diary.images.forEach((img, index) => {
-                const imgElement = document.createElement('img');
-                imgElement.src = img;
-                imgElement.className = 'thumbnail';
-                imgElement.style.cursor = 'pointer';
-                imgElement.onclick = function() {
-                    showImageCarousel(diary.images, index);
-                };
-                imagesContainer.appendChild(imgElement);
-            });
-        } else {
-            imagesContainer.innerHTML = '<p>Nenhuma imagem anexada.</p>';
-        }
-
-        showScreen('evaluation-screen');
-    }
-
-    async function saveEvaluation() {
-        if (!appState.currentDiary || !appState.currentUser) return;
-
-        const grade = document.getElementById('evaluation-grade').value;
-        const comments = document.getElementById('evaluation-comment').value;
-
-        try {
-            await db.collection('Diario').doc(appState.currentDiary.id).update({
-                status: 'reviewed',
-                grade: grade ? parseFloat(grade) : null,
-                comments: comments || '',
-                reviewedBy: appState.userData.fullname,
-                reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            await db.collection('notifications').add({
-                userId: appState.currentDiary.userId,
-                type: 'diary_reviewed',
-                diaryId: appState.currentDiary.id,
-                teacherId: appState.currentUser.id,
-                teacherName: appState.userData.fullname,
-                title: 'Diário avaliado',
-                message: `Seu diário "${appState.currentDiary.title}" foi avaliado pelo professor.`,
-                read: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert('Avaliação salva com sucesso!');
-            showScreen('teacher-screen');
-
-        } catch (error) {
-            console.error('Erro ao salvar avaliação:', error);
-            alert('Erro ao salvar avaliação: ' + error.message);
-        }
-    }
-
-    async function checkNotifications() {
-        if (!appState.currentUser) return;
-
-        try {
-            const snapshot = await db.collection('notifications')
-                .where('userId', '==', appState.currentUser.id)
-                .where('read', '==', false)
-                .get();
-
-            const count = snapshot.size;
-
-            if (appState.userData.role === 'teacher' || appState.userData.role === 'admin') {
-                const badge = document.getElementById('notification-count');
-                if (count > 0) {
-                    badge.textContent = count;
-                    badge.style.display = 'flex';
-                } else {
-                    badge.style.display = 'none';
+                if (notifications.length === 0) {
+                    notificationsList.innerHTML = '<p>Nenhuma notificação encontrada.</p>';
+                    return;
                 }
-            } else {
-                const badge = document.getElementById('student-notification-count');
-                if (count > 0) {
-                    badge.textContent = count;
-                    badge.style.display = 'flex';
-                } else {
-                    badge.style.display = 'none';
-                }
-            }
 
-        } catch (error) {
-            console.error('Erro ao verificar notificações:', error);
-        }
-    }
+                notifications.forEach(notification => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = 'notification-item submission-item';
+                    notificationItem.style.padding = '15px';
+                    notificationItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                    notificationItem.style.position = 'relative';
 
-    async function loadNotifications() {
-        if (!appState.currentUser) return;
+                    const swipeArea = document.createElement('div');
+                    swipeArea.className = 'notification-swipe';
+                    swipeArea.innerHTML = '<i class="fas fa-trash"></i>';
+                    notificationItem.appendChild(swipeArea);
 
-        const notificationsList = document.getElementById('notifications-list');
-        notificationsList.innerHTML = '<div class="spinner"></div>';
-
-        try {
-            const snapshot = await db.collection('notifications')
-                .where('userId', '==', appState.currentUser.id)
-                .orderBy('createdAt', 'desc')
-                .get();
-
-            const notifications = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
-            const batch = db.batch();
-            notifications.forEach(notification => {
-                if (!notification.read) {
-                    const notificationRef = db.collection('notifications').doc(notification.id);
-                    batch.update(notificationRef, {
-                        read: true,
-                        readAt: firebase.firestore.FieldValue.serverTimestamp()
+                    notificationItem.addEventListener('touchstart', e => {
+                        appState.touchStartX = e.touches[0].clientX;
+                        notificationItem.classList.add('swiping');
                     });
-                }
-            });
-            await batch.commit();
 
-            checkNotifications();
+                    notificationItem.addEventListener('touchmove', e => {
+                        const touchX = e.touches[0].clientX;
+                        const diff = appState.touchStartX - touchX;
 
-            notificationsList.innerHTML = '';
-
-            if (notifications.length === 0) {
-                notificationsList.innerHTML = '<p>Nenhuma notificação encontrada.</p>';
-                return;
-            }
-
-            notifications.forEach(notification => {
-                const notificationItem = document.createElement('div');
-                notificationItem.className = 'notification-item submission-item';
-                notificationItem.style.padding = '15px';
-                notificationItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                notificationItem.style.position = 'relative';
-
-                const swipeArea = document.createElement('div');
-                swipeArea.className = 'notification-swipe';
-                swipeArea.innerHTML = '<i class="fas fa-trash"></i>';
-                notificationItem.appendChild(swipeArea);
-
-                notificationItem.addEventListener('touchstart', e => {
-                    appState.touchStartX = e.touches[0].clientX;
-                    notificationItem.classList.add('swiping');
-                });
-
-                notificationItem.addEventListener('touchmove', e => {
-                    const touchX = e.touches[0].clientX;
-                    const diff = appState.touchStartX - touchX;
-
-                    if (diff > 50) {
-                        notificationItem.classList.add('deleting');
-                    } else {
-                        notificationItem.classList.remove('deleting');
-                    }
-                });
-
-                notificationItem.addEventListener('touchend', async () => {
-                    if (notificationItem.classList.contains('deleting')) {
-                        try {
-                            await db.collection('notifications').doc(notification.id).delete();
-                            notificationItem.remove();
-                            checkNotifications();
-                        } catch (error) {
-                            console.error('Erro ao excluir notificação:', error);
-                            alert('Erro ao excluir notificação: ' + error.message);
+                        if (diff > 50) {
+                            notificationItem.classList.add('deleting');
+                        } else {
+                            notificationItem.classList.remove('deleting');
                         }
-                    } else {
-                        notificationItem.classList.remove('swiping', 'deleting');
-                    }
-                });
+                    });
 
-                const content = document.createElement('div');
-                content.innerHTML = `
+                    notificationItem.addEventListener('touchend', async () => {
+                        if (notificationItem.classList.contains('deleting')) {
+                            try {
+                                await db.collection('notifications').doc(notification.id).delete();
+                                notificationItem.remove();
+                                checkNotifications();
+                            } catch (error) {
+                                console.error('Erro ao excluir notificação:', error);
+                                alert('Erro ao excluir notificação: ' + error.message);
+                            }
+                        } else {
+                            notificationItem.classList.remove('swiping', 'deleting');
+                        }
+                    });
+
+                    const content = document.createElement('div');
+                    content.innerHTML = `
                         <div style="display: flex; justify-content: space-between;">
                             <div style="font-weight: 500;">${notification.title}</div>
                             <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDate(notification.createdAt)}</div>
@@ -4390,405 +4421,405 @@
                         </div>` : ''}
                     `;
 
-                notificationItem.appendChild(content);
-                notificationsList.appendChild(notificationItem);
-            });
+                    notificationItem.appendChild(content);
+                    notificationsList.appendChild(notificationItem);
+                });
 
-        } catch (error) {
-            console.error('Erro ao carregar notificações:', error);
-            notificationsList.innerHTML = `<p>Erro ao carregar notificações: ${error.message}</p>`;
-        }
-    }
-
-    function showNotifications() {
-        showScreen('notifications-screen');
-    }
-
-    function goBackFromNotifications() {
-        if (appState.userData.role === 'teacher' || appState.userData.role === 'admin') {
-            showScreen('teacher-screen');
-        } else {
-            showScreen('hub-screen');
-        }
-    }
-
-    function editStudent() {
-        if (!appState.currentStudent) return;
-
-        document.getElementById('edit-student-fullname').value = appState.currentStudent.fullname || '';
-        document.getElementById('edit-student-birthdate').value = appState.currentStudent.birthdate || '';
-        document.getElementById('edit-student-cpf').value = appState.currentStudent.cpf || '';
-        document.getElementById('edit-student-registration').value = appState.currentStudent.registration || '';
-        document.getElementById('edit-student-course').value = appState.currentStudent.course || '';
-        document.getElementById('edit-student-username').value = appState.currentStudent.username || '';
-        document.getElementById('edit-student-created').textContent = formatDate(appState.currentStudent.createdAt) || 'Não disponível';
-        document.getElementById('current-password-display').textContent = appState.currentStudent.password || 'Não disponível';
-
-        const internatoTypeGroup = document.getElementById('edit-student-internato-type-group');
-        const internatoTypeSelect = document.getElementById('edit-student-internato-type');
-        if (appState.userData.role === 'admin') {
-            internatoTypeGroup.style.display = 'flex';
-            internatoTypeSelect.value = appState.currentStudent.internatoType || 'academico';
-        } else {
-            internatoTypeGroup.style.display = 'none';
-        }
-
-        showScreen('edit-student-screen');
-    }
-
-    async function saveStudentChanges() {
-        if (!appState.currentStudent) return;
-
-        const fullname = document.getElementById('edit-student-fullname').value;
-        const birthdate = document.getElementById('edit-student-birthdate').value;
-        const cpf = document.getElementById('edit-student-cpf').value;
-        const registration = document.getElementById('edit-student-registration').value;
-        const course = document.getElementById('edit-student-course').value;
-        let username = document.getElementById('edit-student-username').value;
-        const password = document.getElementById('edit-student-password').value;
-        const internatoType = document.getElementById('edit-student-internato-type').value;
-
-        if (!fullname || !birthdate || !cpf || !registration || !course || !username) {
-            alert('Por favor, preencha todos os campos obrigatórios!');
-            return;
-        }
-
-        username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-
-        try {
-            const updateData = {
-                fullname,
-                birthdate,
-                cpf,
-                registration,
-                course,
-                username,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            if (password) {
-                updateData.password = password;
+            } catch (error) {
+                console.error('Erro ao carregar notificações:', error);
+                notificationsList.innerHTML = `<p>Erro ao carregar notificações: ${error.message}</p>`;
             }
+        }
 
+        function showNotifications() {
+            showScreen('notifications-screen');
+        }
+
+        function goBackFromNotifications() {
+            if (appState.userData.role === 'teacher' || appState.userData.role === 'admin') {
+                showScreen('teacher-screen');
+            } else {
+                showScreen('hub-screen');
+            }
+        }
+
+        function editStudent() {
+            if (!appState.currentStudent) return;
+
+            document.getElementById('edit-student-fullname').value = appState.currentStudent.fullname || '';
+            document.getElementById('edit-student-birthdate').value = appState.currentStudent.birthdate || '';
+            document.getElementById('edit-student-cpf').value = appState.currentStudent.cpf || '';
+            document.getElementById('edit-student-registration').value = appState.currentStudent.registration || '';
+            document.getElementById('edit-student-course').value = appState.currentStudent.course || '';
+            document.getElementById('edit-student-username').value = appState.currentStudent.username || '';
+            document.getElementById('edit-student-created').textContent = formatDate(appState.currentStudent.createdAt) || 'Não disponível';
+            document.getElementById('current-password-display').textContent = appState.currentStudent.password || 'Não disponível';
+
+            const internatoTypeGroup = document.getElementById('edit-student-internato-type-group');
+            const internatoTypeSelect = document.getElementById('edit-student-internato-type');
             if (appState.userData.role === 'admin') {
-                updateData.internatoType = internatoType;
-            }
-
-            await db.collection('alunos').doc(appState.currentStudent.id).update(updateData);
-
-            const userQuery = await db.collection('users').where('userId', '==', appState.currentStudent.id).get();
-            if (!userQuery.empty) {
-                const userDocRef = userQuery.docs[0].ref;
-                await userDocRef.update(updateData);
-            }
-
-            appState.currentStudent = {
-                ...appState.currentStudent,
-                ...updateData
-            };
-
-            alert('Alterações salvas com sucesso!');
-            viewStudent(appState.currentStudent);
-
-        } catch (error) {
-            console.error('Erro ao salvar alterações do aluno:', error);
-            alert('Erro ao salvar alterações: ' + error.message);
-        }
-    }
-
-    function editTeacher() {
-        if (!appState.currentTeacher) return;
-
-        document.getElementById('edit-teacher-fullname').value = appState.currentTeacher.fullname || '';
-        document.getElementById('edit-teacher-birthdate').value = appState.currentTeacher.birthdate || '';
-        document.getElementById('edit-teacher-cpf').value = appState.currentTeacher.cpf || '';
-        document.getElementById('edit-teacher-registration').value = appState.currentTeacher.registration || '';
-        document.getElementById('edit-teacher-username').value = appState.currentTeacher.username || '';
-        document.getElementById('edit-teacher-created').textContent = formatDate(appState.currentTeacher.createdAt) || 'Não disponível';
-        document.getElementById('current-teacher-password-display').textContent = appState.currentTeacher.password || 'Não disponível';
-
-        showScreen('edit-teacher-screen');
-    }
-
-    async function saveTeacherChanges() {
-        if (!appState.currentTeacher) return;
-
-        const fullname = document.getElementById('edit-teacher-fullname').value;
-        const birthdate = document.getElementById('edit-teacher-birthdate').value;
-        const cpf = document.getElementById('edit-teacher-cpf').value;
-        const registration = document.getElementById('edit-teacher-registration').value;
-        let username = document.getElementById('edit-teacher-username').value;
-        const password = document.getElementById('edit-teacher-password').value;
-
-        if (!fullname || !birthdate || !cpf || !registration || !username) {
-            alert('Por favor, preencha todos os campos obrigatórios!');
-            return;
-        }
-
-        username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-
-        try {
-            const updateData = {
-                fullname,
-                birthdate,
-                cpf,
-                registration,
-                username,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            if (password) {
-                updateData.password = password;
-            }
-
-            await db.collection('professores').doc(appState.currentTeacher.id).update(updateData);
-
-            const userQuery = await db.collection('users').where('userId', '==', appState.currentTeacher.id).get();
-            if (!userQuery.empty) {
-                const userDocRef = userQuery.docs[0].ref;
-                await userDocRef.update(updateData);
-            }
-
-            appState.currentTeacher = {
-                ...appState.currentTeacher,
-                ...updateData
-            };
-
-            alert('Alterações salvas com sucesso!');
-            viewTeacher(appState.currentTeacher);
-
-        } catch (error) {
-            console.error('Erro ao salvar alterações do professor:', error);
-            alert('Erro ao salvar alterações: ' + error.message);
-        }
-    }
-
-    async function confirmBlock() {
-        const reason = document.getElementById('block-reason-input').value;
-        let collectionName, target;
-
-        if (appState.blockTargetType === 'student') {
-            collectionName = 'alunos';
-            target = appState.currentStudent;
-        } else if (appState.blockTargetType === 'teacher') {
-            collectionName = 'professores';
-            target = appState.currentTeacher;
-        } else {
-            return;
-        }
-
-        if (!reason && target.status !== 'blocked') {
-            alert('É necessário informar um motivo para bloquear!');
-            return;
-        }
-
-        try {
-            const newStatus = target.status === 'blocked' ? 'active' : 'blocked';
-            const updateData = {
-                status: newStatus,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            if (newStatus === 'blocked') {
-                updateData.blockReason = reason;
+                internatoTypeGroup.style.display = 'flex';
+                internatoTypeSelect.value = appState.currentStudent.internatoType || 'academico';
             } else {
-                updateData.blockReason = '';
+                internatoTypeGroup.style.display = 'none';
             }
 
-            await db.collection(collectionName).doc(target.id).update(updateData);
-
-            const userQuery = await db.collection('users').where('userId', '==', target.id).get();
-            if (!userQuery.empty) {
-                const userDocRef = userQuery.docs[0].ref;
-                await userDocRef.update(updateData);
-            }
-
-            target.status = newStatus;
-            target.blockReason = newStatus === 'blocked' ? reason : '';
-
-            if (newStatus === 'blocked') {
-                alert(appState.blockTargetType === 'student' ? 'Aluno bloqueado com sucesso!' : 'Professor bloqueado com sucesso!');
-            } else {
-                alert(appState.blockTargetType === 'student' ? 'Aluno desbloqueado com sucesso!' : 'Professor desbloqueado com sucesso!');
-            }
-
-            hideBlockModal();
-
-            if (appState.blockTargetType === 'student') {
-                viewStudent(target);
-            } else {
-                viewTeacher(target);
-            }
-
-        } catch (error) {
-            console.error('Erro ao bloquear/desbloquear:', error);
-            alert('Erro ao bloquear/desbloquear: ' + error.message);
-        }
-    }
-
-    async function deleteStudent() {
-        if (!appState.currentStudent) return;
-
-        if (!confirm('Tem certeza que deseja excluir permanentemente este aluno?')) {
-            return;
+            showScreen('edit-student-screen');
         }
 
-        try {
-            await db.collection('alunos').doc(appState.currentStudent.id).delete();
-            const userQuery = await db.collection('users').where('userId', '==', appState.currentStudent.id).get();
-            userQuery.forEach(async doc => {
-                await doc.ref.delete();
-            });
+        async function saveStudentChanges() {
+            if (!appState.currentStudent) return;
 
-            alert('Aluno excluído com sucesso!');
-            showScreen('teacher-screen');
+            const fullname = document.getElementById('edit-student-fullname').value;
+            const birthdate = document.getElementById('edit-student-birthdate').value;
+            const cpf = document.getElementById('edit-student-cpf').value;
+            const registration = document.getElementById('edit-student-registration').value;
+            const course = document.getElementById('edit-student-course').value;
+            let username = document.getElementById('edit-student-username').value;
+            const password = document.getElementById('edit-student-password').value;
+            const internatoType = document.getElementById('edit-student-internato-type').value;
 
-        } catch (error) {
-            console.error('Erro ao excluir aluno:', error);
-            alert('Erro ao excluir aluno: ' + error.message);
-        }
-    }
-
-    async function deleteTeacher() {
-        if (!appState.currentTeacher) return;
-
-        if (!confirm('Tem certeza que deseja excluir permanentemente este professor?')) {
-            return;
-        }
-
-        try {
-            await db.collection('professores').doc(appState.currentTeacher.id).delete();
-            const userQuery = await db.collection('users').where('userId', '==', appState.currentTeacher.id).get();
-            userQuery.forEach(async doc => {
-                await doc.ref.delete();
-            });
-
-            alert('Professor excluído com sucesso!');
-            showScreen('teacher-screen');
-
-        } catch (error) {
-            console.error('Erro ao excluir professor:', error);
-            alert('Erro ao excluir professor: ' + error.message);
-        }
-    }
-
-    async function sendMessage() {
-        if (!appState.currentUser || appState.userData.role !== 'admin') {
-            alert('Você não tem permissão para enviar mensagens.');
-            return;
-        }
-
-        const recipients = document.getElementById('message-recipients').value;
-        const course = document.getElementById('message-course').value;
-        const title = document.getElementById('message-title').value;
-        const content = document.getElementById('message-content').value;
-        const duration = parseInt(document.getElementById('message-duration').value) || 1;
-
-        if (!title || !content) {
-            alert('Por favor, preencha o título e o conteúdo da mensagem!');
-            return;
-        }
-
-        if (recipients === 'course' && !course) {
-            alert('Por favor, selecione um curso para enviar a mensagem.');
-            return;
-        }
-
-        try {
-            const messageData = {
-                title,
-                content,
-                senderId: appState.currentUser.id,
-                senderName: appState.userData.fullname,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                recipientType: recipients
-            };
-
-            if (recipients === 'course') {
-                messageData.course = course;
-            }
-
-            const expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + duration);
-            messageData.expiration = expirationDate;
-
-            await db.collection('messages').add(messageData);
-
-            alert('Mensagem enviada com sucesso!');
-            hideSendMessageModal();
-
-        } catch (error) {
-            console.error('Erro ao enviar mensagem:', error);
-            alert('Erro ao enviar mensagem: ' + error.message);
-        }
-    }
-
-    async function deleteMessage(messageId) {
-        if (!appState.currentUser || appState.userData.role !== 'admin') {
-            alert('Você não tem permissão para excluir mensagens.');
-            return;
-        }
-
-        if (!confirm('Tem certeza que deseja excluir esta mensagem?')) {
-            return;
-        }
-
-        try {
-            await db.collection('messages').doc(messageId).delete();
-            alert('Mensagem excluída com sucesso!');
-            loadActiveMessages(); // Recarrega a lista de mensagens ativas
-        } catch (error) {
-            console.error('Erro ao excluir mensagem:', error);
-            alert('Erro ao excluir mensagem: ' + error.message);
-        }
-    }
-
-    async function loadActiveMessages() {
-        if (!appState.currentUser || appState.userData.role !== 'admin') return;
-
-        const messagesList = document.getElementById('active-messages-list');
-        messagesList.innerHTML = '<div class="spinner"></div>';
-
-        try {
-            const now = new Date();
-            const snapshot = await db.collection('messages')
-                .where('expiration', '>', now)
-                .orderBy('expiration', 'asc')
-                .get();
-
-            const messages = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
-            messagesList.innerHTML = '';
-
-            if (messages.length === 0) {
-                messagesList.innerHTML = '<p>Nenhuma mensagem ativa encontrada.</p>';
+            if (!fullname || !birthdate || !cpf || !registration || !course || !username) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
 
-            messages.forEach(message => {
-                const messageItem = document.createElement('div');
-                messageItem.className = 'message-item';
+            username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
 
-                let recipientText = '';
-                switch (message.recipientType) {
-                    case 'all':
-                        recipientText = 'Todos os usuários';
-                        break;
-                    case 'students':
-                        recipientText = 'Todos os alunos';
-                        break;
-                    case 'teachers':
-                        recipientText = 'Todos os professores';
-                        break;
-                    case 'course':
-                        recipientText = `Curso: ${getCourseName(message.course)}`;
-                        break;
+            try {
+                const updateData = {
+                    fullname,
+                    birthdate,
+                    cpf,
+                    registration,
+                    course,
+                    username,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (password) {
+                    updateData.password = password;
                 }
 
-                messageItem.innerHTML = `
+                if (appState.userData.role === 'admin') {
+                    updateData.internatoType = internatoType;
+                }
+
+                await db.collection('alunos').doc(appState.currentStudent.id).update(updateData);
+
+                const userQuery = await db.collection('users').where('userId', '==', appState.currentStudent.id).get();
+                if (!userQuery.empty) {
+                    const userDocRef = userQuery.docs[0].ref;
+                    await userDocRef.update(updateData);
+                }
+
+                appState.currentStudent = {
+                    ...appState.currentStudent,
+                    ...updateData
+                };
+
+                alert('Alterações salvas com sucesso!');
+                viewStudent(appState.currentStudent);
+
+            } catch (error) {
+                console.error('Erro ao salvar alterações do aluno:', error);
+                alert('Erro ao salvar alterações: ' + error.message);
+            }
+        }
+
+        function editTeacher() {
+            if (!appState.currentTeacher) return;
+
+            document.getElementById('edit-teacher-fullname').value = appState.currentTeacher.fullname || '';
+            document.getElementById('edit-teacher-birthdate').value = appState.currentTeacher.birthdate || '';
+            document.getElementById('edit-teacher-cpf').value = appState.currentTeacher.cpf || '';
+            document.getElementById('edit-teacher-registration').value = appState.currentTeacher.registration || '';
+            document.getElementById('edit-teacher-username').value = appState.currentTeacher.username || '';
+            document.getElementById('edit-teacher-created').textContent = formatDate(appState.currentTeacher.createdAt) || 'Não disponível';
+            document.getElementById('current-teacher-password-display').textContent = appState.currentTeacher.password || 'Não disponível';
+
+            showScreen('edit-teacher-screen');
+        }
+
+        async function saveTeacherChanges() {
+            if (!appState.currentTeacher) return;
+
+            const fullname = document.getElementById('edit-teacher-fullname').value;
+            const birthdate = document.getElementById('edit-teacher-birthdate').value;
+            const cpf = document.getElementById('edit-teacher-cpf').value;
+            const registration = document.getElementById('edit-teacher-registration').value;
+            let username = document.getElementById('edit-teacher-username').value;
+            const password = document.getElementById('edit-teacher-password').value;
+
+            if (!fullname || !birthdate || !cpf || !registration || !username) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            username = username.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+
+            try {
+                const updateData = {
+                    fullname,
+                    birthdate,
+                    cpf,
+                    registration,
+                    username,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (password) {
+                    updateData.password = password;
+                }
+
+                await db.collection('professores').doc(appState.currentTeacher.id).update(updateData);
+
+                const userQuery = await db.collection('users').where('userId', '==', appState.currentTeacher.id).get();
+                if (!userQuery.empty) {
+                    const userDocRef = userQuery.docs[0].ref;
+                    await userDocRef.update(updateData);
+                }
+
+                appState.currentTeacher = {
+                    ...appState.currentTeacher,
+                    ...updateData
+                };
+
+                alert('Alterações salvas com sucesso!');
+                viewTeacher(appState.currentTeacher);
+
+            } catch (error) {
+                console.error('Erro ao salvar alterações do professor:', error);
+                alert('Erro ao salvar alterações: ' + error.message);
+            }
+        }
+
+        async function confirmBlock() {
+            const reason = document.getElementById('block-reason-input').value;
+            let collectionName, target;
+
+            if (appState.blockTargetType === 'student') {
+                collectionName = 'alunos';
+                target = appState.currentStudent;
+            } else if (appState.blockTargetType === 'teacher') {
+                collectionName = 'professores';
+                target = appState.currentTeacher;
+            } else {
+                return;
+            }
+
+            if (!reason && target.status !== 'blocked') {
+                alert('É necessário informar um motivo para bloquear!');
+                return;
+            }
+
+            try {
+                const newStatus = target.status === 'blocked' ? 'active' : 'blocked';
+                const updateData = {
+                    status: newStatus,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (newStatus === 'blocked') {
+                    updateData.blockReason = reason;
+                } else {
+                    updateData.blockReason = '';
+                }
+
+                await db.collection(collectionName).doc(target.id).update(updateData);
+
+                const userQuery = await db.collection('users').where('userId', '==', target.id).get();
+                if (!userQuery.empty) {
+                    const userDocRef = userQuery.docs[0].ref;
+                    await userDocRef.update(updateData);
+                }
+
+                target.status = newStatus;
+                target.blockReason = newStatus === 'blocked' ? reason : '';
+
+                if (newStatus === 'blocked') {
+                    alert(appState.blockTargetType === 'student' ? 'Aluno bloqueado com sucesso!' : 'Professor bloqueado com sucesso!');
+                } else {
+                    alert(appState.blockTargetType === 'student' ? 'Aluno desbloqueado com sucesso!' : 'Professor desbloqueado com sucesso!');
+                }
+
+                hideBlockModal();
+
+                if (appState.blockTargetType === 'student') {
+                    viewStudent(target);
+                } else {
+                    viewTeacher(target);
+                }
+
+            } catch (error) {
+                console.error('Erro ao bloquear/desbloquear:', error);
+                alert('Erro ao bloquear/desbloquear: ' + error.message);
+            }
+        }
+
+        async function deleteStudent() {
+            if (!appState.currentStudent) return;
+
+            if (!confirm('Tem certeza que deseja excluir permanentemente este aluno?')) {
+                return;
+            }
+
+            try {
+                await db.collection('alunos').doc(appState.currentStudent.id).delete();
+                const userQuery = await db.collection('users').where('userId', '==', appState.currentStudent.id).get();
+                userQuery.forEach(async doc => {
+                    await doc.ref.delete();
+                });
+
+                alert('Aluno excluído com sucesso!');
+                showScreen('teacher-screen');
+
+            } catch (error) {
+                console.error('Erro ao excluir aluno:', error);
+                alert('Erro ao excluir aluno: ' + error.message);
+            }
+        }
+
+        async function deleteTeacher() {
+            if (!appState.currentTeacher) return;
+
+            if (!confirm('Tem certeza que deseja excluir permanentemente este professor?')) {
+                return;
+            }
+
+            try {
+                await db.collection('professores').doc(appState.currentTeacher.id).delete();
+                const userQuery = await db.collection('users').where('userId', '==', appState.currentTeacher.id).get();
+                userQuery.forEach(async doc => {
+                    await doc.ref.delete();
+                });
+
+                alert('Professor excluído com sucesso!');
+                showScreen('teacher-screen');
+
+            } catch (error) {
+                console.error('Erro ao excluir professor:', error);
+                alert('Erro ao excluir professor: ' + error.message);
+            }
+        }
+
+        async function sendMessage() {
+            if (!appState.currentUser || appState.userData.role !== 'admin') {
+                alert('Você não tem permissão para enviar mensagens.');
+                return;
+            }
+
+            const recipients = document.getElementById('message-recipients').value;
+            const course = document.getElementById('message-course').value;
+            const title = document.getElementById('message-title').value;
+            const content = document.getElementById('message-content').value;
+            const duration = parseInt(document.getElementById('message-duration').value) || 1;
+
+            if (!title || !content) {
+                alert('Por favor, preencha o título e o conteúdo da mensagem!');
+                return;
+            }
+
+            if (recipients === 'course' && !course) {
+                alert('Por favor, selecione um curso para enviar a mensagem.');
+                return;
+            }
+
+            try {
+                const messageData = {
+                    title,
+                    content,
+                    senderId: appState.currentUser.id,
+                    senderName: appState.userData.fullname,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    recipientType: recipients
+                };
+
+                if (recipients === 'course') {
+                    messageData.course = course;
+                }
+
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + duration);
+                messageData.expiration = expirationDate;
+
+                await db.collection('messages').add(messageData);
+
+                alert('Mensagem enviada com sucesso!');
+                hideSendMessageModal();
+
+            } catch (error) {
+                console.error('Erro ao enviar mensagem:', error);
+                alert('Erro ao enviar mensagem: ' + error.message);
+            }
+        }
+
+        async function deleteMessage(messageId) {
+            if (!appState.currentUser || appState.userData.role !== 'admin') {
+                alert('Você não tem permissão para excluir mensagens.');
+                return;
+            }
+
+            if (!confirm('Tem certeza que deseja excluir esta mensagem?')) {
+                return;
+            }
+
+            try {
+                await db.collection('messages').doc(messageId).delete();
+                alert('Mensagem excluída com sucesso!');
+                loadActiveMessages(); // Recarrega a lista de mensagens ativas
+            } catch (error) {
+                console.error('Erro ao excluir mensagem:', error);
+                alert('Erro ao excluir mensagem: ' + error.message);
+            }
+        }
+
+        async function loadActiveMessages() {
+            if (!appState.currentUser || appState.userData.role !== 'admin') return;
+
+            const messagesList = document.getElementById('active-messages-list');
+            messagesList.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const now = new Date();
+                const snapshot = await db.collection('messages')
+                    .where('expiration', '>', now)
+                    .orderBy('expiration', 'asc')
+                    .get();
+
+                const messages = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                messagesList.innerHTML = '';
+
+                if (messages.length === 0) {
+                    messagesList.innerHTML = '<p>Nenhuma mensagem ativa encontrada.</p>';
+                    return;
+                }
+
+                messages.forEach(message => {
+                    const messageItem = document.createElement('div');
+                    messageItem.className = 'message-item';
+
+                    let recipientText = '';
+                    switch (message.recipientType) {
+                        case 'all':
+                            recipientText = 'Todos os usuários';
+                            break;
+                        case 'students':
+                            recipientText = 'Todos os alunos';
+                            break;
+                        case 'teachers':
+                            recipientText = 'Todos os professores';
+                            break;
+                        case 'course':
+                            recipientText = `Curso: ${getCourseName(message.course)}`;
+                            break;
+                    }
+
+                    messageItem.innerHTML = `
                         <div class="message-content">
                             <div><strong>${message.title}</strong></div>
                             <div>${message.content}</div>
@@ -4804,35 +4835,83 @@
                         </button>
                     `;
 
-                messagesList.appendChild(messageItem);
-            });
+                    messagesList.appendChild(messageItem);
+                });
 
-        } catch (error) {
-            console.error('Erro ao carregar mensagens ativas:', error);
-            messagesList.innerHTML = `<p>Erro ao carregar mensagens ativas: ${error.message}</p>`;
-        }
-    }
-
-    function setupMessagesListener(panelType) { // Added panelType parameter
-        if (!appState.currentUser || !appState.userData) return;
-
-        if (appState.messagesListener) {
-            appState.messagesListener(); // Detach previous listener
+            } catch (error) {
+                console.error('Erro ao carregar mensagens ativas:', error);
+                messagesList.innerHTML = `<p>Erro ao carregar mensagens ativas: ${error.message}</p>`;
+            }
         }
 
-        const messagesContainer = panelType === 'student' ?
-            document.getElementById('persistent-messages-container') :
-            document.getElementById('persistent-messages-container-teacher');
+        function setupMessagesListener(panelType) { // Added panelType parameter
+            if (!appState.currentUser || !appState.userData) return;
 
-        if (!messagesContainer) return; // Ensure container exists
+            if (appState.messagesListener) {
+                appState.messagesListener(); // Detach previous listener
+            }
 
-        messagesContainer.innerHTML = ''; // Clear previous messages
-        const now = new Date();
+            const messagesContainer = panelType === 'student' ?
+                document.getElementById('persistent-messages-container') :
+                document.getElementById('persistent-messages-container-teacher');
 
-        appState.messagesListener = db.collection('messages')
-            .where('expiration', '>', now)
-            .onSnapshot(snapshot => {
-                messagesContainer.innerHTML = ''; // Clear messages on each update
+            if (!messagesContainer) return; // Ensure container exists
+
+            messagesContainer.innerHTML = ''; // Clear previous messages
+            const now = new Date();
+
+            appState.messagesListener = db.collection('messages')
+                .where('expiration', '>', now)
+                .onSnapshot(snapshot => {
+                    messagesContainer.innerHTML = ''; // Clear messages on each update
+
+                    snapshot.forEach(doc => {
+                        const message = doc.data();
+
+                        let shouldDisplay = false;
+
+                        if (message.recipientType === 'all') {
+                            shouldDisplay = true;
+                        } else if (message.recipientType === 'students' && appState.userData.role === 'student') {
+                            shouldDisplay = true;
+                        } else if (message.recipientType === 'teachers' &&
+                            (appState.userData.role === 'teacher' || appState.userData.role === 'admin')) {
+                            shouldDisplay = true;
+                        } else if (message.recipientType === 'course' &&
+                            appState.userData.course === message.course) {
+                            shouldDisplay = true;
+                        }
+
+                        if (shouldDisplay) {
+                            const messageElement = document.createElement('div');
+                            messageElement.className = 'persistent-message';
+                            messageElement.innerHTML = `
+                                <div><strong>${message.title}</strong></div>
+                                <div>${message.content}</div>
+                            `;
+                            messagesContainer.appendChild(messageElement);
+                        }
+                    });
+                }, error => {
+                    console.error('Erro ao carregar mensagens persistentes em tempo real:', error);
+                    messagesContainer.innerHTML = `<p>Erro ao carregar mensagens: ${error.message}</p>`;
+                });
+        }
+
+        async function loadPersistentMessages() {
+            // This function is now redundant as setupMessagesListener handles initial load and real-time updates.
+            // It's kept for backward compatibility if other parts of the code still call it,
+            // but its logic is now primarily handled by setupMessagesListener.
+            if (!appState.currentUser) return;
+
+            try {
+                const now = new Date();
+                const snapshot = await db.collection('messages')
+                    .where('expiration', '>', now)
+                    .get();
+
+                const messagesContainer = document.getElementById('persistent-messages-container');
+                messagesContainer.innerHTML = '';
 
                 snapshot.forEach(doc => {
                     const message = doc.data();
@@ -4855,349 +4934,301 @@
                         const messageElement = document.createElement('div');
                         messageElement.className = 'persistent-message';
                         messageElement.innerHTML = `
-                                <div><strong>${message.title}</strong></div>
-                                <div>${message.content}</div>
-                            `;
-                        messagesContainer.appendChild(messageElement);
-                    }
-                });
-            }, error => {
-                console.error('Erro ao carregar mensagens persistentes em tempo real:', error);
-                messagesContainer.innerHTML = `<p>Erro ao carregar mensagens: ${error.message}</p>`;
-            });
-    }
-
-    async function loadPersistentMessages() {
-        // This function is now redundant as setupMessagesListener handles initial load and real-time updates.
-        // It's kept for backward compatibility if other parts of the code still call it,
-        // but its logic is now primarily handled by setupMessagesListener.
-        if (!appState.currentUser) return;
-
-        try {
-            const now = new Date();
-            const snapshot = await db.collection('messages')
-                .where('expiration', '>', now)
-                .get();
-
-            const messagesContainer = document.getElementById('persistent-messages-container');
-            messagesContainer.innerHTML = '';
-
-            snapshot.forEach(doc => {
-                const message = doc.data();
-
-                let shouldDisplay = false;
-
-                if (message.recipientType === 'all') {
-                    shouldDisplay = true;
-                } else if (message.recipientType === 'students' && appState.userData.role === 'student') {
-                    shouldDisplay = true;
-                } else if (message.recipientType === 'teachers' &&
-                    (appState.userData.role === 'teacher' || appState.userData.role === 'admin')) {
-                    shouldDisplay = true;
-                } else if (message.recipientType === 'course' &&
-                    appState.userData.course === message.course) {
-                    shouldDisplay = true;
-                }
-
-                if (shouldDisplay) {
-                    const messageElement = document.createElement('div');
-                    messageElement.className = 'persistent-message';
-                    messageElement.innerHTML = `
                             <div><strong>${message.title}</strong></div>
                             <div>${message.content}</div>
                         `;
-                    messagesContainer.appendChild(messageElement);
-                }
-            });
-
-        } catch (error) {
-            console.error('Erro ao carregar mensagens persistentes:', error);
-        }
-    }
-
-    function showIconSelector() {
-        const iconGrid = document.getElementById('icon-grid');
-        iconGrid.innerHTML = '';
-
-        const icons = [
-            'fas fa-user', 'fas fa-user-graduate', 'fas fa-user-tie', 'fas fa-user-md',
-            'fas fa-user-nurse', 'fas fa-user-injured', 'fas fa-user-astronaut', 'fas fa-user-secret',
-            'fas fa-user-ninja', 'fas fa-heart', 'fas fa-code', 'fas fa-stethoscope',
-            'fas fa-ghost', 'fas fa-mask', 'fas fa-robot', 'fas fa-brain',
-            'fas fa-user-circle', 'fas fa-smile', 'fas fa-laugh', 'fas fa-grin',
-            'fas fa-meh', 'fas fa-frown', 'fas fa-paw', 'fas fa-star'
-        ];
-
-        icons.forEach(iconClass => {
-            const iconOption = document.createElement('div');
-            iconOption.className = 'icon-option';
-            if (appState.userData.profileIcon === iconClass) {
-                iconOption.classList.add('selected');
-            }
-            iconOption.innerHTML = `<i class="${iconClass}"></i>`;
-            iconOption.onclick = function() {
-                document.querySelectorAll('.icon-option').forEach(opt => {
-                    opt.classList.remove('selected');
+                        messagesContainer.appendChild(messageElement);
+                    }
                 });
-                this.classList.add('selected');
-                appState.selectedIcon = iconClass;
-            };
-            iconGrid.appendChild(iconOption);
-        });
 
-        document.getElementById('icon-selector-modal').style.display = 'flex';
-    }
-
-    function hideIconSelector() {
-        document.getElementById('icon-selector-modal').style.display = 'none';
-    }
-
-    async function saveProfileIcon() {
-        if (!appState.currentUser || !appState.selectedIcon) return;
-
-        try {
-            await db.collection('alunos').doc(appState.currentUser.id).update({
-                profileIcon: appState.selectedIcon
-            });
-
-            appState.userData.profileIcon = appState.selectedIcon;
-            document.getElementById('profile-icon').className = appState.selectedIcon;
-
-            alert('Ícone de perfil atualizado com sucesso!');
-            hideIconSelector();
-        } catch (error) {
-            console.error('Erro ao salvar ícone:', error);
-            alert('Erro ao salvar ícone: ' + error.message);
-        }
-    }
-
-    function showImageCarousel(images, startIndex = 0) {
-        appState.carouselImages = images;
-        appState.currentCarouselIndex = startIndex;
-
-        const carouselContainer = document.querySelector('.carousel-container');
-        carouselContainer.innerHTML = '';
-
-        const closeBtn = document.createElement('div');
-        closeBtn.className = 'carousel-close';
-        closeBtn.innerHTML = '&times;';
-        closeBtn.onclick = hideImageCarousel;
-        carouselContainer.appendChild(closeBtn);
-
-        const prevBtn = document.createElement('div');
-        prevBtn.className = 'carousel-nav carousel-prev';
-        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        prevBtn.onclick = prevImage;
-        carouselContainer.appendChild(prevBtn);
-
-        const nextBtn = document.createElement('div');
-        nextBtn.className = 'carousel-nav carousel-next';
-        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        nextBtn.onclick = nextImage;
-        carouselContainer.appendChild(nextBtn);
-
-        const counter = document.createElement('div');
-        counter.className = 'carousel-counter';
-        counter.id = 'carousel-counter';
-        carouselContainer.appendChild(counter);
-
-        updateCarouselImages();
-        document.getElementById('image-carousel-modal').style.display = 'flex';
-    }
-
-    function updateCarouselImages() {
-        const carouselContainer = document.querySelector('.carousel-container');
-        const existingImages = document.querySelectorAll('.carousel-image');
-        existingImages.forEach(img => img.remove());
-
-        const currentImage = document.createElement('img');
-        currentImage.src = appState.carouselImages[appState.currentCarouselIndex];
-        currentImage.className = 'carousel-image active';
-        carouselContainer.appendChild(currentImage);
-
-        document.getElementById('carousel-counter').textContent = `${appState.currentCarouselIndex + 1}/${appState.carouselImages.length}`;
-    }
-
-    function nextImage() {
-        if (appState.currentCarouselIndex < appState.carouselImages.length - 1) {
-            appState.currentCarouselIndex++;
-            updateCarouselImages();
-        }
-    }
-
-    function prevImage() {
-        if (appState.currentCarouselIndex > 0) {
-            appState.currentCarouselIndex--;
-            updateCarouselImages();
-        }
-    }
-
-    function hideImageCarousel() {
-        document.getElementById('image-carousel-modal').style.display = 'none';
-    }
-
-    async function performCheckin() {
-        if (!appState.currentUser || appState.userData.internatoType !== 'interno' || appState.userData.registrationStatus !== 'approved') {
-            alert('Esta função é exclusiva para alunos do internato com registro aprovado.');
-            return;
+            } catch (error) {
+                console.error('Erro ao carregar mensagens persistentes:', error);
+            }
         }
 
-        const preceptorId = document.getElementById('checkin-preceptor').value;
-        if (!preceptorId) {
-            alert('Por favor, selecione seu preceptor.');
-            return;
-        }
+        function showIconSelector() {
+            const iconGrid = document.getElementById('icon-grid');
+            iconGrid.innerHTML = '';
 
-        const performCheckinBtn = document.getElementById('perform-checkin-btn');
-        const originalBtnContent = performCheckinBtn.innerHTML;
-        performCheckinBtn.disabled = true;
-        performCheckinBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto;"></div>';
+            const icons = [
+                'fas fa-user', 'fas fa-user-graduate', 'fas fa-user-tie', 'fas fa-user-md',
+                'fas fa-user-nurse', 'fas fa-user-injured', 'fas fa-user-astronaut', 'fas fa-user-secret',
+                'fas fa-user-ninja', 'fas fa-heart', 'fas fa-code', 'fas fa-stethoscope',
+                'fas fa-ghost', 'fas fa-mask', 'fas fa-robot', 'fas fa-brain',
+                'fas fa-user-circle', 'fas fa-smile', 'fas fa-laugh', 'fas fa-grin',
+                'fas fa-meh', 'fas fa-frown', 'fas fa-paw', 'fas fa-star'
+            ];
 
-        let latitude = 'Não disponível';
-        let longitude = 'Não disponível';
-        let locationType = 'unknown';
-
-        try {
-            const position = await new Promise((resolve, reject) => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
-                } else {
-                    reject(new Error('Geolocalização não suportada pelo seu navegador.'));
+            icons.forEach(iconClass => {
+                const iconOption = document.createElement('div');
+                iconOption.className = 'icon-option';
+                if (appState.userData.profileIcon === iconClass) {
+                    iconOption.classList.add('selected');
                 }
+                iconOption.innerHTML = `<i class="${iconClass}"></i>`;
+                iconOption.onclick = function() {
+                    document.querySelectorAll('.icon-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    appState.selectedIcon = iconClass;
+                };
+                iconGrid.appendChild(iconOption);
             });
-            latitude = position.coords.latitude;
-            longitude = position.coords.longitude;
-            locationType = 'gps';
-            alert('Localização GPS obtida com sucesso!');
 
-        } catch (geoError) {
-            console.warn('Erro ao obter localização GPS:', geoError.message);
-            alert('Não foi possível obter sua localização exata. Tentando localização aproximada por IP.');
-            locationType = 'ip';
+            document.getElementById('icon-selector-modal').style.display = 'flex';
+        }
+
+        function hideIconSelector() {
+            document.getElementById('icon-selector-modal').style.display = 'none';
+        }
+
+        async function saveProfileIcon() {
+            if (!appState.currentUser || !appState.selectedIcon) return;
 
             try {
-                const ipGeoResponse = await fetch('https://ipapi.co/json/');
-                const ipGeoData = await ipGeoResponse.json();
-                if (ipGeoData && ipGeoData.latitude && ipGeoData.longitude) {
-                    latitude = ipGeoData.latitude;
-                    longitude = ipGeoData.longitude;
-                    alert('Localização aproximada por IP obtida com sucesso!');
-                } else {
-                    alert('Não foi possível obter sua localização aproximada por IP.');
-                }
-            } catch (ipError) {
-                console.error('Erro ao obter localização por IP:', ipError);
-                alert('Erro ao obter localização por IP: ' + ipError.message);
+                await db.collection('alunos').doc(appState.currentUser.id).update({
+                    profileIcon: appState.selectedIcon
+                });
+
+                appState.userData.profileIcon = appState.selectedIcon;
+                document.getElementById('profile-icon').className = appState.selectedIcon;
+
+                alert('Ícone de perfil atualizado com sucesso!');
+                hideIconSelector();
+            } catch (error) {
+                console.error('Erro ao salvar ícone:', error);
+                alert('Erro ao salvar ícone: ' + error.message);
             }
         }
 
-        const checkinTime = firebase.firestore.FieldValue.serverTimestamp();
+        function showImageCarousel(images, startIndex = 0) {
+            appState.carouselImages = images;
+            appState.currentCarouselIndex = startIndex;
 
-        const preceptorDoc = await db.collection('professores').doc(preceptorId).get();
-        const preceptorData = preceptorDoc.data();
-        const preceptorName = preceptorData ? preceptorData.fullname : 'Preceptor Desconhecido';
+            const carouselContainer = document.querySelector('.carousel-container');
+            carouselContainer.innerHTML = '';
 
-        const checkinData = {
-            studentId: appState.currentUser.id,
-            studentName: appState.userData.fullname,
-            studentRegistration: appState.userData.registration,
-            studentCourse: appState.userData.course,
-            preceptorId: preceptorId,
-            preceptorName: preceptorName,
-            checkinTime: checkinTime,
-            latitude: latitude,
-            longitude: longitude,
-            locationType: locationType,
-            status: 'pending',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
+            const closeBtn = document.createElement('div');
+            closeBtn.className = 'carousel-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.onclick = hideImageCarousel;
+            carouselContainer.appendChild(closeBtn);
 
-        const checkinRef = await db.collection('checkins').add(checkinData);
+            const prevBtn = document.createElement('div');
+            prevBtn.className = 'carousel-nav carousel-prev';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = prevImage;
+            carouselContainer.appendChild(prevBtn);
 
-        await db.collection('notifications').add({
-            userId: preceptorId,
-            type: 'new_checkin',
-            checkinId: checkinRef.id,
-            studentId: appState.currentUser.id,
-            studentName: appState.userData.fullname,
-            title: 'Novo Check-in Pendente',
-            message: `${appState.userData.fullname} realizou um check-in e aguarda sua aprovação.`,
-            read: false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+            const nextBtn = document.createElement('div');
+            nextBtn.className = 'carousel-nav carousel-next';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = nextImage;
+            carouselContainer.appendChild(nextBtn);
 
-        alert('Check-in enviado para aprovação do preceptor!');
+            const counter = document.createElement('div');
+            counter.className = 'carousel-counter';
+            counter.id = 'carousel-counter';
+            carouselContainer.appendChild(counter);
 
-        performCheckinBtn.disabled = false;
-        performCheckinBtn.innerHTML = originalBtnContent;
-    }
-
-    function loadCheckinHistory() {
-        if (!appState.currentUser) return;
-
-        const checkinHistoryList = document.getElementById('checkin-history-list');
-        checkinHistoryList.innerHTML = '<div class="spinner"></div>';
-
-        if (appState.checkinHistoryListener) {
-            appState.checkinHistoryListener();
+            updateCarouselImages();
+            document.getElementById('image-carousel-modal').style.display = 'flex';
         }
 
-        appState.checkinHistoryListener = db.collection('checkins')
-            .where('studentId', '==', appState.currentUser.id)
-            .orderBy('checkinTime', 'desc')
-            .onSnapshot(snapshot => {
-                const checkins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                appState.checkins = checkins;
+        function updateCarouselImages() {
+            const carouselContainer = document.querySelector('.carousel-container');
+            const existingImages = document.querySelectorAll('.carousel-image');
+            existingImages.forEach(img => img.remove());
 
-                updateCheckinHistoryList();
-            }, error => {
-                console.error('Erro ao carregar histórico de check-ins em tempo real:', error);
-                checkinHistoryList.innerHTML = `<p>Erro ao carregar histórico: ${error.message}</p>`;
+            const currentImage = document.createElement('img');
+            currentImage.src = appState.carouselImages[appState.currentCarouselIndex];
+            currentImage.className = 'carousel-image active';
+            carouselContainer.appendChild(currentImage);
+
+            document.getElementById('carousel-counter').textContent = `${appState.currentCarouselIndex + 1}/${appState.carouselImages.length}`;
+        }
+
+        function nextImage() {
+            if (appState.currentCarouselIndex < appState.carouselImages.length - 1) {
+                appState.currentCarouselIndex++;
+                updateCarouselImages();
+            }
+        }
+
+        function prevImage() {
+            if (appState.currentCarouselIndex > 0) {
+                appState.currentCarouselIndex--;
+                updateCarouselImages();
+            }
+        }
+
+        function hideImageCarousel() {
+            document.getElementById('image-carousel-modal').style.display = 'none';
+        }
+
+        async function performCheckin() {
+            if (!appState.currentUser || appState.userData.internatoType !== 'interno' || appState.userData.registrationStatus !== 'approved') {
+                alert('Esta função é exclusiva para alunos do internato com registro aprovado.');
+                return;
+            }
+
+            const preceptorId = document.getElementById('checkin-preceptor').value;
+            if (!preceptorId) {
+                alert('Por favor, selecione seu preceptor.');
+                return;
+            }
+
+            const performCheckinBtn = document.getElementById('perform-checkin-btn');
+            const originalBtnContent = performCheckinBtn.innerHTML;
+            performCheckinBtn.disabled = true;
+            performCheckinBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto;"></div>';
+
+            let latitude = 'Não disponível';
+            let longitude = 'Não disponível';
+            let locationType = 'unknown';
+
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                    } else {
+                        reject(new Error('Geolocalização não suportada pelo seu navegador.'));
+                    }
+                });
+                latitude = position.coords.latitude;
+                longitude = position.coords.longitude;
+                locationType = 'gps';
+                alert('Localização GPS obtida com sucesso!');
+
+            } catch (geoError) {
+                console.warn('Erro ao obter localização GPS:', geoError.message);
+                alert('Não foi possível obter sua localização exata. Tentando localização aproximada por IP.');
+                locationType = 'ip';
+
+                try {
+                    const ipGeoResponse = await fetch('https://ipapi.co/json/');
+                    const ipGeoData = await ipGeoResponse.json();
+                    if (ipGeoData && ipGeoData.latitude && ipGeoData.longitude) {
+                        latitude = ipGeoData.latitude;
+                        longitude = ipGeoData.longitude;
+                        alert('Localização aproximada por IP obtida com sucesso!');
+                    } else {
+                        alert('Não foi possível obter sua localização aproximada por IP.');
+                    }
+                } catch (ipError) {
+                    console.error('Erro ao obter localização por IP:', ipError);
+                    alert('Erro ao obter localização por IP: ' + ipError.message);
+                }
+            }
+
+            const checkinTime = firebase.firestore.FieldValue.serverTimestamp();
+
+            const preceptorDoc = await db.collection('professores').doc(preceptorId).get();
+            const preceptorData = preceptorDoc.data();
+            const preceptorName = preceptorData ? preceptorData.fullname : 'Preceptor Desconhecido';
+
+            const checkinData = {
+                studentId: appState.currentUser.id,
+                studentName: appState.userData.fullname,
+                studentRegistration: appState.userData.registration,
+                studentCourse: appState.userData.course,
+                preceptorId: preceptorId,
+                preceptorName: preceptorName,
+                checkinTime: checkinTime,
+                latitude: latitude,
+                longitude: longitude,
+                locationType: locationType,
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            const checkinRef = await db.collection('checkins').add(checkinData);
+
+            await db.collection('notifications').add({
+                userId: preceptorId,
+                type: 'new_checkin',
+                checkinId: checkinRef.id,
+                studentId: appState.currentUser.id,
+                studentName: appState.userData.fullname,
+                title: 'Novo Check-in Pendente',
+                message: `${appState.userData.fullname} realizou um check-in e aguarda sua aprovação.`,
+                read: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-    }
 
-    function updateCheckinHistoryList() {
-        const checkinHistoryList = document.getElementById('checkin-history-list');
-        const pagination = document.getElementById('checkin-history-pagination');
-        const prevBtn = document.getElementById('prev-checkin-btn');
-        const nextBtn = document.getElementById('next-checkin-btn');
-        const pageInfo = document.getElementById('checkin-page-info');
+            alert('Check-in enviado para aprovação do preceptor!');
 
-        const startIndex = (appState.checkinHistoryPage - 1) * appState.pageSize;
-        const endIndex = startIndex + appState.pageSize;
-        const paginatedCheckins = appState.checkins.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(appState.checkins.length / appState.pageSize);
-
-        checkinHistoryList.innerHTML = '';
-
-        if (paginatedCheckins.length === 0) {
-            checkinHistoryList.innerHTML = '<p>Nenhum check-in registrado.</p>';
-            pagination.style.display = 'none';
-            return;
+            performCheckinBtn.disabled = false;
+            performCheckinBtn.innerHTML = originalBtnContent;
         }
 
-        paginatedCheckins.forEach(checkin => {
-            const checkinItem = document.createElement('div');
-            checkinItem.className = 'submission-item';
-            checkinItem.style.padding = '15px';
-            checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+        function loadCheckinHistory() {
+            if (!appState.currentUser) return;
 
-            let statusBadge = '';
-            if (checkin.status === 'pending') {
-                statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+            const checkinHistoryList = document.getElementById('checkin-history-list');
+            checkinHistoryList.innerHTML = '<div class="spinner"></div>';
+
+            if (appState.checkinHistoryListener) {
+                appState.checkinHistoryListener();
+            }
+
+            appState.checkinHistoryListener = db.collection('checkins')
+                .where('studentId', '==', appState.currentUser.id)
+                .orderBy('checkinTime', 'desc')
+                .onSnapshot(snapshot => {
+                    const checkins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    appState.checkins = checkins;
+
+                    updateCheckinHistoryList();
+                }, error => {
+                    console.error('Erro ao carregar histórico de check-ins em tempo real:', error);
+                    checkinHistoryList.innerHTML = `<p>Erro ao carregar histórico: ${error.message}</p>`;
+                });
+        }
+
+        function updateCheckinHistoryList() {
+            const checkinHistoryList = document.getElementById('checkin-history-list');
+            const pagination = document.getElementById('checkin-history-pagination');
+            const prevBtn = document.getElementById('prev-checkin-btn');
+            const nextBtn = document.getElementById('next-checkin-btn');
+            const pageInfo = document.getElementById('checkin-page-info');
+
+            const startIndex = (appState.checkinHistoryPage - 1) * appState.pageSize;
+            const endIndex = startIndex + appState.pageSize;
+            const paginatedCheckins = appState.checkins.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(appState.checkins.length / appState.pageSize);
+
+            checkinHistoryList.innerHTML = '';
+
+            if (paginatedCheckins.length === 0) {
+                checkinHistoryList.innerHTML = '<p>Nenhum check-in registrado.</p>';
+                pagination.style.display = 'none';
+                return;
+            }
+
+            paginatedCheckins.forEach(checkin => {
+                const checkinItem = document.createElement('div');
+                checkinItem.className = 'submission-item';
+                checkinItem.style.padding = '15px';
+                checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+
+                let statusBadge = '';
+                if (checkin.status === 'pending') {
+                    statusBadge = `<div style="background-color: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
                         <i class="fas fa-clock"></i> Pendente
                     </div>`;
-            } else if (checkin.status === 'approved') {
-                statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                } else if (checkin.status === 'approved') {
+                    statusBadge = `<div style="background-color: var(--success); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
                         <i class="fas fa-check-circle"></i> Aprovado
                     </div>`;
-            } else if (checkin.status === 'denied') {
-                statusBadge = `<div style="background-color: var(--error); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
+                } else if (checkin.status === 'denied') {
+                    statusBadge = `<div style="background-color: var(--error); padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">
                         <i class="fas fa-times-circle"></i> Recusado
                     </div>`;
-            }
+                }
 
-            checkinItem.innerHTML = `
+                checkinItem.innerHTML = `
                     <div style="display: flex; justify-content: space-between;">
                         <div style="font-weight: 500;">Check-in com ${checkin.preceptorName}</div>
                         <div style="font-size: 0.8rem; color: var(--light-gray);">${formatDateTime(checkin.checkinTime)}</div>
@@ -5215,63 +5246,63 @@
                         </div>` : ''}
                     </div>
                 `;
-            checkinHistoryList.appendChild(checkinItem);
-        });
+                checkinHistoryList.appendChild(checkinItem);
+            });
 
-        pageInfo.textContent = `Página ${appState.checkinHistoryPage} de ${totalPages}`;
-        prevBtn.disabled = appState.checkinHistoryPage === 1;
-        nextBtn.disabled = appState.checkinHistoryPage === totalPages;
-        pagination.style.display = 'flex';
-    }
-
-    function prevCheckinPage() {
-        if (appState.checkinHistoryPage > 1) {
-            appState.checkinHistoryPage--;
-            updateCheckinHistoryList();
-        }
-    }
-
-    function nextCheckinPage() {
-        const totalPages = Math.ceil(appState.checkins.length / appState.pageSize);
-        if (appState.checkinHistoryPage < totalPages) {
-            appState.checkinHistoryPage++;
-            updateCheckinHistoryList();
-        }
-    }
-
-    function loadPendingCheckins() {
-        if (!appState.currentUser || (appState.userData.role !== 'teacher' && appState.userData.role !== 'admin')) return;
-
-        const pendingCheckinsList = document.getElementById('pending-checkins-list');
-        pendingCheckinsList.innerHTML = '<div class="spinner"></div>';
-
-        if (appState.pendingCheckinsListener) {
-            appState.pendingCheckinsListener(); // Desativa o listener anterior
+            pageInfo.textContent = `Página ${appState.checkinHistoryPage} de ${totalPages}`;
+            prevBtn.disabled = appState.checkinHistoryPage === 1;
+            nextBtn.disabled = appState.checkinHistoryPage === totalPages;
+            pagination.style.display = 'flex';
         }
 
-        let query = db.collection('checkins').where('status', '==', 'pending');
-
-        if (appState.userData.role === 'teacher') {
-            query = query.where('preceptorId', '==', appState.currentUser.id);
+        function prevCheckinPage() {
+            if (appState.checkinHistoryPage > 1) {
+                appState.checkinHistoryPage--;
+                updateCheckinHistoryList();
+            }
         }
 
-        appState.pendingCheckinsListener = query.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-            appState.pendingCheckins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        function nextCheckinPage() {
+            const totalPages = Math.ceil(appState.checkins.length / appState.pageSize);
+            if (appState.checkinHistoryPage < totalPages) {
+                appState.checkinHistoryPage++;
+                updateCheckinHistoryList();
+            }
+        }
 
-            if (appState.pendingCheckins.length === 0) {
-                pendingCheckinsList.innerHTML = '<p>Nenhum check-in pendente.</p>';
-                return;
+        function loadPendingCheckins() {
+            if (!appState.currentUser || (appState.userData.role !== 'teacher' && appState.userData.role !== 'admin')) return;
+
+            const pendingCheckinsList = document.getElementById('pending-checkins-list');
+            pendingCheckinsList.innerHTML = '<div class="spinner"></div>';
+
+            if (appState.pendingCheckinsListener) {
+                appState.pendingCheckinsListener(); // Desativa o listener anterior
             }
 
-            pendingCheckinsList.innerHTML = '';
+            let query = db.collection('checkins').where('status', '==', 'pending');
 
-            appState.pendingCheckins.forEach(checkin => {
-                const checkinItem = document.createElement('div');
-                checkinItem.className = 'submission-item';
-                checkinItem.style.padding = '15px';
-                checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+            if (appState.userData.role === 'teacher') {
+                query = query.where('preceptorId', '==', appState.currentUser.id);
+            }
 
-                checkinItem.innerHTML = `
+            appState.pendingCheckinsListener = query.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                appState.pendingCheckins = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (appState.pendingCheckins.length === 0) {
+                    pendingCheckinsList.innerHTML = '<p>Nenhum check-in pendente.</p>';
+                    return;
+                }
+
+                pendingCheckinsList.innerHTML = '';
+
+                appState.pendingCheckins.forEach(checkin => {
+                    const checkinItem = document.createElement('div');
+                    checkinItem.className = 'submission-item';
+                    checkinItem.style.padding = '15px';
+                    checkinItem.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+
+                    checkinItem.innerHTML = `
                         <div>
                             <div style="font-weight: 500;">Check-in de ${checkin.studentName}</div>
                             <div style="margin-top: 5px; font-size: 0.9rem;">
@@ -5290,221 +5321,221 @@
                             </div>
                         </div>
                     `;
-                pendingCheckinsList.appendChild(checkinItem);
-            });
-
-        }, error => {
-            console.error('Erro ao carregar check-ins pendentes em tempo real:', error);
-            pendingCheckinsList.innerHTML = `<p>Erro: ${error.message}</p>`;
-        });
-    }
-
-    async function approveCheckin(checkinId, studentId, studentName) {
-        try {
-            await db.collection('checkins').doc(checkinId).update({
-                status: 'approved',
-                approvedBy: appState.userData.fullname,
-                approvedById: appState.currentUser.id,
-                approvedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            await db.collection('notifications').add({
-                userId: studentId,
-                type: 'checkin_approved',
-                checkinId: checkinId,
-                teacherId: appState.currentUser.id,
-                teacherName: appState.userData.fullname,
-                title: 'Check-in Aprovado!',
-                message: `Seu check-in foi aprovado por ${appState.userData.fullname} em ${formatDateTime(new Date())}.`,
-                read: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert('Check-in aprovado com sucesso!');
-            // loadPendingCheckins() will be called by the listener
-        } catch (error) {
-            console.error('Erro ao aprovar check-in:', error);
-            alert('Erro ao aprovar check-in: ' + error.message);
-        }
-    }
-
-    async function denyCheckin(checkinId, studentId, studentName) {
-        const reason = prompt('Informe o motivo da recusa (obrigatório):');
-        if (!reason) {
-            alert('O motivo da recusa é obrigatório.');
-            return;
-        }
-
-        try {
-            await db.collection('checkins').doc(checkinId).update({
-                status: 'denied',
-                deniedBy: appState.userData.fullname,
-                deniedById: appState.currentUser.id,
-                denialReason: reason,
-                deniedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            await db.collection('notifications').add({
-                userId: studentId,
-                type: 'checkin_denied',
-                checkinId: checkinId,
-                teacherId: appState.currentUser.id,
-                teacherName: appState.userData.fullname,
-                title: 'Check-in Recusado',
-                message: `Seu check-in foi recusado por ${appState.userData.fullname}. Motivo: ${reason}`,
-                read: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert('Check-in recusado com sucesso!');
-            // loadPendingCheckins() will be called by the listener
-        } catch (error) {
-            console.error('Erro ao recusar check-in:', error);
-            alert('Erro ao recusar check-in: ' + error.message);
-        }
-    }
-
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-
-    window.addEventListener('appinstalled', () => {
-        hidePWAInstallPrompt(true);
-        deferredPrompt = null;
-        console.log('PWA was installed');
-    });
-
-    function isMobile() {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        if (/android/i.test(userAgent)) {
-            return true;
-        }
-        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            return true;
-        }
-        return false;
-    }
-
-    function isPWAInstalled() {
-        if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
-            return true;
-        }
-        if (document.referrer.startsWith('android-app://') || document.referrer.startsWith('ios-app://')) {
-            return true;
-        }
-        return false;
-    }
-
-    function checkPWAInstallPrompt() {
-        const dontShowAgain = localStorage.getItem('pwaInstallPromptDontShowAgain');
-
-        if (!isMobile() || isPWAInstalled() || dontShowAgain === 'true') {
-            return;
-        }
-
-        showPWAInstallPrompt();
-    }
-
-    function showPWAInstallPrompt() {
-        const pwaModal = document.getElementById('pwa-install-modal');
-        pwaModal.style.display = 'flex';
-
-        if (/(iPhone|iPad|iPod)/i.test(navigator.userAgent)) {
-            showPWAInstallSteps('ios');
-        } else if (/Android/i.test(navigator.userAgent)) {
-            showPWAInstallSteps('android');
-        }
-    }
-
-    function hidePWAInstallPrompt(dontShowAgain) {
-        const pwaModal = document.getElementById('pwa-install-modal');
-        pwaModal.style.display = 'none';
-        if (dontShowAgain) {
-            localStorage.setItem('pwaInstallPromptDontShowAgain', 'true');
-        }
-    }
-
-    function showPWAInstallSteps(os) {
-        document.getElementById('pwa-ios-steps').style.display = 'none';
-        document.getElementById('pwa-android-steps').style.display = 'none';
-        document.getElementById('pwa-ios-btn').classList.remove('active');
-        document.getElementById('pwa-android-btn').classList.remove('active');
-
-        if (os === 'ios') {
-            document.getElementById('pwa-ios-steps').style.display = 'flex';
-            document.getElementById('pwa-ios-btn').classList.add('active');
-        } else if (os === 'android') {
-            document.getElementById('pwa-android-steps').style.display = 'flex';
-            document.getElementById('pwa-android-btn').classList.add('active');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const cpfInputs = document.querySelectorAll('#cpf, #new-user-cpf, #edit-cpf, #edit-student-cpf, #edit-teacher-cpf');
-        cpfInputs.forEach(input => {
-            input.addEventListener('input', (e) => {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.length > 11) value = value.slice(0, 11);
-
-                if (value.length > 9) {
-                    value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
-                } else if (value.length > 6) {
-                    value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
-                } else if (value.length > 3) {
-                    value = value.replace(/^(\d{3})$/, '$1');
-                } else if (value.length > 0) {
-                    value = value.replace(/^(\d{3})$/, '$1');
-                }
-                e.target.value = value;
-            });
-        });
-
-        const usernameInputs = document.querySelectorAll('#login-username, #username, #new-user-username, #edit-username, #edit-student-username, #edit-teacher-username');
-        usernameInputs.forEach(input => {
-            input.addEventListener('input', (e) => {
-                e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-            });
-        });
-
-        checkPWAInstallPrompt();
-
-        // Adiciona os ouvintes de evento para o gesto de deslizar
-        const appContainer = document.querySelector('.app-container');
-        if (appContainer) {
-            appContainer.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 1) { // Apenas um toque para evitar conflitos
-                    appState.swipeStartX = e.touches[0].clientX;
-                }
-            });
-
-            appContainer.addEventListener('touchend', (e) => {
-                if (e.changedTouches.length === 1) {
-                    const swipeEndX = e.changedTouches[0].clientX;
-                    const swipeDistance = swipeEndX - appState.swipeStartX;
-
-                    // Verifica se é um dispositivo iOS e se o deslize foi para a direita
-                    if (/(iPhone|iPad|iPod)/i.test(navigator.userAgent) && swipeDistance > appState.swipeThreshold) {
-                        goBack();
-                    }
-                }
-            });
-        }
-    });
-
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(registration => {
-                    console.log('Service Worker registrado com sucesso:', registration);
-                })
-                .catch(error => {
-                    console.log('Falha ao registrar o Service Worker:', error);
+                    pendingCheckinsList.appendChild(checkinItem);
                 });
+
+            }, error => {
+                console.error('Erro ao carregar check-ins pendentes em tempo real:', error);
+                pendingCheckinsList.innerHTML = `<p>Erro: ${error.message}</p>`;
+            });
+        }
+
+        async function approveCheckin(checkinId, studentId, studentName) {
+            try {
+                await db.collection('checkins').doc(checkinId).update({
+                    status: 'approved',
+                    approvedBy: appState.userData.fullname,
+                    approvedById: appState.currentUser.id,
+                    approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await db.collection('notifications').add({
+                    userId: studentId,
+                    type: 'checkin_approved',
+                    checkinId: checkinId,
+                    teacherId: appState.currentUser.id,
+                    teacherName: appState.userData.fullname,
+                    title: 'Check-in Aprovado!',
+                    message: `Seu check-in foi aprovado por ${appState.userData.fullname} em ${formatDateTime(new Date())}.`,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('Check-in aprovado com sucesso!');
+                // loadPendingCheckins() will be called by the listener
+            } catch (error) {
+                console.error('Erro ao aprovar check-in:', error);
+                alert('Erro ao aprovar check-in: ' + error.message);
+            }
+        }
+
+        async function denyCheckin(checkinId, studentId, studentName) {
+            const reason = prompt('Informe o motivo da recusa (obrigatório):');
+            if (!reason) {
+                alert('O motivo da recusa é obrigatório.');
+                return;
+            }
+
+            try {
+                await db.collection('checkins').doc(checkinId).update({
+                    status: 'denied',
+                    deniedBy: appState.userData.fullname,
+                    deniedById: appState.currentUser.id,
+                    denialReason: reason,
+                    deniedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await db.collection('notifications').add({
+                    userId: studentId,
+                    type: 'checkin_denied',
+                    checkinId: checkinId,
+                    teacherId: appState.currentUser.id,
+                    teacherName: appState.userData.fullname,
+                    title: 'Check-in Recusado',
+                    message: `Seu check-in foi recusado por ${appState.userData.fullname}. Motivo: ${reason}`,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('Check-in recusado com sucesso!');
+                // loadPendingCheckins() will be called by the listener
+            } catch (error) {
+                console.error('Erro ao recusar check-in:', error);
+                alert('Erro ao recusar check-in: ' + error.message);
+            }
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
         });
-    }
+
+        window.addEventListener('appinstalled', () => {
+            hidePWAInstallPrompt(true);
+            deferredPrompt = null;
+            console.log('PWA was installed');
+        });
+
+        function isMobile() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/android/i.test(userAgent)) {
+                return true;
+            }
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return true;
+            }
+            return false;
+        }
+
+        function isPWAInstalled() {
+            if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+                return true;
+            }
+            if (document.referrer.startsWith('android-app://') || document.referrer.startsWith('ios-app://')) {
+                return true;
+            }
+            return false;
+        }
+
+        function checkPWAInstallPrompt() {
+            const dontShowAgain = localStorage.getItem('pwaInstallPromptDontShowAgain');
+
+            if (!isMobile() || isPWAInstalled() || dontShowAgain === 'true') {
+                return;
+            }
+
+            showPWAInstallPrompt();
+        }
+
+        function showPWAInstallPrompt() {
+            const pwaModal = document.getElementById('pwa-install-modal');
+            pwaModal.style.display = 'flex';
+
+            if (/(iPhone|iPad|iPod)/i.test(navigator.userAgent)) {
+                showPWAInstallSteps('ios');
+            } else if (/Android/i.test(navigator.userAgent)) {
+                showPWAInstallSteps('android');
+            }
+        }
+
+        function hidePWAInstallPrompt(dontShowAgain) {
+            const pwaModal = document.getElementById('pwa-install-modal');
+            pwaModal.style.display = 'none';
+            if (dontShowAgain) {
+                localStorage.setItem('pwaInstallPromptDontShowAgain', 'true');
+            }
+        }
+
+        function showPWAInstallSteps(os) {
+            document.getElementById('pwa-ios-steps').style.display = 'none';
+            document.getElementById('pwa-android-steps').style.display = 'none';
+            document.getElementById('pwa-ios-btn').classList.remove('active');
+            document.getElementById('pwa-android-btn').classList.remove('active');
+
+            if (os === 'ios') {
+                document.getElementById('pwa-ios-steps').style.display = 'flex';
+                document.getElementById('pwa-ios-btn').classList.add('active');
+            } else if (os === 'android') {
+                document.getElementById('pwa-android-steps').style.display = 'flex';
+                document.getElementById('pwa-android-btn').classList.add('active');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cpfInputs = document.querySelectorAll('#cpf, #new-user-cpf, #edit-cpf, #edit-student-cpf, #edit-teacher-cpf');
+            cpfInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 11) value = value.slice(0, 11);
+
+                    if (value.length > 9) {
+                        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+                    } else if (value.length > 6) {
+                        value = value.replace(/^(\d{3})(\d{3})(\d{3})$/, '$1.$2.$3');
+                    } else if (value.length > 3) {
+                        value = value.replace(/^(\d{3})$/, '$1');
+                    } else if (value.length > 0) {
+                        value = value.replace(/^(\d{3})$/, '$1');
+                    }
+                    e.target.value = value;
+                });
+            });
+
+            const usernameInputs = document.querySelectorAll('#login-username, #username, #new-user-username, #edit-username, #edit-student-username, #edit-teacher-username');
+            usernameInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+                });
+            });
+
+            checkPWAInstallPrompt();
+
+            // Adiciona os ouvintes de evento para o gesto de deslizar
+            const appContainer = document.querySelector('.app-container');
+            if (appContainer) {
+                appContainer.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) { // Apenas um toque para evitar conflitos
+                        appState.swipeStartX = e.touches[0].clientX;
+                    }
+                });
+
+                appContainer.addEventListener('touchend', (e) => {
+                    if (e.changedTouches.length === 1) {
+                        const swipeEndX = e.changedTouches[0].clientX;
+                        const swipeDistance = swipeEndX - appState.swipeStartX;
+
+                        // Verifica se é um dispositivo iOS e se o deslize foi para a direita
+                        if (/(iPhone|iPad|iPod)/i.test(navigator.userAgent) && swipeDistance > appState.swipeThreshold) {
+                            goBack();
+                        }
+                    }
+                });
+            }
+        });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
 </script>
 </body>
 </html>
