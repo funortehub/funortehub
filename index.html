@@ -313,8 +313,7 @@
             cursor: pointer;
             min-height: 140px;
             position: relative;
-            /* Adicionado para reduzir o espaço entre a imagem e o texto */
-            gap: 5px; /* Reduz o espaçamento padrão */
+            gap: 5px
         }
 
         .module-card:active {
@@ -324,7 +323,7 @@
         .module-card img {
             width: 60px;
             height: 60px;
-            margin-bottom: 0px; /* Alterado de 10px para 0px */
+            margin-bottom: 0;
             object-fit: contain
         }
 
@@ -364,7 +363,7 @@
             animation: fadeIn .5s ease
         }
 
-        @media (min-width: 768px) {
+        @media (min-width:768px) {
             .app-container {
                 max-width: 480px;
                 margin: 0 auto;
@@ -380,7 +379,7 @@
             }
         }
 
-        @media (max-width: 767px) {
+        @media (max-width:767px) {
             .form-row {
                 flex-direction: column;
                 gap: 8px
@@ -1108,7 +1107,7 @@
             }
         }
 
-        @media (min-width: 1024px) {
+        @media (min-width:1024px) {
             body {
                 display: flex;
                 justify-content: center;
@@ -1509,7 +1508,9 @@
             </div>
             <div id="persistent-messages-container-teacher"></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Alunos</div></div>
+                <div class="card-header">
+                    <div class="card-title">Alunos</div>
+                </div>
                 <div class="card-content">
                     <div class="form-group">
                         <select id="teacher-course-select" class="form-control" onchange="loadStudents()">
@@ -1533,7 +1534,9 @@
                 </div>
             </div>
             <div id="teachers-card" class="card" style="display:none">
-                <div class="card-header"><div class="card-title">Professores</div></div>
+                <div class="card-header">
+                    <div class="card-title">Professores</div>
+                </div>
                 <div class="card-content">
                     <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" id="search-professor" class="search-input" placeholder="Buscar professor..." oninput="filterTeachers()"></div>
                     <div id="teachers-list"><p>Carregando professores...</p></div>
@@ -1545,11 +1548,15 @@
                 </div>
             </div>
             <div id="pending-checkins-card" class="card" style="display:none">
-                <div class="card-header"><div class="card-title">Check-ins Pendentes</div></div>
+                <div class="card-header">
+                    <div class="card-title">Check-ins Pendentes</div>
+                </div>
                 <div class="card-content" id="pending-checkins-list"><p>Nenhum check-in pendente.</p></div>
             </div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Avaliação</div></div>
+                <div class="card-header">
+                    <div class="card-title">Avaliação</div>
+                </div>
                 <div class="card-content">
                     <div class="form-group">
                         <select id="evaluation-course-select" class="form-control" onchange="loadSubmissions()">
@@ -1577,7 +1584,9 @@
         <div id="approval-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("teacher-screen")'></i>Aprovar Registros</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Alunos Pendentes</div></div>
+                <div class="card-header">
+                    <div class="card-title">Alunos Pendentes</div>
+                </div>
                 <div class="card-content" id="pending-students-list"><div class="spinner"></div></div>
             </div>
         </div>
@@ -1622,7 +1631,9 @@
                 </div>
                 <div class="form-group">
                     <label for="professor">Professor Responsável</label>
-                    <select id="professor" class="form-control"><option value="">Selecione o professor</option></select>
+                    <select id="professor" class="form-control">
+                        <option value="">Selecione o professor</option>
+                    </select>
                 </div>
                 <div class="btn-container">
                     <button class="btn btn-secondary" onclick="backFromDiaryScreen()"><i class="fas fa-times"></i>Cancelar</button>
@@ -1633,7 +1644,9 @@
         <div id="submissions-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("hub-screen")'></i>Meus Envios</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Diários de Campo</div><i class="fas fa-filter"></i></div>
+                <div class="card-header">
+                    <div class="card-title">Diários de Campo</div><i class="fas fa-filter"></i>
+                </div>
                 <div class="card-content" id="my-submissions-list"><div class="spinner"></div></div>
                 <div id="my-submissions-pagination" class="pagination" style="display:none">
                     <button class="page-btn" onclick="prevUserSubmissionsPage()" id="prev-user-submission-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
@@ -1692,7 +1705,9 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Informações do Aluno</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Informações do Aluno</div>
+                    </div>
                     <div class="card-content">
                         <div class="form-group"><label>Data de Nascimento</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-birthdate"></div></div>
                         <div class="form-group"><label>CPF</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="student-view-cpf"></div></div>
@@ -1702,7 +1717,9 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Histórico de Check-ins</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Histórico de Check-ins</div>
+                    </div>
                     <div class="card-content" id="student-checkin-history-list"><p>Nenhum check-in registrado.</p></div>
                     <div id="student-checkin-history-pagination" class="pagination" style="display:none">
                         <button class="page-btn" onclick="prevStudentCheckinPage()" id="prev-student-checkin-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
@@ -1711,7 +1728,9 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Diários de Campo</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Diários de Campo</div>
+                    </div>
                     <div class="card-content" id="student-diaries-list"><div class="spinner"></div></div>
                     <div id="student-diaries-pagination" class="pagination" style="display:none">
                         <button class="page-btn" onclick="prevStudentDiaryPage()" id="prev-student-diary-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
@@ -1721,7 +1740,9 @@
                 </div>
                 <div id="admin-actions-container" style="display:none">
                     <div class="card">
-                        <div class="card-header"><div class="card-title">Ações Administrativas</div></div>
+                        <div class="card-header">
+                            <div class="card-title">Ações Administrativas</div>
+                        </div>
                         <div class="card-content">
                             <div class="admin-actions">
                                 <button class="admin-btn admin-btn-primary" onclick="editStudent()"><i class="fas fa-edit"></i>Editar Aluno</button>
@@ -1754,7 +1775,13 @@
                         <option value="bacimed">BACIMED</option>
                     </select>
                 </div>
-                <div class="form-group" id="edit-student-internato-type-group" style="display:none"><label for="edit-student-internato-type">Tipo de Aluno</label><select id="edit-student-internato-type" class="form-control"><option value="academico">Acadêmico</option><option value="interno">Interno</option></select></div>
+                <div class="form-group" id="edit-student-internato-type-group" style="display:none">
+                    <label for="edit-student-internato-type">Tipo de Aluno</label>
+                    <select id="edit-student-internato-type" class="form-control">
+                        <option value="academico">Acadêmico</option>
+                        <option value="interno">Interno</option>
+                    </select>
+                </div>
                 <div class="form-group"><label for="edit-student-username">Nome de Usuário</label><input type="text" id="edit-student-username" class="form-control"></div>
                 <div class="form-group"><label for="edit-student-password">Nova Senha</label><input type="password" id="edit-student-password" class="form-control" placeholder="Deixe em branco para manter a atual"></div>
                 <div class="form-group"><label>Senha Atual</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="current-password-display"></div></div>
@@ -1776,7 +1803,9 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Informações do Professor</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Informações do Professor</div>
+                    </div>
                     <div class="card-content">
                         <div class="form-group"><label>Data de Nascimento</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-birthdate"></div></div>
                         <div class="form-group"><label>CPF</label><div class="form-control" style="background-color:transparent;border:none;padding:0" id="teacher-view-cpf"></div></div>
@@ -1786,7 +1815,9 @@
                 </div>
                 <div id="admin-actions-container-teacher">
                     <div class="card">
-                        <div class="card-header"><div class="card-title">Ações Administrativas</div></div>
+                        <div class="card-header">
+                            <div class="card-title">Ações Administrativas</div>
+                        </div>
                         <div class="card-content">
                             <div class="admin-actions">
                                 <button class="admin-btn admin-btn-primary" onclick="editTeacher()"><i class="fas fa-edit"></i>Editar Professor</button>
@@ -1804,17 +1835,17 @@
                 <div class="evaluation-header">
                     <div class="evaluation-title" id="evaluation-title">Título do Diário</div>
                     <div class="evaluation-info">
-                        <div>Data:<span id="evaluation-date"></span></div>
-                        <div>Aluno:<span id="evaluation-student-name"></span></div>
-                        <div>Matrícula:<span id="evaluation-student-registration"></span></div>
-                        <div id="evaluation-reviewed-by-teacher" style="display:none;">Avaliado por:<span id="evaluation-teacher-name"></span></div>
+                        <div>Data: <span id="evaluation-date"></span></div>
+                        <div>Aluno: <span id="evaluation-student-name"></span></div>
+                        <div>Matrícula: <span id="evaluation-student-registration"></span></div>
+                        <div id="evaluation-reviewed-by-teacher" style="display:none">Avaliado por: <span id="evaluation-teacher-name"></span></div>
                     </div>
                     <div class="evaluation-status" id="evaluation-status" style="margin-top:5px;display:inline-block;padding:3px 8px;border-radius:5px;font-size:.8rem"><i class="fas fa-clock"></i>Pendente</div>
                 </div>
                 <div class="evaluation-content"><div class="evaluation-text" id="evaluation-text">Conteúdo do diário de campo será exibido aqui.</div></div>
                 <div class="thumbnail-container" id="evaluation-images-container"></div>
-                <div class="form-group"><label for="evaluation-grade">Nota (0-10)</label><input type="number" id="evaluation-grade" class="form-control" min="0" max="10" step="0.1" placeholder="Digite a nota"></div>
-                <div class="form-group"><label for="evaluation-comment">Comentários</label><textarea id="evaluation-comment" class="form-control" rows="4" placeholder="Digite seus comentários sobre o diário"></textarea></div>
+                <div class="form-group" style="gap: 5px;"><label for="evaluation-grade">Nota (0-10):</label><input type="number" id="evaluation-grade" class="form-control" min="0" max="10" step="0.1" placeholder="Digite a nota"></div>
+                <div class="form-group" style="gap: 5px;"><label for="evaluation-comment">Comentários:</label><textarea id="evaluation-comment" class="form-control" rows="4" placeholder="Digite seus comentários sobre o diário"></textarea></div>
                 <div class="btn-container">
                     <button class="btn btn-secondary" onclick='showScreen("teacher-screen")'><i class="fas fa-arrow-left"></i>Voltar</button>
                     <button class="btn btn-primary" onclick="saveEvaluation()"><i class="fas fa-check"></i>Salvar Avaliação</button>
@@ -1824,7 +1855,9 @@
         <div id="notifications-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick="goBackFromNotifications()"></i>Notificações</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Minhas Notificações</div></div>
+                <div class="card-header">
+                    <div class="card-title">Minhas Notificações</div>
+                </div>
                 <div class="card-content" id="notifications-list"><p>Carregando notificações...</p></div>
             </div>
         </div>
@@ -1839,7 +1872,9 @@
         <div id="messages-screen" class="screen hidden">
             <div class="header"><h1><i class="fas fa-arrow-left" onclick='showScreen("teacher-screen")'></i>Mensagens Ativas</h1></div>
             <div class="card">
-                <div class="card-header"><div class="card-title">Mensagens Ativas</div></div>
+                <div class="card-header">
+                    <div class="card-title">Mensagens Ativas</div>
+                </div>
                 <div class="card-content" id="active-messages-list"><div class="spinner"></div></div>
             </div>
         </div>
@@ -1852,13 +1887,17 @@
                 </div>
                 <div class="form-group">
                     <label for="checkin-preceptor">Preceptor</label>
-                    <select id="checkin-preceptor" class="form-control"><option value="">Selecione seu preceptor</option></select>
+                    <select id="checkin-preceptor" class="form-control">
+                        <option value="">Selecione seu preceptor</option>
+                    </select>
                 </div>
                 <div class="btn-container">
                     <button class="btn btn-primary" id="perform-checkin-btn" onclick="performCheckin()"><i class="fas fa-map-marker-alt"></i>Fazer Check-in</button>
                 </div>
                 <div class="card">
-                    <div class="card-header"><div class="card-title">Histórico de Check-ins</div></div>
+                    <div class="card-header">
+                        <div class="card-title">Histórico de Check-ins</div>
+                    </div>
                     <div class="card-content" id="checkin-history-list"><p>Nenhum check-in registrado.</p></div>
                     <div id="checkin-history-pagination" class="pagination" style="display:none">
                         <button class="page-btn" onclick="prevCheckinPage()" id="prev-checkin-btn" disabled="disabled"><i class="fas fa-chevron-left"></i></button>
@@ -1919,14 +1958,14 @@
             <div class="diary-modal-close" onclick="hideDiaryModal()">&times;</div>
         </div>
         <div class="diary-info">
-            <div>Data:<span id="diary-modal-date"></span></div>
-            <div>Enviado por:<span id="diary-modal-author"></span></div>
-            <div id="diary-modal-reviewed-by" style="display:none;">Avaliado por:<span id="diary-modal-teacher-name"></span></div>
+            <div>Data: <span id="diary-modal-date"></span></div>
+            <div>Enviado por: <span id="diary-modal-author"></span></div>
+            <div id="diary-modal-reviewed-by" style="display:none">Avaliado por: <span id="diary-modal-teacher-name"></span></div>
         </div>
         <div class="diary-content" id="diary-modal-content">Conteúdo do diário será exibido aqui...</div>
         <div id="diary-images-container" class="images-container" style="margin-top:15px"></div>
-        <div class="diary-grade" id="diary-modal-grade" style="display:none"><strong>Nota:</strong><span id="diary-grade-value"></span></div>
-        <div class="diary-comments" id="diary-modal-comments" style="display:none"><strong>Comentários:</strong><span id="diary-comments-value"></span></div>
+        <div class="diary-grade" id="diary-modal-grade" style="display:none"><strong>Nota:</strong> <span id="diary-grade-value"></span></div>
+        <div class="diary-comments" id="diary-modal-comments" style="display:none"><strong>Comentários:</strong> <span id="diary-comments-value"></span></div>
     </div>
 </div>
 <div id="send-message-modal" class="modal">
@@ -2599,7 +2638,7 @@
 
             const offset = -3 * 60; // Offset em minutos para GMT-3
             const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
-            const brasiliaTime = new Date(utc + (offset * 60000));
+            const brasiliaTime = new Date(utc + (3600000 * offset / 60));
             return brasiliaTime.toLocaleDateString('pt-BR');
         } catch (e) {
             console.error('Erro ao formatar data:', e);
@@ -2620,7 +2659,7 @@
 
             const offset = -3 * 60; // Offset em minutos para GMT-3
             const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
-            const brasiliaTime = new Date(utc + (offset * 60000));
+            const brasiliaTime = new Date(utc + (3600000 * offset / 60));
             return brasiliaTime.toLocaleString('pt-BR');
         } catch (e) {
             console.error('Erro ao formatar data/hora:', e);
